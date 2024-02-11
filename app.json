@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eadef55e-f2fd-4b12-99fd-048dce69f774"
+      }
+    },
+    "owner": "ykukrecha"
   }
 }
