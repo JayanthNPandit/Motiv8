@@ -1,20 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import UploadPhotoScreen from './components/UploadPhotoScreen';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>vincent is very old</Text>
-      <StatusBar style="auto" />
-    </View>
+    <UploadPhotoScreen/>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
