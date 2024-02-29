@@ -19,9 +19,30 @@ const UploadPhotoScreen = () => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(status === 'granted');
+      fetchImages();
     })();
   }, []);
 
+
+  const fetchImages = async () => {
+    console.log("Fetching images from Firebase Storage...");
+    const imagesListRef = ref(storage, "images/");
+    try {
+      const imageRefs = await listAll(imagesListRef);
+      console.log("Image references:", imageRefs);
+      const imageUrls = await Promise.all(
+        imageRefs.items.map(async (itemRef) => {
+          const url = await getDownloadURL(itemRef);
+          console.log("Image URL:", url);
+          return { uri: url, caption: "" }; // Assuming there are no captions stored in the database
+        })
+      );
+      setImageData(imageUrls);
+      console.log("Image URLs set to state:", imageUrls);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -58,9 +79,13 @@ const UploadPhotoScreen = () => {
     console.log("yippee");
     const imageRef = ref(storage, `images/${new Date().toISOString()}`);
     console.log("wompwomp");
+
+    console.log(blob);
+    console.log(imageRef);
     try {
       await uploadBytes(imageRef, blob);
     } catch (e) {
+      console.log(e);
       throw e;
     }
     console.log("vincent");
