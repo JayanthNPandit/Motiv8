@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
+import { storage } from '../firebaseConfig.js';
+import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage"; // Import storage methods
+
 
 const UploadPhotoScreen = () => {
   const [imageUri, setImageUri] = useState(null);
   const [caption, setCaption] = useState('');
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageData, setImageData] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -16,25 +22,50 @@ const UploadPhotoScreen = () => {
     })();
   }, []);
 
-  const uploadImage = async () => {
+
+  const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
       quality: 1,
     });
 
     if (!result.cancelled) {
-      setImageUri(result.assets[0].uri);
+      // setImageUri(result.assets[0].uri);
+      // console.log(imageUri);
+
+      setImageUri((prevUri) => {
+        const newUri = result.assets[0].uri;
+        console.log("New Image Data:", newUri);
+        return newUri;
+      });
     }
   };
 
-  const addImage = () => {
+  const addImage = async () => {
     if (imageUri) {
-      setImageData([...imageData, { uri: imageUri, caption: caption}]);
+      const downloadUrl = await addToFirebase(imageUri);
+      setImageData([...imageData, { uri: downloadUrl, caption: caption}]);
       setImageUri(null); // Clear imageUri after adding
       setCaption('');
     }
+  };
+
+  const addToFirebase = async (imageUri) => {
+    const response = await fetch(imageUri);
+    console.log("woohoo");
+    const blob = await response.blob();
+    console.log("yippee");
+    const imageRef = ref(storage, `images/${new Date().toISOString()}`);
+    console.log("wompwomp");
+    try {
+      await uploadBytes(imageRef, blob);
+    } catch (e) {
+      throw e;
+    }
+    console.log("vincent");
+    const downloadUrl = await getDownloadURL(imageRef);
+    return downloadUrl
   };
 
   return (
@@ -44,16 +75,23 @@ const UploadPhotoScreen = () => {
             data={imageData}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-            <View style={styles.message}>
-                <Image source={{ uri: item.uri }} style={styles.image} />
-                <Text>{item.caption}</Text>
-            </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedImage(item.uri);
+                  setModalVisible(true);
+                }}
+              >
+                <View style={styles.message}>
+                  <Image source={{ uri: item.uri }} style={styles.image} />
+                  <Text>{item.caption}</Text>
+                </View>
+              </TouchableOpacity>
             )}
         />
         
         {!imageUri && (
         <View>
-            <TouchableOpacity style={styles.button} onPress={uploadImage}>
+            <TouchableOpacity style={styles.button} onPress={pickImage}>
                 <Text style={styles.text}>Choose image from gallery</Text>
             </TouchableOpacity>
         </View>
@@ -78,6 +116,31 @@ const UploadPhotoScreen = () => {
             </TouchableOpacity>
         </KeyboardAvoidingView>
         )}
+
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.fullscreenImage}
+          />
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
     </View>
   );
 };
@@ -130,7 +193,28 @@ const styles = StyleSheet.create({
   },
   message: {
     marginVertical: 7
-  }
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+  },
+  fullscreenImage: {
+    width: "100%",
+    height: "80%",
+    resizeMode: "contain",
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: "black",
+  },
 })
 
 export default UploadPhotoScreen;
