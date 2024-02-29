@@ -15,6 +15,12 @@ const UploadPhotoScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // hardcoded
+  const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
+  const goalID = 'nPnXBLlRi6LCeCAZtUyP';
+  const backend = process.env.BACKEND_URL;
+
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -23,7 +29,7 @@ const UploadPhotoScreen = () => {
     })();
   }, []);
 
-
+  // fetch images from storage
   const fetchImages = async () => {
     console.log("Fetching images from Firebase Storage...");
     const imagesListRef = ref(storage, "images/");
@@ -44,6 +50,7 @@ const UploadPhotoScreen = () => {
     }
   };
 
+  // choosing the image
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -52,46 +59,72 @@ const UploadPhotoScreen = () => {
     });
 
     if (!result.cancelled) {
-      // setImageUri(result.assets[0].uri);
-      // console.log(imageUri);
-
-      setImageUri((prevUri) => {
-        const newUri = result.assets[0].uri;
-        console.log("New Image Data:", newUri);
-        return newUri;
-      });
+      setImageUri(result.assets[0].uri);
     }
   };
 
+  // adding the image to the screen
   const addImage = async () => {
     if (imageUri) {
-      const downloadUrl = await addToFirebase(imageUri);
+      const {downloadUrl, name} = await addToFirebase(imageUri);
+      await addImageToDB(userID, goalID, caption, name, downloadUrl);
       setImageData([...imageData, { uri: downloadUrl, caption: caption}]);
-      setImageUri(null); // Clear imageUri after adding
+      setImageUri(null);
       setCaption('');
     }
   };
 
+  // adding the image to the bucket
   const addToFirebase = async (imageUri) => {
     const response = await fetch(imageUri);
-    console.log("woohoo");
     const blob = await response.blob();
-    console.log("yippee");
-    const imageRef = ref(storage, `images/${new Date().toISOString()}`);
-    console.log("wompwomp");
+    const name = `images/${new Date().toISOString()}`;
+    const imageRef = ref(storage, name);
 
-    console.log(blob);
-    console.log(imageRef);
     try {
       await uploadBytes(imageRef, blob);
     } catch (e) {
       console.log(e);
       throw e;
     }
-    console.log("vincent");
+    
     const downloadUrl = await getDownloadURL(imageRef);
-    return downloadUrl
+    return {downloadUrl, name};
   };
+
+  // add the image to the database
+  const addImageToDB = async (userID, goalID, caption, name, url) => {
+    try {
+      console.log("started");
+      console.log(name);
+      const response = await fetch(`http://localhost:3001/addImageToDatabase`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': "application/json"
+        },
+        body: JSON.stringify({
+          'userID': userID,
+          'goalID': goalID,
+          'caption': caption,
+          'name': name,
+          'timestamp': name.substring(7),
+          'imageUrl': url,
+        }),
+      });
+      
+      console.log("got to here");
+      const result = await response.json();
+  
+      if (result.success) {
+        console.log('Image added to the database successfully');
+      } else {
+        console.error('Error adding image to the database:', result.error);
+      }
+    } catch (error) {
+      console.error('Error adding image to the database:', error);
+    }
+  }
 
   return (
     <View style={styles.container}>

@@ -28,6 +28,38 @@ const auth = (req, res, next) => {
   }
 };
 
+app.post('/addImageToDatabase', async (req, res) => {
+  try {
+    console.log("in backend");
+    // add image
+    const data = {
+      'goalID': req.body.goalID,
+      'caption': req.body.caption,
+      'imageName': req.body.name,
+      'imageUrl': req.body.imageUrl,
+      'timestamp': req.body.timestamp,
+    }
+    console.log(data);
+    const userID = req.body.userID;
+    const addedImage = await db.collection('users').doc(userID).collection('images').add(data);
+
+    console.log("added image");
+
+    // update goals
+    const goalDoc = await db.collection('users').doc(userID).collection('goals').doc(req.body.goalID);
+    const goalSnapshot = await goalDoc.get();
+    const {images} = goalSnapshot.data();
+    await goalDoc.update({'images': [...images, addedImage.id]});
+
+    console.log("updated goals");
+
+    res.json({ success: true, message: 'Image added to database successfully' });
+  } catch (error) {
+    console.error('Error adding image to Firestore:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+})
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
