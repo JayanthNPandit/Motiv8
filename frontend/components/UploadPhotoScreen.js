@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import { storage } from '../firebaseConfig.js';
 import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage"; // Import storage methods
@@ -31,20 +33,19 @@ const UploadPhotoScreen = () => {
 
   // fetch images from storage
   const fetchImages = async () => {
-    console.log("Fetching images from Firebase Storage...");
     const imagesListRef = ref(storage, "images/");
     try {
       const imageRefs = await listAll(imagesListRef);
-      console.log("Image references:", imageRefs);
+      //console.log("Image references:", imageRefs);
       const imageUrls = await Promise.all(
         imageRefs.items.map(async (itemRef) => {
           const url = await getDownloadURL(itemRef);
-          console.log("Image URL:", url);
+          //console.log("Image URL:", url);
           return { uri: url, caption: "" }; // Assuming there are no captions stored in the database
         })
       );
       setImageData(imageUrls);
-      console.log("Image URLs set to state:", imageUrls);
+      //console.log("Image URLs set to state:", imageUrls);
     } catch (error) {
       console.error("Error fetching images:", error);
     }
@@ -52,14 +53,27 @@ const UploadPhotoScreen = () => {
 
   // choosing the image
   const pickImage = async () => {
+
+    // selected image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       quality: 1,
     });
 
+
     if (!result.cancelled) {
-      setImageUri(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const originalFileSize = fileInfo.size;
+      // compress if greater than 1.5 MB (prevents crashing)
+      if (originalFileSize > (1024 * 1024 * 1.5)) {
+        const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
+        setImageUri(compressedImage.uri);
+      } else {
+        setImageUri(uri);
+      }
+      
     }
   };
 
