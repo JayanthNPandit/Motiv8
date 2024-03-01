@@ -77,6 +77,11 @@ const UploadPhotoScreen = () => {
     }
   };
 
+  // taking the image
+  const takeImage = async () => {
+    // IMPLEMENT
+  }
+
   // adding the image to the screen
   const addImage = async () => {
     if (imageUri) {
@@ -142,7 +147,7 @@ const UploadPhotoScreen = () => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.header}> GROUP IMAGES </Text>
+        <Text style={styles.header}> MOTIV8 </Text>
         <FlatList
             data={imageData}
             keyExtractor={(item, index) => index.toString()}
@@ -162,9 +167,12 @@ const UploadPhotoScreen = () => {
         />
         
         {!imageUri && (
-        <View>
+        <View style={styles.choosing}>
             <TouchableOpacity style={styles.button} onPress={pickImage}>
                 <Text style={styles.text}>Choose image from gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={takeImage}>
+                <Text style={styles.text}>Take picture - not implemented</Text>
             </TouchableOpacity>
         </View>
         )}
@@ -179,7 +187,7 @@ const UploadPhotoScreen = () => {
                     placeholder='add a caption' 
                     placeholderTextColor='#88898a'
                     onChangeText={setCaption}
-                    style = {{padding: 3}}
+                    style = {{padding: 3, fontSize: 18}}
                 />
             </View>
             
@@ -240,6 +248,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 5,
   },
+  choosing: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   button: {
     borderRadius: 10,
     borderWidth: 1,
@@ -254,7 +266,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   text: {
-    fontSize: 20
+    fontSize: 18
   },
   image: {
     width: 350, 
