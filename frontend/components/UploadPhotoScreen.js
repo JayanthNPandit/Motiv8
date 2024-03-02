@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform, Modal } from 'react-native';
+import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
@@ -17,9 +17,12 @@ const UploadPhotoScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   // hardcoded
   const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
   const goalID = 'nPnXBLlRi6LCeCAZtUyP';
+  const groupID = '2vc4eiJZ8eap0fnmfDVf';
   const backend = process.env.BACKEND_URL;
 
 
@@ -44,11 +47,37 @@ const UploadPhotoScreen = () => {
           return { uri: url, caption: "" }; // Assuming there are no captions stored in the database
         })
       );
-      setImageData(imageUrls);
+      const reversedList = imageUrls.reverse();
+      setImageData(reversedList);
+      setRefreshing(false);
       //console.log("Image URLs set to state:", imageUrls);
     } catch (error) {
       console.error("Error fetching images:", error);
     }
+
+
+    // try {
+    //   console.log("started");
+    //   const response = await fetch(`https://group-goals.vercel.app/fetchGroupImages`, {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'accept': "application/json"
+    //     },
+    //     body: JSON.stringify({
+    //       'groupID': groupID
+    //     }),
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error('Failed to fetch data');
+    //   }
+    //   const data = await response.json();
+    //   setImageData(data);
+      
+    // } catch (error) {
+    //   console.error('Error adding image to the database:', error);
+    // }
   };
 
   // choosing the image
@@ -116,7 +145,7 @@ const UploadPhotoScreen = () => {
     try {
       console.log("started");
       console.log(name);
-      const response = await fetch(`http://localhost:3001/addImageToDatabase`, {
+      const response = await fetch(`https://group-goals.vercel.app/addImageToDatabase`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +156,6 @@ const UploadPhotoScreen = () => {
           'goalID': goalID,
           'caption': caption,
           'name': name,
-          'timestamp': name.substring(7),
           'imageUrl': url,
         }),
       });
@@ -164,6 +192,12 @@ const UploadPhotoScreen = () => {
                 </View>
               </TouchableOpacity>
             )}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={fetchImages}
+              />
+            }
         />
         
         {!imageUri && (
