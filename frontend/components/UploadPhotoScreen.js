@@ -69,12 +69,8 @@ const UploadPhotoScreen = () => {
     }
   };
 
-  // taking the image
+  // taking the image using the camera
   const takeImage = async () => {
-    // IMPLEMENT
-
-    // Take image on the app using the camera
-
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -83,15 +79,15 @@ const UploadPhotoScreen = () => {
     });
 
     if (!result.cancelled) {
-      const uri = result.uri;
+      const uri = result.assets[0].uri;
       const fileInfo = await FileSystem.getInfoAsync(uri);
       const originalFileSize = fileInfo.size;
       // compress if greater than 1.5 MB to avoid crases
       if (originalFileSize > (1024 * 768 * 1.5)) { // 1024 x 78 for 4:3 aspect ratio for images
         const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
-        setImageUri(compressedImage.uri);
+        setImageUrl(compressedImage.uri);
       } else {
-        setImageUri(uri);
+        setImageUrl(uri);
       }
     }
   }
@@ -140,7 +136,7 @@ const UploadPhotoScreen = () => {
                 <Text style={styles.text}>Choose image from gallery</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={takeImage}>
-                <Text style={styles.text}>Take picture - not implemented</Text>
+                <Text style={styles.text}>Take picture</Text>
             </TouchableOpacity>
         </View>
         )}
