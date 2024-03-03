@@ -4,12 +4,12 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
-import { storage } from '../firebaseConfig.js';
-import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage"; // Import storage methods
+import { storage, fetchGroupImages, addImageToDatabase, addToBucket } from '../firebaseConfig.js';
+
 
 
 const UploadPhotoScreen = () => {
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [caption, setCaption] = useState('');
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageData, setImageData] = useState([]);
@@ -19,12 +19,16 @@ const UploadPhotoScreen = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  // hardcoded
+  const backend = process.env.BACKEND_URL;
+
+  // YASH
   const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
   const goalID = 'nPnXBLlRi6LCeCAZtUyP';
   const groupID = '2vc4eiJZ8eap0fnmfDVf';
-  const backend = process.env.BACKEND_URL;
-
+  
+  // VENKAT
+  const userID2 = 'ED7pVVZgH1PigTO4pwA3B9WM9bX2';
+  const goalID2 = 'xRBJHrwlWTvBKrS821jS';
 
   useEffect(() => {
     (async () => {
@@ -36,48 +40,9 @@ const UploadPhotoScreen = () => {
 
   // fetch images from storage
   const fetchImages = async () => {
-    const imagesListRef = ref(storage, "images/");
-    try {
-      const imageRefs = await listAll(imagesListRef);
-      //console.log("Image references:", imageRefs);
-      const imageUrls = await Promise.all(
-        imageRefs.items.map(async (itemRef) => {
-          const url = await getDownloadURL(itemRef);
-          //console.log("Image URL:", url);
-          return { uri: url, caption: "" }; // Assuming there are no captions stored in the database
-        })
-      );
-      const reversedList = imageUrls.reverse();
-      setImageData(reversedList);
-      setRefreshing(false);
-      //console.log("Image URLs set to state:", imageUrls);
-    } catch (error) {
-      console.error("Error fetching images:", error);
-    }
-
-
-    // try {
-    //   console.log("started");
-    //   const response = await fetch(`https://group-goals.vercel.app/fetchGroupImages`, {
-    //     method: 'GET',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'accept': "application/json"
-    //     },
-    //     body: JSON.stringify({
-    //       'groupID': groupID
-    //     }),
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error('Failed to fetch data');
-    //   }
-    //   const data = await response.json();
-    //   setImageData(data);
-      
-    // } catch (error) {
-    //   console.error('Error adding image to the database:', error);
-    // }
+    const images = await fetchGroupImages(groupID);
+    setImageData(images);
+    setRefreshing(false);
   };
 
   // choosing the image
@@ -90,19 +55,17 @@ const UploadPhotoScreen = () => {
       quality: 1,
     });
 
-
     if (!result.cancelled) {
-      const uri = result.assets[0].uri;
-      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const url = result.assets[0].uri;
+      const fileInfo = await FileSystem.getInfoAsync(url);
       const originalFileSize = fileInfo.size;
       // compress if greater than 1.5 MB (prevents crashing)
       if (originalFileSize > (1024 * 1024 * 1.5)) {
-        const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
-        setImageUri(compressedImage.uri);
+        const compressedImage = await manipulateAsync(url, [], { compress: 0.3 });
+        setImageUrl(compressedImage.uri);
       } else {
-        setImageUri(uri);
+        setImageUrl(url);
       }
-      
     }
   };
 
@@ -113,65 +76,14 @@ const UploadPhotoScreen = () => {
 
   // adding the image to the screen
   const addImage = async () => {
-    if (imageUri) {
-      const {downloadUrl, name} = await addToFirebase(imageUri);
-      await addImageToDB(userID, goalID, caption, name, downloadUrl);
-      setImageData([...imageData, { uri: downloadUrl, caption: caption}]);
-      setImageUri(null);
+    if (imageUrl) {
+      const {downloadUrl, name} = await addToBucket(imageUrl);
+      await addImageToDatabase(userID, goalID, caption, name, downloadUrl);
+      setImageData([...imageData, { url: downloadUrl, caption: caption}]);
+      setImageUrl(null);
       setCaption('');
     }
   };
-
-  // adding the image to the bucket
-  const addToFirebase = async (imageUri) => {
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
-    const name = `images/${new Date().toISOString()}`;
-    const imageRef = ref(storage, name);
-
-    try {
-      await uploadBytes(imageRef, blob);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-    
-    const downloadUrl = await getDownloadURL(imageRef);
-    return {downloadUrl, name};
-  };
-
-  // add the image to the database
-  const addImageToDB = async (userID, goalID, caption, name, url) => {
-    try {
-      console.log("started");
-      console.log(name);
-      const response = await fetch(`https://group-goals.vercel.app/addImageToDatabase`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'accept': "application/json"
-        },
-        body: JSON.stringify({
-          'userID': userID,
-          'goalID': goalID,
-          'caption': caption,
-          'name': name,
-          'imageUrl': url,
-        }),
-      });
-      
-      console.log("got to here");
-      const result = await response.json();
-  
-      if (result.success) {
-        console.log('Image added to the database successfully');
-      } else {
-        console.error('Error adding image to the database:', result.error);
-      }
-    } catch (error) {
-      console.error('Error adding image to the database:', error);
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -182,12 +94,12 @@ const UploadPhotoScreen = () => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
-                  setSelectedImage(item.uri);
+                  setSelectedImage(item.url);
                   setModalVisible(true);
                 }}
               >
                 <View style={styles.message}>
-                  <Image source={{ uri: item.uri }} style={styles.image} />
+                  <Image source={{url: item.url}} style={styles.image} />
                   <Text>{item.caption}</Text>
                 </View>
               </TouchableOpacity>
@@ -200,7 +112,7 @@ const UploadPhotoScreen = () => {
             }
         />
         
-        {!imageUri && (
+        {!imageUrl && (
         <View style={styles.choosing}>
             <TouchableOpacity style={styles.button} onPress={pickImage}>
                 <Text style={styles.text}>Choose image from gallery</Text>
@@ -211,12 +123,12 @@ const UploadPhotoScreen = () => {
         </View>
         )}
             
-        {imageUri && (
+        {imageUrl && (
         <KeyboardAvoidingView style={styles.miniContainer} 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={75}>
             <View style={styles.halfContainer}>
-                <Image source={{ uri: imageUri }} style={{ width: 275, height: 200, borderRadius: 10, borderWidth: 1 }} />
+                <Image source={{ url: imageUrl }} style={{ width: 275, height: 200, borderRadius: 10, borderWidth: 1 }} />
                 <TextInput 
                     placeholder='add a caption' 
                     placeholderTextColor='#88898a'
@@ -241,7 +153,7 @@ const UploadPhotoScreen = () => {
       >
         <View style={styles.modalView}>
           <Image
-            source={{ uri: selectedImage }}
+            source={{ url: selectedImage }}
             style={styles.fullscreenImage}
           />
           <TouchableOpacity
