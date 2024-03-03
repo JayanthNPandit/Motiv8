@@ -136,7 +136,7 @@ const UploadPhotoScreen = () => {
         {!imageUrl && (
         <View style={styles.choosing}>
             <TouchableOpacity style={styles.button} onPress={pickImage}>
-                <Text style={styles.text}>Choose image from gallery</Text>
+                <Text style={styles.text}>Choose picture</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={takeImage}>
                 <Text style={styles.text}>Take picture</Text>
