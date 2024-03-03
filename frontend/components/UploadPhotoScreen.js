@@ -72,6 +72,28 @@ const UploadPhotoScreen = () => {
   // taking the image
   const takeImage = async () => {
     // IMPLEMENT
+
+    // Take image on the app using the camera
+
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      const uri = result.uri;
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const originalFileSize = fileInfo.size;
+      // compress if greater than 1.5 MB to avoid crases
+      if (originalFileSize > (1024 * 768 * 1.5)) { // 1024 x 78 for 4:3 aspect ratio for images
+        const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
+        setImageUri(compressedImage.uri);
+      } else {
+        setImageUri(uri);
+      }
+    }
   }
 
   // adding the image to the screen
