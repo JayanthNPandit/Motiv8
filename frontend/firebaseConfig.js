@@ -37,7 +37,7 @@ const fetchGroupImages = async (groupID) => {
         userImages.push(...images);
       }));
     
-      userImages.sort((a, b) => a.timestamp - b.timestamp);
+      userImages.sort((a, b) => b.timestamp - a.timestamp);
     
       const images = userImages.map((image) => ({url: image.imageUrl, caption: image.caption}));
       return images;

@@ -19,8 +19,6 @@ const UploadPhotoScreen = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const backend = process.env.BACKEND_URL;
-
   // YASH
   const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
   const goalID = 'nPnXBLlRi6LCeCAZtUyP';
@@ -97,11 +95,16 @@ const UploadPhotoScreen = () => {
     if (imageUrl) {
       const {downloadUrl, name} = await addToBucket(imageUrl);
       await addImageToDatabase(userID, goalID, caption, name, downloadUrl);
-      setImageData([...imageData, { url: downloadUrl, caption: caption}]);
+      setImageData([{ url: downloadUrl, caption: caption}, ...imageData]);
       setImageUrl(null);
       setCaption('');
     }
   };
+
+  const cancelImage = async () => {
+    setImageUrl(null);
+    setCaption('');
+  }
 
   return (
     <View style={styles.container}>
@@ -155,9 +158,15 @@ const UploadPhotoScreen = () => {
                 />
             </View>
             
-            <TouchableOpacity style={styles.button} onPress={addImage}>
-                <Text style={styles.text}>Send</Text>
-            </TouchableOpacity>
+            <View style={styles.halfContainer}>
+              <TouchableOpacity style={styles.button} onPress={addImage}>
+                  <Text style={styles.text}>Send</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={cancelImage}>
+                  <Text style={styles.text}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+            
         </KeyboardAvoidingView>
         )}
 
