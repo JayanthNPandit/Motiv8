@@ -53,7 +53,7 @@ const UploadPhotoScreen = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.cancelled && result.assets) {
       const url = result.assets[0].uri;
       const fileInfo = await FileSystem.getInfoAsync(url);
       const originalFileSize = fileInfo.size;
@@ -76,7 +76,7 @@ const UploadPhotoScreen = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.cancelled && result.assets) {
       const uri = result.assets[0].uri;
       const fileInfo = await FileSystem.getInfoAsync(uri);
       const originalFileSize = fileInfo.size;
