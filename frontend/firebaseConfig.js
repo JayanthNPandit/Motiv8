@@ -17,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // getting all the images
 const fetchGroupImages = async (groupID) => {
@@ -95,6 +96,6 @@ const addImageToDatabase = async (userID, goalID, caption, name, url) => {
     }
 }
 
-export {storage, fetchGroupImages, addImageToDatabase, addToBucket };
+export { storage, auth, fetchGroupImages, addImageToDatabase, addToBucket };
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
