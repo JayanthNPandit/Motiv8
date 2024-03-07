@@ -78,6 +78,21 @@ const fetchRecentGroupImages = async (groupID, limit) => {
   }
 }
 
+// get a specific user's images
+const fetchUserImages = async (userID) => {
+    try {
+      const imagesCollection = await collection(db, 'users', userID, 'images');
+      const imagesSnapshot = await getDocs(imagesCollection);
+      const images = imagesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+      }));
+      return images;
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+}
+
 // adding the image to the bucket
 const addToBucket = async (imageUrl) => {
     const response = await fetch(imageUrl);
@@ -126,6 +141,6 @@ const addImageToDatabase = async (userID, goalID, caption, name, url) => {
     }
 }
 
-export { storage, auth, fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket };
+export { storage, auth, fetchGroupImages, fetchUserImages, fetchRecentGroupImages, addImageToDatabase, addToBucket };
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase

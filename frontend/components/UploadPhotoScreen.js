@@ -7,7 +7,6 @@ import { Camera } from 'expo-camera';
 import { storage, fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../firebaseConfig.js';
 
 
-
 const UploadPhotoScreen = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [caption, setCaption] = useState('');
