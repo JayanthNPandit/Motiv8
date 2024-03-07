@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
-import { storage, fetchGroupImages, addImageToDatabase, addToBucket } from '../firebaseConfig.js';
+import { storage, fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../firebaseConfig.js';
 
 
 
@@ -28,17 +28,26 @@ const UploadPhotoScreen = () => {
   const userID2 = 'ED7pVVZgH1PigTO4pwA3B9WM9bX2';
   const goalID2 = 'xRBJHrwlWTvBKrS821jS';
 
+  // JJ
+
+  // Basically force the user to accept camera permissions
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(status === 'granted');
       fetchImages();
+      // reprompt for camera permissions if they deny
+      if (status !== 'granted') {
+        alert('We need camera permissions for this app to work');
+        // reprompt
+      }
     })();
   }, []);
 
-  // fetch images from storage
+  // fetch some recent images from storage
   const fetchImages = async () => {
-    const images = await fetchGroupImages(groupID);
+    var limit = 7;
+    const images = await fetchRecentGroupImages(groupID, limit); // hard coded value for now
     setImageData(images);
     setRefreshing(false);
   };
@@ -80,7 +89,7 @@ const UploadPhotoScreen = () => {
       const uri = result.assets[0].uri;
       const fileInfo = await FileSystem.getInfoAsync(uri);
       const originalFileSize = fileInfo.size;
-      // compress if greater than 1.5 MB to avoid crases
+      // compress if greater than 1.5 MB to avoid crashes
       if (originalFileSize > (1024 * 768 * 1.5)) { // 1024 x 78 for 4:3 aspect ratio for images
         const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
         setImageUrl(compressedImage.uri);
@@ -108,7 +117,7 @@ const UploadPhotoScreen = () => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.header}> MOTIV8 </Text>
+        <Text style={styles.header}> MOTI-V8 </Text>
         <FlatList
             data={imageData}
             keyExtractor={(item, index) => index.toString()}

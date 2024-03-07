@@ -48,6 +48,36 @@ const fetchGroupImages = async (groupID) => {
     }
 }
 
+// getting the 'limit' number of recent images
+const fetchRecentGroupImages = async (groupID, limit) => {
+  try {
+
+    const groupDoc = await doc(db, 'groups', groupID);
+    const groupDocRef = await getDoc(groupDoc);
+    const userIDs = await groupDocRef.data().users;
+  
+    const userImages = [];
+    await Promise.all(userIDs.map(async (user) => {
+      const imagesCollection = await collection(db, 'users', user, 'images');
+      const query = await query(imagesCollection, orderBy('timestamp', 'desc'), limit(limit));
+      const imagesSnapshot = await getDocs(query);
+      const images = imagesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+      }));
+      userImages.push(...images);
+    }));
+  
+    userImages.sort((a, b) => b.timestamp - a.timestamp);
+  
+    const images = userImages.map((image) => ({url: image.imageUrl, caption: image.caption}));
+    return images.slice(0, limit);
+  
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  }
+}
+
 // adding the image to the bucket
 const addToBucket = async (imageUrl) => {
     const response = await fetch(imageUrl);
@@ -96,6 +126,6 @@ const addImageToDatabase = async (userID, goalID, caption, name, url) => {
     }
 }
 
-export { storage, auth, fetchGroupImages, addImageToDatabase, addToBucket };
+export { storage, auth, fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket };
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
