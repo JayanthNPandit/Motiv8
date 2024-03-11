@@ -3,7 +3,7 @@ import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, 
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
-import { storage, fetchUserImages, addToBucket } from '../firebaseConfig.js';
+import { storage, fetchUserImages, addToBucket } from '../backendFunctions.js';
 
 const ProfileScreen = () => {
     // state variables
@@ -45,7 +45,7 @@ const ProfileScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text>Name: {"Jayanth"}</Text>
             <Text>Email: {"jnp@gmail.com"}</Text>
             <Text>Goals:</Text>
@@ -63,3 +63,5 @@ const ProfileScreen = () => {
         </View>
     );
 }
+
+export default ProfileScreen;

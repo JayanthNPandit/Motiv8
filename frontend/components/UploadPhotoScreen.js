@@ -4,10 +4,10 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
-import { storage, fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../firebaseConfig.js';
+import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
 
 
-const UploadPhotoScreen = () => {
+const UploadPhotoScreen = ({navigation}) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [caption, setCaption] = useState('');
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -17,6 +17,8 @@ const UploadPhotoScreen = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const { user } = useAuth();
 
   // YASH
   const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
@@ -46,7 +48,7 @@ const UploadPhotoScreen = () => {
   // fetch some recent images from storage
   const fetchImages = async () => {
     var limit = 7;
-    const images = await fetchRecentGroupImages(groupID, limit); // hard coded value for now
+    const images = await fetchRecentGroupImages(user, groupID, limit); // hard coded value for now
     setImageData(images);
     setRefreshing(false);
   };
