@@ -5,6 +5,7 @@ import ProfileScreen from './components/ProfileScreen';
 import SignUpScreen from './components/SignUpScreen';
 import LoginScreen from './components/LoginScreen';
 import WelcomeScreen from './components/WelcomeScreen';
+import OnboardingScreen from './components/OnboardingScreen';
 
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -24,6 +25,7 @@ export default function App() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
           <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
           <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{headerShown: false}}/>
           <Stack.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
           <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
