@@ -19,8 +19,8 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
   return (
-    <NavigationContainer>
-      <AuthProvider>
+    <AuthProvider>
+      <NavigationContainer>
         <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
           <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
@@ -29,7 +29,7 @@ export default function App() {
           <Stack.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
           <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
-      </AuthProvider>
-    </NavigationContainer>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }

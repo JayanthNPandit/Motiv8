@@ -24,40 +24,65 @@ const validateUser = (token) => {
     });
 }
 
-// getting all the images
-const fetchGroupImages = async (user, groupID) => {
-    try {
+export const createUser = async (user, username, name, weight, pfp) => {
+  try {
+    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    if (!decodedUser) throw error("not authorized");
 
-      const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
-      if (!decodedUser) throw error("not authorized");
-    
-      const groupDoc = await doc(db, 'groups', groupID);
-      const groupDocRef = await getDoc(groupDoc);
-      const userIDs = await groupDocRef.data().users;
-    
-      const userImages = [];
-      await Promise.all(userIDs.map(async (user) => {
-        const imagesCollection = await collection(db, 'users', user, 'images');
-        const imagesSnapshot = await getDocs(imagesCollection);
-        const images = imagesSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        userImages.push(...images);
-      }));
-    
-      userImages.sort((a, b) => b.timestamp - a.timestamp);
-    
-      const images = userImages.map((image) => ({url: image.imageUrl, caption: image.caption}));
-      return images;
-    
-    } catch (error) {
-      console.error('Error fetching images:', error);
+    addToBucket(user, 'profiles', pfp)
+
+    const userData = {
+      name: name,
+      username: username, 
+      email: user.email,
+      weight: weight,
+      profilePicture: pfp,
+      groupID: ''
     }
+
+    await setDoc(doc(db, 'users', user.uid), userData);
+    await addDoc(collection(db, 'users', user.uid, 'images', {}));
+    await addDoc(collection(db, 'users', user.uid, 'goals', {}));
+
+  } catch (error) {
+    console.error('Error creating user:', error);
+  }
+}
+
+// getting all the images
+export const fetchGroupImages = async (user, groupID) => {
+  try {
+
+    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    if (!decodedUser) throw error("not authorized");
+  
+    const groupDoc = await doc(db, 'groups', groupID);
+    const groupDocRef = await getDoc(groupDoc);
+    const userIDs = await groupDocRef.data().users;
+  
+    const userImages = [];
+    await Promise.all(userIDs.map(async (user) => {
+      const imagesCollection = await collection(db, 'users', user, 'images');
+      const imagesSnapshot = await getDocs(imagesCollection);
+      const images = imagesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+      }));
+      userImages.push(...images);
+    }));
+  
+    userImages.sort((a, b) => b.timestamp - a.timestamp);
+  
+    const images = userImages.map((image) => ({url: image.imageUrl, caption: image.caption}));
+    return images;
+  
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  }
 }
 
 // getting the 'limit' number of recent images
-const fetchRecentGroupImages = async (user, groupID, limit) => {
+export const fetchRecentGroupImages = async (user, groupID, limit) => {
   try {
     
     // authorize user
@@ -91,80 +116,78 @@ const fetchRecentGroupImages = async (user, groupID, limit) => {
 }
 
 // get a specific user's images
-const fetchUserImages = async (user) => {
-    try {
-
-      const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
-      if (!decodedUser) throw error("not authorized");
-
-      const userID = user.uid;
-
-      const imagesCollection = await collection(db, 'users', userID, 'images');
-      const imagesSnapshot = await getDocs(imagesCollection);
-      const images = imagesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-      }));
-      return images;
-    } catch (error) {
-      console.error('Error fetching images:', error);
-    }
-}
-
-// adding the image to the bucket
-const addToBucket = async (user, imageUrl) => {
+export const fetchUserImages = async (user) => {
+  try {
 
     const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
     if (!decodedUser) throw error("not authorized");
 
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-    const name = `images/${new Date().toISOString()}`;
-    const imageRef = ref(storage, name);
+    const userID = user.uid;
 
-    try {
-      await uploadBytes(imageRef, blob);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-    
-    const downloadUrl = await getDownloadURL(imageRef);
-    return {downloadUrl, name};
+    const imagesCollection = await collection(db, 'users', userID, 'images');
+    const imagesSnapshot = await getDocs(imagesCollection);
+    const images = imagesSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+    return images;
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  }
+}
+
+// adding the image to the bucket
+export const addToBucket = async (user, directory, imageUrl) => {
+
+  const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+  if (!decodedUser) throw error("not authorized");
+
+  const response = await fetch(imageUrl);
+  const blob = await response.blob();
+  const name = `${directory}/${new Date().toISOString()}`;
+  const imageRef = ref(storage, name);
+
+  try {
+    await uploadBytes(imageRef, blob);
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+  
+  const downloadUrl = await getDownloadURL(imageRef);
+  return {downloadUrl, name};
 };
 
 // adding image to the database
-const addImageToDatabase = async (user, goalID, caption, name, url) => {
-    try {
+export const addImageToDatabase = async (user, goalID, caption, name, url) => {
+  try {
 
-      const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
-      if (!decodedUser) throw error("not authorized");
+    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    if (!decodedUser) throw error("not authorized");
 
-      const userID = user.uid;
-      // add image
-      const data = {
-        goalID: goalID,
-        caption: caption,
-        imageName: name,
-        imageUrl: url,
-        timestamp: new Date(),
-      };
-      console.log(data);
-      const addedImage = await addDoc(collection(db, 'users', userID, 'images'), data);
-    
-      console.log("added image");
-    
-      // update goals
-      const goalDoc = await doc(db, 'users', userID, 'goals', goalID);
-      const goalRef = await getDoc(goalDoc);
-      const images = goalRef.data().images;
-      await setDoc(goalDoc, {images: [...images, addedImage.id]}, {name: goalRef.data().name}, {type: goalRef.data().type});
-    
-      console.log("updated goals");
-    
-    } catch (error) {
-      console.error('Error adding image to database:', error);
-    }
+    const userID = user.uid;
+    // add image
+    const data = {
+      goalID: goalID,
+      caption: caption,
+      imageName: name,
+      imageUrl: url,
+      timestamp: new Date(),
+    };
+    console.log(data);
+    const addedImage = await addDoc(collection(db, 'users', userID, 'images'), data);
+  
+    console.log("added image");
+  
+    // update goals
+    const goalDoc = await doc(db, 'users', userID, 'goals', goalID);
+    const goalRef = await getDoc(goalDoc);
+    const images = goalRef.data().images;
+    await setDoc(goalDoc, {images: [...images, addedImage.id]}, {name: goalRef.data().name}, {type: goalRef.data().type});
+  
+    console.log("updated goals");
+  
+  } catch (error) {
+    console.error('Error adding image to database:', error);
+  }
 }
-
-export { fetchGroupImages, fetchRecentGroupImages, fetchUserImages, addToBucket, addImageToDatabase };

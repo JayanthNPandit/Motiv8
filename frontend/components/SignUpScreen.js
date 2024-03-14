@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import Checkbox from 'expo-checkbox';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
 import loadFonts from '../fonts/loadFonts';
 
@@ -15,10 +14,17 @@ const SignUpScreen = ({navigation}) => {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
 
-    const { register } = useAuth();
+    const [isClickable, setIsClickable] = useState(true);
 
-    const handleLogin = () => {
+    const { register, user } = useAuth();
+
+    const handleRegister = () => {
+        setIsClickable(false);
         register(email, password);
+        console.log(user);
+        setEmail('');
+        setPassword('');
+        setIsClickable(true);
         navigation.navigate("Onboarding");
     }
 
@@ -30,10 +36,10 @@ const SignUpScreen = ({navigation}) => {
                     <Text style={styles.subheader}> Get Started with Motiv8 </Text>
                 </View>
 
-                <View style={styles.miniContainer}>
+                {/* <View style={styles.miniContainer}>
                     <Text style={styles.body}> Name: </Text>
                     <TextInput style={styles.input} onChange={setName}/>
-                </View>
+                </View> */}
                 <View style={styles.miniContainer}>
                     <Text style={styles.body}> Email: </Text>
                     <TextInput style={styles.input} onChange={setEmail}/>
@@ -43,7 +49,7 @@ const SignUpScreen = ({navigation}) => {
                     <TextInput secureTextEntry={true} style={styles.input} onChange={setPassword}/>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={!isClickable}>
                     <Text style={styles.buttonText}> Register </Text>
                 </TouchableOpacity>
 

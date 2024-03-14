@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import loadFonts from '../fonts/loadFonts';
 import image from '../assets/working-out.png';
 

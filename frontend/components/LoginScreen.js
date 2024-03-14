@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Checkbox from 'expo-checkbox';
 
 import loadFonts from '../fonts/loadFonts';
@@ -20,7 +20,9 @@ const LoginScreen = ({navigation}) => {
 
     const handleLogin = () => {
         login(email, password);
+        
         if (!loginError) navigation.navigate('Profile');
+        else Alert.alert("login failed");
     }
 
     return (
