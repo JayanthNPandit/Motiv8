@@ -12,6 +12,11 @@ const ProfileScreen = () => {
     const [goals, setGoals] = useState([]);
     const [images, setImages] = useState([]);
 
+    const [isClickable, setIsClickable] = useState(true);
+
+    const [imageUrl, setImageUrl] = useState(null);
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+
     useEffect(() => {
         // Fetch user data and images from backend
         fetchUserData();
@@ -44,22 +49,31 @@ const ProfileScreen = () => {
         }
     };
 
+    // copied from
     return (
-        <View>
-            <Text>Name: {"Jayanth"}</Text>
-            <Text>Email: {"jnp@gmail.com"}</Text>
-            <Text>Goals:</Text>
-            <FlatList
-                data={goals}
-                renderItem={({ item }) => <Text>{item}</Text>}
-                keyExtractor={(item, index) => index.toString()}
-            />
-            <Text>Images:</Text>
-            <FlatList
-                data={images}
-                renderItem={({ item }) => <Image source={{ uri: item }} style={styles.image} />}
-                keyExtractor={(item, index) => index.toString()}
-            />
+        <View style={{backgroundColor:'white', flex: 1}}>
+            <View style={styles.container}>
+                <View style={styles.headerContainer}>
+                    <Text style={styles.header}> This is you! </Text>
+                </View>
+                <Image style={styles.image} source={imageUrl==null ? image : {url: imageUrl}}/>
+                <TouchableOpacity style={styles.button} onPress={pickImage}>
+                    <Text style={styles.buttonText}> Add a profile photo </Text>
+                </TouchableOpacity>
+                <View style={styles.miniContainer}>
+                    <TextInput style={styles.input} placeholder="Change your username" onChange={setUsername}/>
+                    <TextInput style={styles.input} placeholder="Change your name" onChange={setName}/>
+                    <TextInput style={styles.input} placeholder="Chnage your weight" onChange={setWeight}/>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.backButton} onPress={deleteUserAndTryAgain} disabled={!isClickable}>
+                        <Text style={styles.backButtonText}> Back </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={addUserInfo} disabled={!isClickable}>
+                        <Text style={styles.buttonText}> Next </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
     );
 }
