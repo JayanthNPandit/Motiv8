@@ -18,8 +18,8 @@ const LoginScreen = ({navigation}) => {
 
     const { login, loginError } = useAuth();
 
-    const handleLogin = () => {
-        login(email, password);
+    const handleLogin = async () => {
+        await login(email, password);
         
         if (!loginError) navigation.navigate('Profile');
         else Alert.alert("login failed");
@@ -35,11 +35,11 @@ const LoginScreen = ({navigation}) => {
 
                 <View style={styles.miniContainer}>
                     <Text style={styles.body}> Email: </Text>
-                    <TextInput style={styles.input} onChange={setEmail}/>
+                    <TextInput style={styles.input} onChangeText={setEmail}/>
                 </View>
                 <View style={styles.miniContainer}>
                     <Text style={styles.body}> Password: </Text>
-                    <TextInput secureTextEntry={true} style={styles.input} onChange={setPassword}/>
+                    <TextInput secureTextEntry={true} style={styles.input} onChangeText={setPassword}/>
                 </View>
 
                 <View style={styles.forgotOrRememberContainer}>

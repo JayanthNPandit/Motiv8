@@ -18,10 +18,9 @@ const SignUpScreen = ({navigation}) => {
 
     const { register, user } = useAuth();
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         setIsClickable(false);
-        register(email, password);
-        console.log(user);
+        await register(email, password);
         setEmail('');
         setPassword('');
         setIsClickable(true);
@@ -36,17 +35,13 @@ const SignUpScreen = ({navigation}) => {
                     <Text style={styles.subheader}> Get Started with Motiv8 </Text>
                 </View>
 
-                {/* <View style={styles.miniContainer}>
-                    <Text style={styles.body}> Name: </Text>
-                    <TextInput style={styles.input} onChange={setName}/>
-                </View> */}
                 <View style={styles.miniContainer}>
                     <Text style={styles.body}> Email: </Text>
-                    <TextInput style={styles.input} onChange={setEmail}/>
+                    <TextInput style={styles.input} onChangeText={setEmail}/>
                 </View>
                 <View style={styles.miniContainer}>
                     <Text style={styles.body}> Password: </Text>
-                    <TextInput secureTextEntry={true} style={styles.input} onChange={setPassword}/>
+                    <TextInput secureTextEntry={true} style={styles.input} onChangeText={setPassword}/>
                 </View>
 
                 <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={!isClickable}>

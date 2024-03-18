@@ -77,12 +77,14 @@ const Onboarding = ({navigation}) => {
     }
 
     const addUserInfo = async () => {
+        console.log(user.accessToken);
         setIsClickable(false);
 
         // test inputs
         const regex = /\D/;
         if (username === '' || name === '' || weight == '' || regex.test(weight)) {
             Alert.alert('Empty fields or weight contains non-numeric characters');
+            setIsClickable(true);
             return;
         }
 
@@ -107,9 +109,9 @@ const Onboarding = ({navigation}) => {
                     <Text style={styles.buttonText}> Add a profile photo </Text>
                 </TouchableOpacity>
                 <View style={styles.miniContainer}>
-                    <TextInput style={styles.input} placeholder="Enter a username" onChange={setUsername}/>
-                    <TextInput style={styles.input} placeholder="Enter your name" onChange={setName}/>
-                    <TextInput style={styles.input} placeholder="Enter your weight" onChange={setWeight}/>
+                    <TextInput style={styles.input} placeholder="Enter a username" onChangeText={setUsername}/>
+                    <TextInput style={styles.input} placeholder="Enter your name" onChangeText={setName}/>
+                    <TextInput style={styles.input} placeholder="Enter your weight" onChangeText={setWeight}/>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.backButton} onPress={deleteUserAndTryAgain} disabled={!isClickable}>

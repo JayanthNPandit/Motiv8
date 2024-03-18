@@ -1,15 +1,13 @@
 import { storage, auth, db } from './firebaseConfig.js';
 import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 import { doc, getDoc, getDocs, addDoc, setDoc, collection } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { verifyIdToken } from "firebase/auth";
 
 // authorize user
 const validateUser = (token) => {
     return new Promise((resolve, reject) => {
-        try {
-          const tokenId = token.split("Bearer ")[1];
-    
-          verifyIdToken(auth, tokenId)
+        try {    
+          verifyIdToken(token)
             .then((decoded) => {
               resolve(decoded);
             })
@@ -26,23 +24,30 @@ const validateUser = (token) => {
 
 export const createUser = async (user, username, name, weight, pfp) => {
   try {
-    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
-    if (!decodedUser) throw error("not authorized");
+    console.log("in backend");
+    // const decodedUser = await validateUser(user.accessToken);
+    // if (!decodedUser) throw error("not authorized");
 
-    addToBucket(user, 'profiles', pfp)
+    const {downloadUrl, name} = await addToBucket(user, 'profiles', pfp);
+    console.log("added to bucket");
 
     const userData = {
       name: name,
       username: username, 
       email: user.email,
       weight: weight,
-      profilePicture: pfp,
+      profilePicture: downloadUrl,
       groupID: ''
     }
 
+    const userDocRef = doc(db, 'users', user.uid);
+
     await setDoc(doc(db, 'users', user.uid), userData);
-    await addDoc(collection(db, 'users', user.uid, 'images', {}));
-    await addDoc(collection(db, 'users', user.uid, 'goals', {}));
+    console.log("step 1 done");
+    await addDoc(collection(userDocRef, 'images'), {});
+    console.log("step 2 done");
+    await addDoc(collection(userDocRef, 'goals'), {});
+    console.log("step 3 done");
 
   } catch (error) {
     console.error('Error creating user:', error);
@@ -53,7 +58,7 @@ export const createUser = async (user, username, name, weight, pfp) => {
 export const fetchGroupImages = async (user, groupID) => {
   try {
 
-    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    const decodedUser = await validateUser(user.accessToken);
     if (!decodedUser) throw error("not authorized");
   
     const groupDoc = await doc(db, 'groups', groupID);
@@ -86,7 +91,7 @@ export const fetchRecentGroupImages = async (user, groupID, limit) => {
   try {
     
     // authorize user
-    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    const decodedUser = await validateUser(user.accessToken);
     if (!decodedUser) throw error("not authorized");
 
     const groupDoc = await doc(db, 'groups', groupID);
@@ -119,7 +124,7 @@ export const fetchRecentGroupImages = async (user, groupID, limit) => {
 export const fetchUserImages = async (user) => {
   try {
 
-    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    const decodedUser = await validateUser(user.accessToken);
     if (!decodedUser) throw error("not authorized");
 
     const userID = user.uid;
@@ -139,8 +144,8 @@ export const fetchUserImages = async (user) => {
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
 
-  const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
-  if (!decodedUser) throw error("not authorized");
+  // const decodedUser = await validateUser(user.accessToken);
+  // if (!decodedUser) throw error("not authorized");
 
   const response = await fetch(imageUrl);
   const blob = await response.blob();
@@ -162,7 +167,7 @@ export const addToBucket = async (user, directory, imageUrl) => {
 export const addImageToDatabase = async (user, goalID, caption, name, url) => {
   try {
 
-    const decodedUser = await validateUser(`Bearer ${user.accessToken}`);
+    const decodedUser = await validateUser(user.accessToken);
     if (!decodedUser) throw error("not authorized");
 
     const userID = user.uid;
