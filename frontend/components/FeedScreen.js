@@ -1,4 +1,4 @@
-// Mostly copied from UploadPhotoScreen
+// Mostly copied from UploadPhotoScreen as this is a similar functionality
 
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal } from 'react-native';
