@@ -39,7 +39,8 @@ const fetchGoals = async () => {
     } catch (error) {
         console.error('Error fetching goals:', error);
     }
-}    
+}
+    
 
 // Sort the goals by type with finished goals at the bottom and unfinished ones on top
 const sortedGoals = [...goals].sort((a, b) => {
