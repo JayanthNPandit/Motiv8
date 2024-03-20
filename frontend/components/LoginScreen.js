@@ -15,14 +15,22 @@ const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isSelected, setSelection] = useState(false);
+    const [isClickable, setIsClickable] = useState(true);
 
     const { login, loginError } = useAuth();
 
     const handleLogin = async () => {
+        setIsClickable(false);
         await login(email, password);
-        
-        if (!loginError) navigation.navigate('Profile');
-        else Alert.alert("login failed");
+        if (loginError) {
+            Alert.alert('Entered incorrect credentials. Try again.');
+            setIsClickable(true);
+        } else {
+            setEmail('');
+            setPassword('');
+            setIsClickable(true);
+            navigation.navigate("Profile");
+        }
     }
 
     return (
@@ -55,7 +63,7 @@ const LoginScreen = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={!isClickable}>
                     <Text style={styles.buttonText}> Sign in </Text>
                 </TouchableOpacity>
 
@@ -75,7 +83,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         marginHorizontal: '5%',
-        marginVertical: '20%',
+        marginTop: '25%',
+        marginBottom: '15%',
         backgroundColor: 'white'
     },
     // HEADER CONTAINER STYLING
@@ -120,7 +129,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#939393',
         width: '100%', 
-        paddingHorizontal: '1%',
+        paddingHorizontal: '2%',
         paddingVertical: '4.5%',
     },
     // SIGN IN BUTTON STYLING

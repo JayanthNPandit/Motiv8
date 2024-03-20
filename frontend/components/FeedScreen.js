@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
+import { useAuth } from "../contexts/AuthContext";
 import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
 
 

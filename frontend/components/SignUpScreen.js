@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import loadFonts from '../fonts/loadFonts';
 
@@ -12,19 +12,24 @@ const SignUpScreen = ({navigation}) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
 
     const [isClickable, setIsClickable] = useState(true);
 
-    const { register, user } = useAuth();
+    const { register, loginError } = useAuth();
 
     const handleRegister = async () => {
         setIsClickable(false);
+
         await register(email, password);
-        setEmail('');
-        setPassword('');
-        setIsClickable(true);
-        navigation.navigate("Onboarding");
+        if (loginError) {
+            Alert.alert('Enter a valid email and password.');
+            setIsClickable(true);
+        } else {
+            setEmail('');
+            setPassword('');
+            setIsClickable(true);
+            navigation.navigate("Onboarding");
+        }
     }
 
     return (
@@ -63,7 +68,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         marginHorizontal: '5%',
-        marginVertical: '20%',
+        marginTop: '25%',
+        marginBottom: '15%',
         backgroundColor: 'white'
     },
     // HEADER CONTAINER STYLING
@@ -108,7 +114,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#939393',
         width: '100%', 
-        paddingHorizontal: '1%',
+        paddingHorizontal: '2%',
         paddingVertical: '4.5%',
     },
     // SIGN IN BUTTON STYLING
@@ -160,7 +166,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins',
         fontWeight: '400',
         textDecorationLine: 'underline'
-    }
+    },
     
 })
 
