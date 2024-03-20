@@ -1,5 +1,5 @@
 import { auth } from '../firebaseConfig.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, browserLocalPersistence, setPersistence } from "firebase/auth";
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -39,6 +39,14 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const remember = async () => {
+    try {
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    } catch (error) {
+      setLoginError(error.message);
+    }
+  }
+
   // An object containing our state and functions related to authentication.
   // By using this context, child components can easily access and use these without prop drilling.
   const contextValue = {
@@ -46,7 +54,8 @@ export function AuthProvider({ children }) {
     loginError,
     login, 
     logout,
-    register
+    register,
+    remember
   };
 
   // The AuthProvider component uses the AuthContext.Provider to wrap its children.

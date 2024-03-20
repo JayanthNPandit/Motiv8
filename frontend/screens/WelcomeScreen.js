@@ -5,10 +5,7 @@ import image from '../assets/working-out.png';
 
 const WelcomeScreen = ({navigation}) => {
     
-    useEffect(() => {
-        // Load fonts when the app starts
-        loadFonts();
-    }, []);
+    useEffect(() => { loadFonts(); }, []);
 
     return (
         <View style={{backgroundColor:'white', flex: 1}}>
