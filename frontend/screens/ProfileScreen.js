@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
-import { createUser } from "../backendFunctions";
-import { deleteUser } from 'firebase/auth';
-
+import { fetchUserData, changeUserData } from "../backendFunctions";
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import image from '../assets/default-pfp.png';
 
@@ -13,112 +11,65 @@ import { Camera } from 'expo-camera';
 
 import loadFonts from '../fonts/loadFonts';
 
-const Onboarding = ({navigation}) => {
-
-    const { user } = useAuth();
-
-    const [username, setUsername] = useState("");
-    const [name, setName] = useState("");
-    const [weight, setWeight] = useState("");
-
-    const [isClickable, setIsClickable] = useState(true);
-
-    const [imageUrl, setImageUrl] = useState(null);
+const ProfileScreen = ({navigation}) => {
+    
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    const [name, setName] = useState("");
+    const [origName, setOrigName] = useState("");
+    const [username, setUsername] = useState("");
+    const [weight, setWeight] = useState("");
+    const [imageUrl, setImageUrl] = useState(null);
+    const [isClickable, setIsClickable] = useState(true);
+    
+    const { user, logout } = useAuth();
 
+    useEffect(() => { loadFonts(); }, []);
     useEffect(() => {
-        (async () => {
-          const { status } = await Camera.requestCameraPermissionsAsync();
-          setHasCameraPermission(status === 'granted');
-          // reprompt for camera permissions if they deny
-          if (status !== 'granted') {
-            alert('We need camera permissions for this app to work');
-            // reprompt
-          }
-        })();
+        fetchUserData(user)
+        .then((data) => {
+            setName(data.name);
+            setOrigName(data.name);
+            setUsername(data.username);
+            setWeight(data.weight);
+            setImageUrl(data.profilePicture);
+            console.log(name)
+        })
     }, []);
 
-    useEffect(() => {
-        // Load fonts when the app starts
-        loadFonts();
-    }, []);
-
-    // choosing the image
-    const pickImage = async () => {
-
-        // selected image
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: false,
-            quality: 1,
-        });
-
-        if (!result.cancelled && result.assets) {
-            const url = result.assets[0].uri;
-            const fileInfo = await FileSystem.getInfoAsync(url);
-            const originalFileSize = fileInfo.size;
-            // compress if greater than 1.5 MB (prevents crashing)
-            if (originalFileSize > (1024 * 1024 * 1.5)) {
-                const compressedImage = await manipulateAsync(url, [], { compress: 0.3 });
-                setImageUrl(compressedImage.uri);
-            } else {
-                setImageUrl(url);
-            }
-        }
-    };
-
-    const deleteUserAndTryAgain = async () => {
-        try {
-            await deleteUser(user);
-        } catch (error) {
-            console.log(error);
-        }
-        navigation.navigate("SignUp");
-    }
-
-    const addUserInfo = async () => {
-        console.log(user.accessToken);
+    const handleLogout = async () => {
         setIsClickable(false);
-
-        // test inputs
-        const regex = /\D/;
-        if (username === '' || name === '' || weight == '' || regex.test(weight)) {
-            Alert.alert('Empty fields or weight contains non-numeric characters');
-            setIsClickable(true);
-            return;
-        }
-
-        try {
-            await createUser(user, username, name, weight, imageUrl);
-        } catch (error) {
-            console.log(error);
-        }
+        await logout();
         setIsClickable(true);
-        navigation.navigate("Profile");
+        navigation.navigate("Welcome");
     }
 
+    const handleChange = async () => {
+        setIsClickable(false);
+        await changeUserData(user, name, username, weight, imageUrl);
+        setOrigName(name);
+        setIsClickable(true);
+    }
+
+    // copied from
     return (
         <View style={{backgroundColor:'white', flex: 1}}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Hey there! </Text>
-                    <Text style={styles.subheader}> Let's get you set up </Text>
+                    <Text style={styles.header}> Hi, {origName}! </Text>
+                    <Text style={styles.subheader}> Let's edit your profile </Text>
                 </View>
                 <Image style={styles.image} source={imageUrl==null ? image : {url: imageUrl}}/>
-                <TouchableOpacity style={styles.button} onPress={pickImage}>
-                    <Text style={styles.buttonText}> Add a profile photo </Text>
-                </TouchableOpacity>
                 <View style={styles.miniContainer}>
-                    <TextInput style={styles.input} placeholder="Enter a username" onChangeText={setUsername}/>
-                    <TextInput style={styles.input} placeholder="Enter your name" onChangeText={setName}/>
-                    <TextInput style={styles.input} placeholder="Enter your weight" onChangeText={setWeight}/>
+                    <TextInput style={styles.input} value={name} onChangeText={setName}/>
+                    <TextInput style={styles.input} value={username} onChangeText={setUsername}/>
+                    <TextInput style={styles.input} value={weight} onChangeText={setWeight}/>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.backButton} onPress={deleteUserAndTryAgain} disabled={!isClickable}>
+                    <TouchableOpacity style={styles.backButton} onPress={handleLogout} disabled={!isClickable}>
                         <Text style={styles.backButtonText}> Back </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={addUserInfo} disabled={!isClickable}>
-                        <Text style={styles.buttonText}> Next </Text>
+                    <TouchableOpacity style={styles.button} onPress={handleChange} disabled={!isClickable}>
+                        <Text style={styles.buttonText}> Confirm </Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -178,15 +129,15 @@ const styles = StyleSheet.create({
     // INPUT CONTAINER STYLING
     miniContainer: {
         flexDirection: 'column', 
-        justifyContent: 'flex-start', 
-        alignItems: 'flex-start',
-        gap: 25, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        gap: 35, 
         display: 'flex',
         marginVertical: '5%',
         width: '92%'
     },
     input: {
-        borderRadius: 16,
+        borderRadius: 10,
         borderWidth: 1,
         borderColor: '#9A9A9A',
         width: '100%', 
@@ -229,4 +180,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Onboarding;
+export default ProfileScreen;

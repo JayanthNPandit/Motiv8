@@ -1,6 +1,6 @@
 import { storage, auth, db } from './firebaseConfig.js';
 import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
-import { doc, getDoc, getDocs, addDoc, setDoc, collection } from "firebase/firestore";
+import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, collection } from "firebase/firestore";
 import { verifyIdToken } from "firebase/auth";
 
 // authorize user
@@ -24,13 +24,9 @@ const validateUser = (token) => {
 
 export const createUser = async (user, username, name, weight, pfp) => {
   try {
-    console.log("in backend");
     // const decodedUser = await validateUser(user.accessToken);
     // if (!decodedUser) throw error("not authorized");
-
-    const {downloadUrl, name} = await addToBucket(user, 'profiles', pfp);
-    console.log("added to bucket");
-
+    const {downloadUrl} = await addToBucket(user, 'profiles', pfp);
     const userData = {
       name: name,
       username: username, 
@@ -41,26 +37,43 @@ export const createUser = async (user, username, name, weight, pfp) => {
     }
 
     const userDocRef = doc(db, 'users', user.uid);
-
-    await setDoc(doc(db, 'users', user.uid), userData);
-    console.log("step 1 done");
+    await setDoc(userDocRef, userData);
     await addDoc(collection(userDocRef, 'images'), {});
-    console.log("step 2 done");
     await addDoc(collection(userDocRef, 'goals'), {});
-    console.log("step 3 done");
 
   } catch (error) {
     console.error('Error creating user:', error);
   }
 }
 
+export const changeUserData = async (user, name, username, weight, imageUrl) => {
+  try {
+    const updatedFields = {
+      name: name,
+      username: username,
+      weight: weight,
+      profilePicture: imageUrl,
+    }
+    await updateDoc(doc(db, 'users', user.uid), updatedFields);
+  } catch (error) {
+    console.log('Error changing user data:', error);
+  }
+}
+
+export const fetchUserData = async (user) => {
+  try {
+    const response = await getDoc(doc(db, 'users', user.uid));
+    if (response.exists()) return response.data();
+    else throw error("User does not exist");
+  } catch (error) {
+    console.log('Error fetching users data:', error);
+  }
+}
+
 // getting all the images
 export const fetchGroupImages = async (user, groupID) => {
   try {
-
-    const decodedUser = await validateUser(user.accessToken);
-    if (!decodedUser) throw error("not authorized");
-  
+    
     const groupDoc = await doc(db, 'groups', groupID);
     const groupDocRef = await getDoc(groupDoc);
     const userIDs = await groupDocRef.data().users;
@@ -89,10 +102,6 @@ export const fetchGroupImages = async (user, groupID) => {
 // getting the 'limit' number of recent images
 export const fetchRecentGroupImages = async (user, groupID, limit) => {
   try {
-    
-    // authorize user
-    const decodedUser = await validateUser(user.accessToken);
-    if (!decodedUser) throw error("not authorized");
 
     const groupDoc = await doc(db, 'groups', groupID);
     const groupDocRef = await getDoc(groupDoc);
@@ -124,9 +133,6 @@ export const fetchRecentGroupImages = async (user, groupID, limit) => {
 export const fetchUserImages = async (user) => {
   try {
 
-    const decodedUser = await validateUser(user.accessToken);
-    if (!decodedUser) throw error("not authorized");
-
     const userID = user.uid;
 
     const imagesCollection = await collection(db, 'users', userID, 'images');
@@ -143,9 +149,6 @@ export const fetchUserImages = async (user) => {
 
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
-
-  // const decodedUser = await validateUser(user.accessToken);
-  // if (!decodedUser) throw error("not authorized");
 
   const response = await fetch(imageUrl);
   const blob = await response.blob();
@@ -166,9 +169,6 @@ export const addToBucket = async (user, directory, imageUrl) => {
 // adding image to the database
 export const addImageToDatabase = async (user, goalID, caption, name, url) => {
   try {
-
-    const decodedUser = await validateUser(user.accessToken);
-    if (!decodedUser) throw error("not authorized");
 
     const userID = user.uid;
     // add image

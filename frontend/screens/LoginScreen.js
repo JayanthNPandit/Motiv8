@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import Checkbox from 'expo-checkbox';
 
 import loadFonts from '../fonts/loadFonts';
 
-const SignUpScreen = ({navigation}) => {
-    useEffect(() => {
-        // Load fonts when the app starts
-        loadFonts();
-    }, []);
+const LoginScreen = ({navigation}) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [isSelected, setSelection] = useState(false);
     const [isClickable, setIsClickable] = useState(true);
 
-    const { register, loginError } = useAuth();
+    const { login, remember, loginError } = useAuth();
 
-    const handleRegister = async () => {
+    useEffect(() => { loadFonts(); }, []);
+
+    const handleLogin = async () => {
         setIsClickable(false);
-
-        await register(email, password);
+        if (isSelected) await remember();
+        await login(email, password);
         if (loginError) {
-            Alert.alert('Enter a valid email and password.');
+            Alert.alert('Entered incorrect credentials. Try again.');
             setIsClickable(true);
         } else {
             setEmail('');
             setPassword('');
+            setSelection(false);
             setIsClickable(true);
-            navigation.navigate("Onboarding");
+            navigation.navigate("Profile");
         }
     }
 
@@ -36,8 +36,8 @@ const SignUpScreen = ({navigation}) => {
         <View style={{backgroundColor:'white', flex: 1}}>
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Sign Up </Text>
-                    <Text style={styles.subheader}> Get Started with Motiv8 </Text>
+                    <Text style={styles.header}> Login </Text>
+                    <Text style={styles.subheader}> Continue Your Journey </Text>
                 </View>
 
                 <View style={styles.miniContainer}>
@@ -49,12 +49,25 @@ const SignUpScreen = ({navigation}) => {
                     <TextInput secureTextEntry={true} style={styles.input} onChangeText={setPassword}/>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={!isClickable}>
-                    <Text style={styles.buttonText}> Register </Text>
+                <View style={styles.forgotOrRememberContainer}>
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox value={isSelected}
+                                onValueChange={setSelection}
+                                color={isSelected ? '#9FA1D1' : undefined}
+                                style={styles.checkbox}/>
+                        <Text style={styles.forgotOrRemember}> Remember me? </Text>
+                    </View>
+                    <TouchableOpacity> 
+                        <Text style={{...styles.forgotOrRemember, textDecorationLine: 'underline'}}> Forgot Password? </Text> 
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={!isClickable}>
+                    <Text style={styles.buttonText}> Sign in </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                    <Text style={styles.signUpText}> Already have an account? Log in </Text>
+                <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+                    <Text style={styles.signUpText}> Don't have an account? Sign up </Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -84,7 +97,7 @@ const styles = StyleSheet.create({
     header: {
         color: 'black', 
         fontSize: 24, 
-        fontFamily: 'Poppins-Bold'
+        fontFamily: 'Poppins-Bold',
     },
     subheader: {
         color: '#8692A6',
@@ -166,8 +179,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins',
         fontWeight: '400',
         textDecorationLine: 'underline'
-    },
-    
+    }
 })
 
-export default SignUpScreen
+export default LoginScreen;
