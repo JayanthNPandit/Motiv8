@@ -1,5 +1,5 @@
 import { auth } from '../firebaseConfig.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, browserLocalPersistence, setPersistence } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
+  const [resetError, setResetError] = useState(null);
   
   // Login function that validates the provided username and password.
   const login = async (email, password) => {
@@ -47,15 +48,25 @@ export function AuthProvider({ children }) {
     }
   }
 
+  const resetPassword = async (email) => {
+    try {
+      const response = await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      setResetError(error.message);
+    }
+  }
+
   // An object containing our state and functions related to authentication.
   // By using this context, child components can easily access and use these without prop drilling.
   const contextValue = {
     user, 
     loginError,
+    resetError,
     login, 
     logout,
     register,
-    remember
+    remember,
+    resetPassword
   };
 
   // The AuthProvider component uses the AuthContext.Provider to wrap its children.

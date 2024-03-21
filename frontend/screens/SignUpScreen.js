@@ -15,11 +15,17 @@ const SignUpScreen = ({navigation}) => {
     useEffect(() => { loadFonts(); }, []);
     
     const handleRegister = async () => {
-        setIsClickable(false);
+        if (email === '' || password === '') {
+            Alert.alert('Email and/or password fields are empty. Try again');
+            return;
+        }
 
+        setIsClickable(false);
         await register(email, password);
         if (loginError) {
-            Alert.alert('Enter a valid email and password.');
+            Alert.alert('Failed to create an account. Try again');
+            setEmail('');
+            setPassword('');
             setIsClickable(true);
         } else {
             setEmail('');

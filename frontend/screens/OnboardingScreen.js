@@ -22,7 +22,7 @@ const Onboarding = ({navigation}) => {
 
     const { user } = useAuth();
 
-    useEffect(() => { loadFonts(); }, []);
+    useEffect(() => { console.log(user); loadFonts(); }, []);
     useEffect(() => {
         (async () => {
           const { status } = await Camera.requestCameraPermissionsAsync();
