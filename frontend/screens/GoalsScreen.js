@@ -71,7 +71,7 @@ return (
       <TouchableOpacity style={styles.addButton} onPress={addGoal}>
         <MaterialIcons name="add" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </View>        
   );
 };
 
