@@ -12,7 +12,7 @@ const LoginScreen = ({navigation}) => {
     const [isSelected, setSelection] = useState(false);
     const [isClickable, setIsClickable] = useState(true);
 
-    const { login, remember, resetPassword, loginError, resetError } = useAuth();
+    const { login, remember, loginError } = useAuth();
 
     useEffect(() => { loadFonts(); }, []);
 
@@ -29,19 +29,6 @@ const LoginScreen = ({navigation}) => {
             setSelection(false);
             setIsClickable(true);
             navigation.navigate("Profile");
-        }
-    }
-
-    const handleReset = async () => {
-        if (email === '') {
-            Alert.alert('Please type in your email so that we can send a password reset email. Then click "Forgot password?"');
-            return;
-        }
-        await resetPassword(email);
-        if (resetError) {
-            Alert.alert('Encountered error, please try again in a few minutes.');
-        } else {
-            Alert.alert('Sent a password reset email. It may take a few minutes to send.');
         }
     }
 
@@ -70,7 +57,7 @@ const LoginScreen = ({navigation}) => {
                                 style={styles.checkbox}/>
                         <Text style={styles.forgotOrRemember}> Remember me? </Text>
                     </View>
-                    <TouchableOpacity onPress={handleReset} disabled={!isClickable}> 
+                    <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")} disabled={!isClickable}> 
                         <Text style={{...styles.forgotOrRemember, textDecorationLine: 'underline'}}> Forgot Password? </Text> 
                     </TouchableOpacity>
                 </View>

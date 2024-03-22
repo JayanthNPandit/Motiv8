@@ -15,7 +15,6 @@ const Onboarding = ({navigation}) => {
 
     const [username, setUsername] = useState("");
     const [name, setName] = useState("");
-    const [weight, setWeight] = useState("");
     const [isClickable, setIsClickable] = useState(true);
     const [imageUrl, setImageUrl] = useState(null);
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -69,19 +68,15 @@ const Onboarding = ({navigation}) => {
     }
 
     const addUserInfo = async () => {
-        console.log(user.accessToken);
         setIsClickable(false);
-
         // test inputs
-        const regex = /\D/;
-        if (username === '' || name === '' || weight == '' || regex.test(weight)) {
-            Alert.alert('Empty fields or weight contains non-numeric characters');
+        if (username === '' || name === '') {
+            Alert.alert('Please fill out all the fields');
             setIsClickable(true);
             return;
         }
-
         try {
-            await createUser(user, username, name, weight, imageUrl);
+            await createUser(user, username, name, imageUrl);
         } catch (error) {
             console.log(error);
         }
@@ -103,7 +98,6 @@ const Onboarding = ({navigation}) => {
                 <View style={styles.miniContainer}>
                     <TextInput style={styles.input} placeholder="Enter a username" onChangeText={setUsername}/>
                     <TextInput style={styles.input} placeholder="Enter your name" onChangeText={setName}/>
-                    <TextInput style={styles.input} placeholder="Enter your weight" onChangeText={setWeight}/>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.backButton} onPress={deleteUserAndTryAgain} disabled={!isClickable}>

@@ -22,7 +22,7 @@ const validateUser = (token) => {
     });
 }
 
-export const createUser = async (user, username, name, weight, pfp) => {
+export const createUser = async (user, username, name, pfp) => {
   try {
     // const decodedUser = await validateUser(user.accessToken);
     // if (!decodedUser) throw error("not authorized");
@@ -31,7 +31,6 @@ export const createUser = async (user, username, name, weight, pfp) => {
       name: name,
       username: username, 
       email: user.email,
-      weight: weight,
       profilePicture: downloadUrl,
       groupID: ''
     }
@@ -46,12 +45,11 @@ export const createUser = async (user, username, name, weight, pfp) => {
   }
 }
 
-export const changeUserData = async (user, name, username, weight, imageUrl) => {
+export const changeUserData = async (user, name, username, imageUrl) => {
   try {
     const updatedFields = {
       name: name,
       username: username,
-      weight: weight,
       profilePicture: imageUrl,
     }
     await updateDoc(doc(db, 'users', user.uid), updatedFields);

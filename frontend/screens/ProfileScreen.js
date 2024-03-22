@@ -17,7 +17,6 @@ const ProfileScreen = ({navigation}) => {
     const [name, setName] = useState("");
     const [origName, setOrigName] = useState("");
     const [username, setUsername] = useState("");
-    const [weight, setWeight] = useState("");
     const [imageUrl, setImageUrl] = useState(null);
     const [isClickable, setIsClickable] = useState(true);
     
@@ -30,7 +29,6 @@ const ProfileScreen = ({navigation}) => {
             setName(data.name);
             setOrigName(data.name);
             setUsername(data.username);
-            setWeight(data.weight);
             setImageUrl(data.profilePicture);
             console.log(name)
         })
@@ -45,7 +43,7 @@ const ProfileScreen = ({navigation}) => {
 
     const handleChange = async () => {
         setIsClickable(false);
-        await changeUserData(user, name, username, weight, imageUrl);
+        await changeUserData(user, name, username, imageUrl);
         setOrigName(name);
         setIsClickable(true);
     }
@@ -62,7 +60,6 @@ const ProfileScreen = ({navigation}) => {
                 <View style={styles.miniContainer}>
                     <TextInput style={styles.input} value={name} onChangeText={setName}/>
                     <TextInput style={styles.input} value={username} onChangeText={setUsername}/>
-                    <TextInput style={styles.input} value={weight} onChangeText={setWeight}/>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.backButton} onPress={handleLogout} disabled={!isClickable}>
