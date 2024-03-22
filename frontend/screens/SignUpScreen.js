@@ -12,7 +12,7 @@ const SignUpScreen = ({navigation}) => {
 
     const { register, loginError } = useAuth();
 
-    useEffect(() => { loadFonts(); }, []);
+    useEffect(() => loadFonts(), []);
     
     const handleRegister = async () => {
         if (email === '' || password === '') {

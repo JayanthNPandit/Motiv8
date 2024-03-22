@@ -1,112 +1,115 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import loadFonts from '../fonts/loadFonts';
-import image from '../assets/working-out.png';
+import image from '../assets/working-out-2.png';
 
-const GroupsScreen = () => {
+const GroupsScreen = ({navigation}) => {
 
-    const [goals, setGoals] = useState([]);
-
-    useEffect(() => {
-        const fetchMembers = async () => {
-            try {
-                const response = await fetch('fetchMembersEndpoint');
-                const data = await response.json();
-                setMembers(data.members);
-            } catch (error) {
-                console.error('Error fetching members:', error);
-            }
-        }
-
-        loadFonts();
-    }, []);
-
-    // uhh how do i make this invite feature???
-    const inviteMember = () => {
-        // Invite a new member to the group
-        const newMember = 'New member';
-        setMembers([...members, newMember]);
-    }
-
-    // chat gpt said do this but idt it works so I will try to fix that later
-    const generateCode = async () => {
-        try {
-          const response = await fetch('https://your-api.com/groups/generate-code', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              // Add any required authentication headers
-            },
-            body: JSON.stringify({ groupId: groupId }),
-          });
-          const data = await response.json();
-          return data.code; // Return the generated code
-        } catch (error) {
-          console.error('Error generating code:', error);
-          // Handle error
-        }
-      };
-      
-      // Join Group Screen
-      const joinGroup = async (code) => {
-        try {
-          const response = await fetch('https://your-api.com/groups/join', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              // Add any required authentication headers
-            },
-            body: JSON.stringify({ code: code }),
-          });
-          const data = await response.json();
-          // Handle success
-        } catch (error) {
-          console.error('Error joining group:', error);
-          // Handle error
-        }
-      }
+  useEffect(() => loadFonts(), []);
 
     return (
+      <View style={{backgroundColor:'white', flex: 1}}>
         <View style={styles.container}>
-            <Text style={styles.header}>Groups</Text>
-            <TouchableOpacity style={styles.button} onPress={() => {}}>
-                <Text style={styles.buttonText}>Create a Group</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => {}}>
-                <Text style={styles.buttonText}>Join a Group</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => {}}>
-                <Text style={styles.buttonText}>My Groups</Text>
-            </TouchableOpacity>
+          <View style={styles.headerContainer}>
+            <Text style={styles.header}>Find Your Friends</Text>
+            <Text style={styles.subheader}>Motiv8 Group Options</Text>
+          </View>
+          <Image style={styles.image} source={image}/>
+          <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate("CreateGroup")}>
+            <Text style={styles.createButtonText}> Create a group </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.joinButton} onPress={() => navigation.navigate("JoinGroup")}>
+            <Text style={styles.joinButtonText}> Join a group </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}> 
+            <Text style={{...styles.textBodySmall, textDecorationLine: 'underline'}}> Skip </Text> 
+          </TouchableOpacity>
         </View>
+      </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 70,
-        marginBottom: 30
-    },
-    button: {
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#a68d8d',
-        padding: 10,
-        marginHorizontal: 2,
-        marginVertical: 5
-    },
-    header: {
-        fontFamily: 'OpenSans-Bold',
-        fontSize: 24,
-        marginBottom: 10
-    },
-    buttonText: {
-        fontFamily: 'OpenSans-Regular',
-        fontSize: 16
-    }
-});
+  container: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor:'white', 
+    marginVertical: '20%',
+    backgroundColor: 'white'
+  },
+  // HEADER CONTAINER STYLING
+  headerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '5%',
+    gap: 8
+  },
+  header: {
+    color: 'black', 
+    fontSize: 24, 
+    fontFamily: 'Poppins-Bold',
+  },
+  subheader: {
+    color: '#8692A6',
+    fontSize: 16,
+    fontFamily: 'Poppins',
+    fontWeight: '400',
+    lineHeight: 28
+  },
+  // IMAGE STYLING
+  image: {
+    width: '97%',
+    height: '30%',
+  },
+  // CREATE BUTTON STYLING
+  createButton: {
+    display: 'flex',
+    justifyContent: 'center', 
+    alignItems: 'center',
+    paddingVertical: '4.5%',
+    paddingHorizontal: '28%',
+    backgroundColor: '#4044AB',
+    borderRadius: 62, 
+    gap: 10,
+    marginVertical: '4%'
+  },
+  createButtonText: {
+    color: 'white', 
+    fontSize: 14, 
+    fontFamily: 'Poppins', 
+    fontWeight: '400',
+    lineHeight: 24,
+  },
+  // JOIN BUTTON STYLING
+  joinButton: {
+    display: 'flex',
+    justifyContent: 'center', 
+    alignItems: 'center',
+    paddingVertical: '4.5%',
+    paddingHorizontal: '30%',
+    backgroundColor: 'white',
+    borderRadius: 62, 
+    borderWidth: 1,
+    gap: 10,
+    marginVertical: '4%'
+  },
+  joinButtonText: {
+    color: 'black', 
+    fontSize: 14, 
+    fontFamily: 'Poppins', 
+    fontWeight: '400'
+  },
+  // SKIP BUTTON
+  textBodySmall: {
+    color: '#545454',
+    fontSize: 14,
+    fontFamily: 'Poppins',
+    fontWeight: '400'
+  },
+})
 
 export default GroupsScreen;

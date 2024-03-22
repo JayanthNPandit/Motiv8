@@ -21,7 +21,7 @@ const Onboarding = ({navigation}) => {
 
     const { user } = useAuth();
 
-    useEffect(() => { console.log(user); loadFonts(); }, []);
+    useEffect(() => loadFonts(), []);
     useEffect(() => {
         (async () => {
           const { status } = await Camera.requestCameraPermissionsAsync();
@@ -81,7 +81,7 @@ const Onboarding = ({navigation}) => {
             console.log(error);
         }
         setIsClickable(true);
-        navigation.navigate("Profile");
+        navigation.navigate("Groups");
     }
 
     return (

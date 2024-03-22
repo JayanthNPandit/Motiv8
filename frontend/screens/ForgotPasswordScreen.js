@@ -10,7 +10,7 @@ const ForgotPasswordScreen = ({navigation}) => {
 
     const { resetPassword, resetError } = useAuth();
 
-    useEffect(() => { loadFonts(); }, []);
+    useEffect(() => loadFonts(), []);
     
     const handleReset = async () => {
         if (email === '') {

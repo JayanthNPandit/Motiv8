@@ -7,6 +7,9 @@ import LoginScreen from './screens/LoginScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
+import GroupsScreen from './screens/GroupsScreen';
+import CreateGroupScreen from './screens/CreateGroupScreen';
+import JoinGroupScreen from './screens/JoinGroupScreen';
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -34,6 +37,9 @@ function AppContent() {
         <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}}/>
       </Stack.Navigator>

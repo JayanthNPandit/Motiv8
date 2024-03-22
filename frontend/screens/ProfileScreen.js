@@ -22,7 +22,7 @@ const ProfileScreen = ({navigation}) => {
     
     const { user, logout } = useAuth();
 
-    useEffect(() => { loadFonts(); }, []);
+    useEffect(() => loadFonts(), []);
     useEffect(() => {
         fetchUserData(user)
         .then((data) => {

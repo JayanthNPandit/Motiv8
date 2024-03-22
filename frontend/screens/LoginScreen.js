@@ -14,7 +14,7 @@ const LoginScreen = ({navigation}) => {
 
     const { login, remember, loginError } = useAuth();
 
-    useEffect(() => { loadFonts(); }, []);
+    useEffect(() => loadFonts(), []);
 
     const handleLogin = async () => {
         setIsClickable(false);
@@ -55,10 +55,10 @@ const LoginScreen = ({navigation}) => {
                                 onValueChange={setSelection}
                                 color={isSelected ? '#9FA1D1' : undefined}
                                 style={styles.checkbox}/>
-                        <Text style={styles.forgotOrRemember}> Remember me? </Text>
+                        <Text style={styles.textBodySmall}> Remember me? </Text>
                     </View>
                     <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")} disabled={!isClickable}> 
-                        <Text style={{...styles.forgotOrRemember, textDecorationLine: 'underline'}}> Forgot Password? </Text> 
+                        <Text style={{...styles.textBodySmall, textDecorationLine: 'underline'}}> Forgot Password? </Text> 
                     </TouchableOpacity>
                 </View>
 
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
     },
-    forgotOrRemember: {
+    textBodySmall: {
         color: '#545454',
         fontSize: 14,
         fontFamily: 'Poppins',
