@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { fetchGroupData } from "../backendFunctions";
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/working-out-3.png';
 
@@ -7,6 +8,19 @@ const JoinGroupScreen = ({navigation}) => {
 
     const [groupCode, setGroupCode] = useState('');
     const [isClickable, setIsClickable] = useState(true);
+
+    const checkGroup = async () => {
+        setIsClickable(false);
+        const data = await fetchGroupData(groupCode);
+        if (!data) {
+            setIsClickable(true);
+            Alert.alert("Incorrect code. Try again");
+        } else {
+            setGroupCode('');
+            setIsClickable(true);
+            navigation.navigate("ConfirmGroup", {groupData: data, groupID: groupCode}); 
+        }
+    }
 
     return (
         <View style={containerStyles.background}>
@@ -24,7 +38,7 @@ const JoinGroupScreen = ({navigation}) => {
                     <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("Groups")} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeader}> Back </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={containerStyles.purpleButton} disabled={!isClickable}>
+                    <TouchableOpacity style={containerStyles.purpleButton} onPress={checkGroup} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeaderWhite}> Next </Text>
                     </TouchableOpacity>
                 </View>

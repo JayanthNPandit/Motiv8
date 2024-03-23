@@ -58,13 +58,34 @@ export const changeUserData = async (user, name, username, imageUrl) => {
   }
 }
 
-export const fetchUserData = async (user) => {
+export const fetchUserData = async (userID) => {
   try {
-    const response = await getDoc(doc(db, 'users', user.uid));
+    const response = await getDoc(doc(db, 'users', userID));
     if (response.exists()) return response.data();
     else throw error("User does not exist");
   } catch (error) {
     console.log('Error fetching users data:', error);
+  }
+}
+
+export const fetchGroupData = async (groupID) => {
+  try {
+    const response = await getDoc(doc(db, 'groups', groupID));
+    if (response.exists()) return response.data();
+    else return null;
+  } catch (error) {
+    console.log('Error fetching group data:', error);
+  }
+}
+
+export const joinGroup = async (user, groupData, groupID) => {
+  try {
+    const updatedFields = {users: [...groupData.users, user.uid]};
+    await updateDoc(doc(db, 'groups', groupID), updatedFields);
+    const updatedUser = {groupID: groupID};
+    await updateDoc(doc(db, 'users', user.uid), updatedUser);
+  } catch (error) {
+    console.log('Error joining group:', error);
   }
 }
 

@@ -16,7 +16,7 @@ const ProfileScreen = ({navigation}) => {
     const { user, logout } = useAuth();
 
     useEffect(() => {
-        fetchUserData(user)
+        fetchUserData(user.uid)
         .then((data) => {
             setName(data.name);
             setOrigName(data.name);

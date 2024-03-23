@@ -111,36 +111,6 @@ const Onboarding = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        marginHorizontal: '5%',
-        marginVertical: '20%',
-        backgroundColor: 'white'
-    },
-    // HEADER CONTAINER STYLING
-    headerContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: '5%',
-        gap: 8
-    },
-    // SIGN IN BUTTON STYLING
-    button: {
-        display: 'flex',
-        justifyContent: 'center', 
-        alignItems: 'center',
-        paddingVertical: '4%',
-        paddingHorizontal: '15%',
-        backgroundColor: '#4044AB',
-        borderRadius: 31, 
-        gap: 10,
-        marginVertical: '5%'
-    },
     // INPUT CONTAINER STYLING
     inputContainer: {
         flexDirection: 'column', 
@@ -150,35 +120,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         marginVertical: '5%',
         width: '92%'
-    },
-    input: {
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#9A9A9A',
-        width: '100%', 
-        paddingHorizontal: '2%',
-        paddingVertical: '4.5%',
-    },
-    // BUTTON CONTAINER
-    buttonContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 10,
-    },
-    // BACK BUTTON
-    backButton: {
-        display: 'flex',
-        justifyContent: 'center', 
-        alignItems: 'center',
-        paddingVertical: '4%',
-        paddingHorizontal: '15%',
-        backgroundColor: 'white',
-        borderRadius: 62, 
-        borderWidth: 1,
-        gap: 10,
-        marginVertical: '4%'
     },
     // IMAGE
     image: {
