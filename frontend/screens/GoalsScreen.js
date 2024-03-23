@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons
-import loadFonts from '../fonts/loadFonts';
 
 const GoalsScreen = () => {
   const [goals, setGoals] = useState([]);

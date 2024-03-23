@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import loadFonts from '../fonts/loadFonts';
 
 const ForgotPasswordScreen = ({navigation}) => {
 
@@ -9,8 +8,6 @@ const ForgotPasswordScreen = ({navigation}) => {
     const [isClickable, setIsClickable] = useState(true);
 
     const { resetPassword, resetError } = useAuth();
-
-    useEffect(() => loadFonts(), []);
     
     const handleReset = async () => {
         if (email === '') {

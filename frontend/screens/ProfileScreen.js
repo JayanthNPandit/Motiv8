@@ -4,13 +4,6 @@ import { fetchUserData, changeUserData } from "../backendFunctions";
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import image from '../assets/default-pfp.png';
 
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
-import { Camera } from 'expo-camera';
-
-import loadFonts from '../fonts/loadFonts';
-
 const ProfileScreen = ({navigation}) => {
     
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -22,7 +15,6 @@ const ProfileScreen = ({navigation}) => {
     
     const { user, logout } = useAuth();
 
-    useEffect(() => loadFonts(), []);
     useEffect(() => {
         fetchUserData(user)
         .then((data) => {

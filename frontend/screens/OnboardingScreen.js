@@ -3,13 +3,12 @@ import { useAuth } from "../contexts/AuthContext";
 import { createUser } from "../backendFunctions";
 import { deleteUser } from 'firebase/auth';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/default-pfp.png';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
-
-import loadFonts from '../fonts/loadFonts';
 
 const Onboarding = ({navigation}) => {
 
@@ -21,7 +20,6 @@ const Onboarding = ({navigation}) => {
 
     const { user } = useAuth();
 
-    useEffect(() => loadFonts(), []);
     useEffect(() => {
         (async () => {
           const { status } = await Camera.requestCameraPermissionsAsync();
@@ -85,26 +83,26 @@ const Onboarding = ({navigation}) => {
     }
 
     return (
-        <View style={{backgroundColor:'white', flex: 1}}>
-            <View style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Hey there! </Text>
-                    <Text style={styles.subheader}> Let's get you set up </Text>
+        <View style={containerStyles.background}>
+            <View style={containerStyles.container}>
+                <View style={containerStyles.headerContainer}>
+                    <Text style={textStyles.header}> Hey there! </Text>
+                    <Text style={textStyles.textBodyGray}> Let's get you set up </Text>
                 </View>
                 <Image style={styles.image} source={imageUrl==null ? image : {url: imageUrl}}/>
-                <TouchableOpacity style={styles.button} onPress={pickImage}>
-                    <Text style={styles.buttonText}> Add a profile photo </Text>
+                <TouchableOpacity style={containerStyles.purpleButton} onPress={pickImage}>
+                    <Text style={textStyles.textBodyHeaderWhite}> Add a profile photo </Text>
                 </TouchableOpacity>
-                <View style={styles.miniContainer}>
-                    <TextInput style={styles.input} placeholder="Enter a username" onChangeText={setUsername}/>
-                    <TextInput style={styles.input} placeholder="Enter your name" onChangeText={setName}/>
+                <View style={styles.inputContainer}>
+                    <TextInput style={containerStyles.input} placeholder="Enter a username" onChangeText={setUsername}/>
+                    <TextInput style={containerStyles.input} placeholder="Enter your name" onChangeText={setName}/>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.backButton} onPress={deleteUserAndTryAgain} disabled={!isClickable}>
-                        <Text style={styles.backButtonText}> Back </Text>
+                <View style={containerStyles.buttonContainer}>
+                    <TouchableOpacity style={containerStyles.whiteButton} onPress={deleteUserAndTryAgain} disabled={!isClickable}>
+                        <Text style={textStyles.textBodyHeader}> Back </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={addUserInfo} disabled={!isClickable}>
-                        <Text style={styles.buttonText}> Next </Text>
+                    <TouchableOpacity style={containerStyles.purpleButton} onPress={addUserInfo} disabled={!isClickable}>
+                        <Text style={textStyles.textBodyHeaderWhite}> Next </Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -131,18 +129,6 @@ const styles = StyleSheet.create({
         marginBottom: '5%',
         gap: 8
     },
-    header: {
-        color: 'black', 
-        fontSize: 24, 
-        fontFamily: 'Poppins-Bold',
-    },
-    subheader: {
-        color: '#8692A6',
-        fontSize: 16,
-        fontFamily: 'Poppins',
-        fontWeight: '400',
-        lineHeight: 28
-    },
     // SIGN IN BUTTON STYLING
     button: {
         display: 'flex',
@@ -155,14 +141,8 @@ const styles = StyleSheet.create({
         gap: 10,
         marginVertical: '5%'
     },
-    buttonText: {
-        color: 'white', 
-        fontSize: 14, 
-        fontFamily: 'Poppins', 
-        fontWeight: '400'
-    },
     // INPUT CONTAINER STYLING
-    miniContainer: {
+    inputContainer: {
         flexDirection: 'column', 
         justifyContent: 'center', 
         alignItems: 'center',
@@ -199,12 +179,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         gap: 10,
         marginVertical: '4%'
-    },
-    backButtonText: {
-        color: 'black', 
-        fontSize: 14, 
-        fontFamily: 'Poppins', 
-        fontWeight: '400'
     },
     // IMAGE
     image: {
