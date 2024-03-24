@@ -1,6 +1,6 @@
 import { storage, auth, db } from './firebaseConfig.js';
 import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
-import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, collection } from "firebase/firestore";
+import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, collection } from "firebase/firestore";
 import { verifyIdToken } from "firebase/auth";
 
 // authorize user
@@ -26,12 +26,17 @@ export const createUser = async (user, username, name, pfp) => {
   try {
     // const decodedUser = await validateUser(user.accessToken);
     // if (!decodedUser) throw error("not authorized");
-    const {downloadUrl} = await addToBucket(user, 'profiles', pfp);
+    const url = "";
+    if (pfp) {
+      const {downloadUrl} = await addToBucket(user, 'profiles', pfp);
+      url = downloadUrl;
+    }
+    
     const userData = {
       name: name,
       username: username, 
       email: user.email,
-      profilePicture: downloadUrl,
+      profilePicture: url,
       groupID: ''
     }
 
@@ -78,14 +83,42 @@ export const fetchGroupData = async (groupID) => {
   }
 }
 
+export const createGroup = async (user, groupName) => {
+  try {
+    const groupData = {
+      name: groupName,
+      users: [user.uid]
+    }
+    const groupDocRef = collection(db, 'groups');
+    const response = await addDoc(groupDocRef, groupData);
+    const id = response.id;
+    const updatedUser = {groupID: id};
+    await updateDoc(doc(db, 'users', user.uid), updatedUser);
+    return id;
+  } catch (error) {
+    console.log("Error creating group:", error);
+  }
+}
+
 export const joinGroup = async (user, groupData, groupID) => {
   try {
     const updatedFields = {users: [...groupData.users, user.uid]};
     await updateDoc(doc(db, 'groups', groupID), updatedFields);
+    // update user
     const updatedUser = {groupID: groupID};
     await updateDoc(doc(db, 'users', user.uid), updatedUser);
   } catch (error) {
     console.log('Error joining group:', error);
+  }
+}
+
+export const deleteGroup = async (user, groupID) => {
+  try {
+    await deleteDoc(doc(db, 'groups', groupID));
+    const updatedUser = {groupID: ""};
+    await updateDoc(doc(db, 'users', user.uid), updatedUser);
+  } catch (error) {
+    console.log('Error deleting group:', error);
   }
 }
 

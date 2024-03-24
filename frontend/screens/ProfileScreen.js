@@ -48,7 +48,7 @@ const ProfileScreen = ({navigation}) => {
                     <Text style={styles.header}> Hi, {origName}! </Text>
                     <Text style={styles.subheader}> Let's edit your profile </Text>
                 </View>
-                <Image style={styles.image} source={imageUrl==null ? image : {url: imageUrl}}/>
+                <Image style={styles.image} source={imageUrl=="" ? image : {url: imageUrl}}/>
                 <View style={styles.miniContainer}>
                     <TextInput style={styles.input} value={name} onChangeText={setName}/>
                     <TextInput style={styles.input} value={username} onChangeText={setUsername}/>

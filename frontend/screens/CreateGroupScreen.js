@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useAuth } from "../contexts/AuthContext";
+import { createGroup } from  "../backendFunctions";
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/working-out-4.png';
 
@@ -7,6 +9,20 @@ const CreateGroupScreen = ({navigation}) => {
 
     const [groupName, setGroupName] = useState('');
     const [isClickable, setIsClickable] = useState(true);
+    const { user } = useAuth();
+
+    const handleGroupCreation = async () => {
+        setIsClickable(false);
+        const id = await createGroup(user, groupName);
+        if (!id) {
+            setIsClickable(true);
+            Alert.alert("Error generating group. Try again");
+        } else {
+            setGroupName('');
+            setIsClickable(true);
+            navigation.navigate("GroupCode", {groupID: id}); 
+        }
+    }
 
     return (
         <View style={containerStyles.background}>
@@ -24,7 +40,7 @@ const CreateGroupScreen = ({navigation}) => {
                     <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("Groups")} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeader}> Back </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={containerStyles.purpleButton} disabled={!isClickable}>
+                    <TouchableOpacity style={containerStyles.purpleButton} onPress={handleGroupCreation} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeaderWhite}> Submit </Text>
                     </TouchableOpacity>
                 </View>
