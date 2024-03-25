@@ -2,94 +2,111 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/working-out-2.png';
+import { addGoal } from '../backendFunctions';
 
-const GoalsScreen = ({navigation}) => {
-  const [goals, setGoals] = useState([]);
+const AddGoalScreen = () => {
+    const [goalName, setGoalName] = useState('');
+    const [goalType, setGoalType] = useState('');
+    const [frequency, setFrequency] = useState('');
+    const [description, setDescription] = useState('');
 
-  useEffect(() => {
-    fetchGoals(); // Fetch goals from the backend when component mounts
-  }, []);
+    const {user} = useAuth();
+  
+    // Placeholder data for goal types and frequencies, you can replace these with your actual data
+    const goalTypes = ['Short Term', 'Long Term', 'Habit'];
+    const frequencies = ['Daily', 'Weekly', 'Monthly'];
 
-  // Add the new goal to the user's goals collection on the server
- const addGoal = async (newGoal) => {
-    try {
-      // Replace 'addGoalEndpoint' with the actual endpoint to add a goal
-      const response = await fetch('addGoalEndpoint', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ goal: newGoal }),
-      });
-      const data = await response.json();
-      // Update the goals state with the new goal
-      setGoals([...goals, data.goal]);
-    } catch (error) {
-      console.error('Error adding goal:', error);
+    // function to add the entered goal to the backend
+    const handleNewGoal = async () => {
+        setIsClickable(false);
+        const id = await addGoal(user, goalName, goalType, frequency, description);
+        if (!id) {
+            setIsClickable(true);
+            Alert.alert("Error adding goal. Try again");
+        }
+        else {
+            setGoalName('');
+            setGoalType('');
+            setFrequency('');
+            setDescription('');
+            setIsClickable(true);
+            navigation.navigate("Goals");
+        }
     }
-  };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Current Goals:</Text>
-      <FlatList
-        data={sortedGoals}
-        renderItem={({ item }) => (
-          <View style={styles.ellipse}>
-            <Text style={styles.goalText}>{item}</Text>
-            <TouchableOpacity style={styles.button}>
-              <MaterialIcons name="check" size={24} color="white" />
+  
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Add a goal</Text>
+        <Text style={styles.subtitle}>You can always change this later!</Text>
+        
+        <View style={styles.form}>
+          <Text style={styles.label}>Enter a name for your goal:</Text>
+          <TextInput 
+            style={styles.input} 
+            onChangeText={setGoalName} 
+            value={goalName} 
+            placeholder="Your goal name"
+          />
+          
+          <Text style={styles.label}>Choose a goal type:</Text>
+          <Picker
+            selectedValue={goalType}
+            onValueChange={(itemValue, itemIndex) => setGoalType(itemValue)}
+            style={styles.picker}>
+            {goalTypes.map((type, index) => (
+              <Picker.Item key={index} label={type} value={type} />
+            ))}
+          </Picker>
+          
+          <Text style={styles.label}>Choose a frequency:</Text>
+          <Picker
+            selectedValue={frequency}
+            onValueChange={(itemValue, itemIndex) => setFrequency(itemValue)}
+            style={styles.picker}>
+            {frequencies.map((freq, index) => (
+              <Picker.Item key={index} label={freq} value={freq} />
+            ))}
+          </Picker>
+          
+          <Text style={styles.label}>Add a description:</Text>
+          <TextInput 
+            style={styles.textarea} 
+            onChangeText={setDescription} 
+            value={description} 
+            placeholder="This is optional"
+            multiline
+          />
+        </View>
+  
+        <View style={containerStyles.buttonContainer}>
+            <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("Goals")} disabled={!isClickable}>
+                <Text style={textStyles.textBodyHeader}> Back </Text>
             </TouchableOpacity>
-          </View>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      {/* Button to add a new goal */}
-      <TouchableOpacity style={styles.addButton} onPress={addGoal}>
-        <MaterialIcons name="add" size={24} color="white" />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingTop: 40,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  ellipse: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'black',
-    borderRadius: 50,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    marginBottom: 10,
-  },
-  goalText: {
-    color: 'white',
-    fontSize: '10%',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    padding: '10%',
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: '5%', // Adjust position to appear above the list of goals
-    right: '10%',
-    backgroundColor: 'green',
-    borderRadius: '20%',
-    padding: '5%',
-  },
-});
-
-export default GoalsScreen;
+            <TouchableOpacity style={containerStyles.purpleButton} onPress={handleNewGoal} disabled={!isClickable}>
+                <Text style={textStyles.textBodyHeaderWhite}> Submit </Text>
+            </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+  
+  const styles = StyleSheet.create({
+    container: {
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor:'white', 
+        marginVertical: '20%',
+        backgroundColor: 'white'
+    },
+    // IMAGE STYLING
+    image: {
+        width: '70%',
+        height: '20%',
+        margin: '15%'
+    }
+})
+  
+  export default AddGoalScreen;

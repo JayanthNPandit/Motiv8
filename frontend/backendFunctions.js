@@ -22,6 +22,24 @@ const validateUser = (token) => {
     });
 }
 
+export const addGoal = async (user, goalName, goalType, frequency, description) => {
+  try {
+    const userID = user.uid; 
+    const goalData = {
+      name: goalName,
+      type: goalType,
+      frequency: frequency,
+      description: description,
+      images: []
+    }
+    const goalDocRef = collection(db, 'users', userID, 'goals');
+    await addDoc(goalDocRef, goalData);
+  } catch (error) {
+    console.error('Error adding goal:', error);
+  }
+}
+
+
 export const createUser = async (user, username, name, pfp) => {
   try {
     // const decodedUser = await validateUser(user.accessToken);
