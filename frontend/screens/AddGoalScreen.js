@@ -10,27 +10,24 @@ const GoalsScreen = ({navigation}) => {
     fetchGoals(); // Fetch goals from the backend when component mounts
   }, []);
 
-  // Function to fetch goals from the backend
-  const fetchGoals = async () => {
+  // Add the new goal to the user's goals collection on the server
+ const addGoal = async (newGoal) => {
     try {
-      const response = await fetch('fetchGoalsEndpoint');
+      // Replace 'addGoalEndpoint' with the actual endpoint to add a goal
+      const response = await fetch('addGoalEndpoint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ goal: newGoal }),
+      });
       const data = await response.json();
-      setGoals(data.goals);
+      // Update the goals state with the new goal
+      setGoals([...goals, data.goal]);
     } catch (error) {
-      console.error('Error fetching goals:', error);
+      console.error('Error adding goal:', error);
     }
   };
-
-  // Sort the goals by completion status
-  const sortedGoals = [...goals].sort((a, b) => {
-    if (a.completed && !b.completed) {
-      return 1; // a is finished, b is unfinished, so a should come after b
-    } else if (!a.completed && b.completed) {
-      return -1; // a is unfinished, b is finished, so a should come before b
-    } else {
-      return 0; // both goals have the same completion status, so maintain the original order
-    }
-  });
 
   return (
     <View style={styles.container}>
@@ -40,14 +37,15 @@ const GoalsScreen = ({navigation}) => {
         renderItem={({ item }) => (
           <View style={styles.ellipse}>
             <Text style={styles.goalText}>{item}</Text>
-            <TouchableOpacity style={{...containerStyles.button}} onPress ={() => navigation.navigate("AddGoal")}>
-              <MaterialIcons name="check" size={'24%'} color="white" />
+            <TouchableOpacity style={styles.button}>
+              <MaterialIcons name="check" size={24} color="white" />
             </TouchableOpacity>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      <TouchableOpacity style={styles.addButton} onPress={navigation.navigate("")}>
+      {/* Button to add a new goal */}
+      <TouchableOpacity style={styles.addButton} onPress={addGoal}>
         <MaterialIcons name="add" size={24} color="white" />
       </TouchableOpacity>
     </View>
