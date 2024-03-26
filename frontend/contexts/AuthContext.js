@@ -16,6 +16,7 @@ export function AuthProvider({ children }) {
   
   // Login function that validates the provided username and password.
   const login = async (email, password) => {
+    setLoginError(null);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
@@ -32,6 +33,7 @@ export function AuthProvider({ children }) {
 
   // Register function
   const register = async (email, password) => {
+    setLoginError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
@@ -41,6 +43,7 @@ export function AuthProvider({ children }) {
   };
 
   const remember = async () => {
+    setLoginError(null);
     try {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     } catch (error) {
@@ -50,7 +53,7 @@ export function AuthProvider({ children }) {
 
   const resetPassword = async (email) => {
     try {
-      const response = await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, email);
     } catch (error) {
       setResetError(error.message);
     }
