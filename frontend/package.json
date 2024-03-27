@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.5.17",
+    "@react-native-picker/picker": "^2.7.2",
     "@react-navigation/native": "^6.1.15",
     "@react-navigation/native-stack": "^6.9.24",
     "expo": "~50.0.7",
     "expo-camera": "~14.0.5",
     "expo-checkbox": "~2.7.0",
+    "expo-clipboard": "~5.0.1",
     "expo-file-system": "^16.0.7",
     "expo-font": "^11.10.3",
     "expo-image-manipulator": "^11.8.0",
@@ -22,8 +24,7 @@
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.8.0",
     "react": "18.2.0",
-    "react-native": "0.73.4",
-    "expo-clipboard": "~5.0.1"
+    "react-native": "0.73.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
