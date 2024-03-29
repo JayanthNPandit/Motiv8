@@ -243,13 +243,13 @@ export const addToBucket = async (user, directory, imageUrl) => {
 };
 
 // adding image to the database
-export const addImageToDatabase = async (user, goalID, caption, name, url) => {
+export const addImageToDatabase = async (user, goals, caption, name, url) => {
   try {
 
     const userID = user.uid;
     // add image
     const data = {
-      goalID: goalID,
+      goals: goals,
       caption: caption,
       imageName: name,
       imageUrl: url,
@@ -261,7 +261,7 @@ export const addImageToDatabase = async (user, goalID, caption, name, url) => {
     console.log("added image");
   
     // update goals
-    const goalDoc = await doc(db, 'users', userID, 'goals', goalID);
+    const goalDoc = await doc(db, 'users', userID, 'goals', goals);
     const goalRef = await getDoc(goalDoc);
     const images = goalRef.data().images;
     await setDoc(goalDoc, {images: [...images, addedImage.id]}, {name: goalRef.data().name}, {type: goalRef.data().type});

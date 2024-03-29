@@ -41,7 +41,7 @@ const GoalsScreen = ({navigation}) => {
           <View style={styles.ellipse}>
             <Text style={styles.goalText}>{item}</Text>
             <TouchableOpacity style={{...containerStyles.button}} onPress ={() => navigation.navigate("AddGoal")}>
-              <MaterialIcons name="check" size={'24%'} color="white" />
+              <Image name="check" size={'24%'} color="white" />
             </TouchableOpacity>
           </View>
         )}

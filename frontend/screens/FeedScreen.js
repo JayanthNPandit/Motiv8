@@ -99,7 +99,7 @@ const FeedScreen = ({navigation}) => {
   const addImage = async () => {
     if (imageUrl) {
       const {downloadUrl, name} = await addToBucket(imageUrl);
-      await addImageToDatabase(userID, goalID, caption, name, downloadUrl);
+      await addImageToDatabase(userID, goals, caption, name, downloadUrl);
       setImageData([{ url: downloadUrl, caption: caption}, ...imageData]);
       setImageUrl(null);
       setCaption('');

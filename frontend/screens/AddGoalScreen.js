@@ -15,7 +15,7 @@ const AddGoalScreen = ({navigation}) => {
     const {user} = useAuth();
   
     // Placeholder data for goal types and frequencies, you can replace these with your actual data
-    const goalTypes = ['Short Term', 'Long Term', 'Habit'];
+    const goalTypes = ['Recurring', 'Long Term'];
     const frequencies = ['Daily', 'Weekly', 'Monthly'];
 
     // function to add the entered goal to the backend
@@ -68,17 +68,32 @@ const AddGoalScreen = ({navigation}) => {
               </Picker>
             </View>
             
-            <View>
-              <Text style={styles.label}>Choose a frequency:</Text>
-              <Picker
-                selectedValue={frequency}
-                onValueChange={(itemValue, itemIndex) => setFrequency(itemValue)}
-                style={styles.picker}>
-                {frequencies.map((freq, index) => (
-                  <Picker.Item key={index} label={freq} value={freq} />
+            {goalType === 'Recurring' && (
+              <View>
+                <Text style={styles.label}>Choose frequency:</Text>
+                <Picker
+                  selectedValue={frequency}
+                  onValueChange={(itemValue, itemIndex) => setFrequency(itemValue)}
+                  style={styles.picker}>
+                  {frequencies.map((type, index) => (
+                  <Picker.Item key={index} label={type} value={type} />
                 ))}
-              </Picker>
-            </View>
+                </Picker>
+              </View>
+            )}
+
+            {goalType === 'Long term' && (
+              <View>
+                <Text style={styles.label}>Enter a date:</Text>
+                <TextInput
+                  style={styles.input}
+                  value={longTermDate}
+                  onChangeText={text => setLongTermDate(text)}
+                  placeholder="MM-DD-YYYY"
+                  keyboardType="numeric"
+                />
+              </View>
+            )}
 
             <View style={containerStyles.inputContainer}>
               <Text style={textStyles.textBodyHeaderBold}>Add a description:</Text>
