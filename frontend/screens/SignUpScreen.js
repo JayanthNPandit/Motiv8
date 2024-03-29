@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
+import { createUser } from "../backendFunctions";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 
@@ -9,7 +10,7 @@ const SignUpScreen = ({navigation}) => {
     const [password, setPassword] = useState("");
     const [isClickable, setIsClickable] = useState(true);
 
-    const { register, loginError } = useAuth();
+    const { user, register, loginError } = useAuth();
     
     const handleRegister = async () => {
         if (email === '' || password === '') {
@@ -25,6 +26,7 @@ const SignUpScreen = ({navigation}) => {
             setPassword('');
             setIsClickable(true);
         } else {
+            await createUser(user, '', '', '');
             setEmail('');
             setPassword('');
             setIsClickable(true);

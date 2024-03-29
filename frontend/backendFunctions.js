@@ -44,7 +44,7 @@ export const createUser = async (user, username, name, pfp) => {
   try {
     // const decodedUser = await validateUser(user.accessToken);
     // if (!decodedUser) throw error("not authorized");
-    const url = "";
+    let url = "";
     if (pfp) {
       const {downloadUrl} = await addToBucket(user, 'profiles', pfp);
       url = downloadUrl;
@@ -60,9 +60,6 @@ export const createUser = async (user, username, name, pfp) => {
 
     const userDocRef = doc(db, 'users', user.uid);
     await setDoc(userDocRef, userData);
-    await addDoc(collection(userDocRef, 'images'), {});
-    await addDoc(collection(userDocRef, 'goals'), {});
-
   } catch (error) {
     console.error('Error creating user:', error);
   }
@@ -78,6 +75,15 @@ export const changeUserData = async (user, name, username, imageUrl) => {
     await updateDoc(doc(db, 'users', user.uid), updatedFields);
   } catch (error) {
     console.log('Error changing user data:', error);
+  }
+}
+
+export const delUser = async (user) => {
+  try {
+    const userDocRef = doc(db, 'users', user.uid);
+    await deleteDoc(userDocRef); 
+  } catch (error) {
+    console.log('Error deleting user data:', error);
   }
 }
 

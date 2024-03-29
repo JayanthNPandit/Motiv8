@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
-import { createUser } from "../backendFunctions";
+import { createUser, delUser } from "../backendFunctions";
 import { deleteUser } from 'firebase/auth';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
@@ -59,6 +59,7 @@ const Onboarding = ({navigation}) => {
     const deleteUserAndTryAgain = async () => {
         try {
             await deleteUser(user);
+            await delUser(user);
         } catch (error) {
             console.log(error);
         }
@@ -73,6 +74,7 @@ const Onboarding = ({navigation}) => {
             setIsClickable(true);
             return;
         }
+        
         try {
             await createUser(user, username, name, imageUrl);
         } catch (error) {

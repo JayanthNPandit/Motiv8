@@ -5,12 +5,12 @@ import {Picker} from '@react-native-picker/picker';
 import { useAuth } from "../contexts/AuthContext";
 import { addGoal } from '../backendFunctions';
 
-const AddGoalScreen = () => {
+const AddGoalScreen = ({navigation}) => {
     const [goalName, setGoalName] = useState('');
     const [goalType, setGoalType] = useState('');
     const [frequency, setFrequency] = useState('');
     const [description, setDescription] = useState('');
-    const [isClickable, setIsClickable] = useState(false);
+    const [isClickable, setIsClickable] = useState(true);
 
     const {user} = useAuth();
   
