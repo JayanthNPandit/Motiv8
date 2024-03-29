@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
-import image from '../assets/working-out-2.png';
+import addButton from '../assets/zondicons_add-solid.png';
 
 const GoalsScreen = ({navigation}) => {
   const [goals, setGoals] = useState([]);
@@ -48,7 +48,7 @@ const GoalsScreen = ({navigation}) => {
         keyExtractor={(item, index) => index.toString()}
       />
       <TouchableOpacity style={styles.addButton} onPress={navigation.navigate("")}>
-        <MaterialIcons name="add" size={24} color="white" />
+        <Image onPress = {navigation.navigate("")}></Image>
       </TouchableOpacity>
     </View>
   );
