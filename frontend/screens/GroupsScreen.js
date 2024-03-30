@@ -2,11 +2,16 @@ import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/working-out-2.png';
+import { useAuth } from "../contexts/AuthContext";
 
 const GroupsScreen = ({navigation}) => {
 
+
+  const { user } = useAuth();
+
     return (
       <View style={containerStyles.background}>
+        <Text>Groups Screen</Text>
         <View style={styles.container}>
           <View style={containerStyles.headerContainer}>
             <Text style={textStyles.header}>Find Your Friends</Text>

@@ -65,10 +65,8 @@ function AppContent() {
     
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
         <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}}/>
         <Stack.Screen name="AddGoals" component={AddGoalScreen} options={{headerShown: false}}/>
-      </Stack.Navigator>
     </NavigationContainer>
 
     /*
