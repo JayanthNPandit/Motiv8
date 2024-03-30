@@ -26,10 +26,10 @@ import profile from './assets/mingcute_user-4-fill.png';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Stack = createNativeStackNavigator();
-//const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
