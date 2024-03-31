@@ -33,7 +33,7 @@ const GroupCodeScreen = ({route, navigation}) => {
                 </View>
                 <Image style={styles.image} source={image}/>
                 <View style={containerStyles.inputContainer}>
-                    <Text style={textStyles.textBodyHeaderBold}> Code: </Text>
+                    <Text style={textStyles.textBodyHeader}> Code: </Text>
                     <View style={styles.copyContainer}>
                         <Text> {groupID} </Text>
                         <TouchableOpacity onPress={copyCode}>

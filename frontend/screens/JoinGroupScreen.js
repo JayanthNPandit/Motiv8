@@ -31,7 +31,7 @@ const JoinGroupScreen = ({navigation}) => {
                 </View>
                 <Image style={styles.image} source={image}/>
                 <View style={{...containerStyles.inputContainer, width:'87%'}}>
-                    <Text style={textStyles.textBodyHeaderBold}> Enter group code: </Text>
+                    <Text style={textStyles.textBodyHeader}> Enter group code: </Text>
                     <TextInput value={groupCode} style={containerStyles.input} onChangeText={setGroupCode}/>
                 </View>
                 <View style={containerStyles.buttonContainer}>
