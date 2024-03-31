@@ -37,7 +37,7 @@ const ForgotPasswordScreen = ({navigation}) => {
                 </View>
 
                 <View style={containerStyles.inputContainer}>
-                    <Text style={textStyles.textBodyHeaderBold}> Enter Email: </Text>
+                    <Text style={textStyles.textBodyHeader}> Enter Email: </Text>
                     <TextInput style={containerStyles.input} onChangeText={setEmail}/>
                 </View>
 

@@ -33,7 +33,7 @@ const CreateGroupScreen = ({navigation}) => {
                 </View>
                 <Image style={styles.image} source={image}/>
                 <View style={{...containerStyles.inputContainer, width:'87%'}}>
-                    <Text style={textStyles.textBodyHeaderBold}> Enter Group Name: </Text>
+                    <Text style={textStyles.textBodyHeader}> Enter Group Name: </Text>
                     <TextInput value={groupName} style={containerStyles.input} onChangeText={setGroupName}/>
                 </View>
                 <View style={containerStyles.buttonContainer}>

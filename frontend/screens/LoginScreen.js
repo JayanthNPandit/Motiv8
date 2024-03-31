@@ -38,11 +38,11 @@ const LoginScreen = ({navigation}) => {
                 </View>
 
                 <View style={containerStyles.inputContainer}>
-                    <Text style={textStyles.textBodyHeaderBold}> Email: </Text>
+                    <Text style={textStyles.textBodyHeader}> Email: </Text>
                     <TextInput value={email} style={containerStyles.input} onChangeText={setEmail}/>
                 </View>
                 <View style={containerStyles.inputContainer}>
-                    <Text style={textStyles.textBodyHeaderBold}> Password: </Text>
+                    <Text style={textStyles.textBodyHeader}> Password: </Text>
                     <TextInput value={password} secureTextEntry={true} style={containerStyles.input} onChangeText={setPassword}/>
                 </View>
 
