@@ -29,6 +29,7 @@ export const textStyles = StyleSheet.create({
         lineHeight: 32,
         textAlign: 'left',
         justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
     textBodyHeader: {
         color: 'black',
@@ -64,6 +65,7 @@ export const textStyles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         fontWeight: '400',
         lineHeight: 24,
+        textAlign: 'center',
     },
     textBodyBold: {
         color: 'black',
@@ -116,9 +118,9 @@ export const containerStyles = StyleSheet.create({
     // HEADER CONTAINER
     headerContainer: {
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         marginBottom: '5%',
         gap: 4
     },
@@ -130,7 +132,8 @@ export const containerStyles = StyleSheet.create({
         gap: 10, 
         display: 'flex',
         marginBottom: '5%',
-        width: '92%'
+        width: '92%',
+        marginTop: '5%'
     },
     input: {
         borderRadius: 16,
@@ -142,11 +145,11 @@ export const containerStyles = StyleSheet.create({
     },
     // BUTTONS
     buttonContainer: {
+        alignItems: 'flex-start', 
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
-        gap: 10,
+        gap: '10%',
         marginVertical: '5%',
     },
     whiteButton: {
@@ -171,15 +174,24 @@ export const containerStyles = StyleSheet.create({
         gap: 10,
         marginVertical: '5%'
     },
-    greenButton: {
+    blackButton: {
         display: 'flex',
-        justifyContent: 'right', 
+        justifyContent: 'center', 
         alignItems: 'center',
         paddingVertical: '4%',
-        paddingHorizontal: '4%',
-        backgroundColor: '#1B7032',
-        borderRadius: 5, 
+        paddingHorizontal: '15%',
+        backgroundColor: '#000000',
+        borderRadius: 31, 
+        gap: 10,
         marginVertical: '5%'
+    },
+    greenButton: {
+        position: 'absolute',
+        right:'-200%',
+        paddingVertical: '0%',
+        paddingHorizontal: '0%',
+        backgroundColor: '#111111',
+        borderRadius: '100%',
     },
     longWhiteButton: {
         display: 'flex',
@@ -215,9 +227,10 @@ export const containerStyles = StyleSheet.create({
     },
     // GOAL CONTAINER
     goalContainer: {
-        alignItems: 'flex-start', 
-        paddingVertical: '5%',
-        paddingHorizontal: '4%',
+        alignItems: 'flex-start',
+        flexDirection: 'row', 
+        paddingVertical: '2%',
+        paddingHorizontal: '2%',
         backgroundColor: '#111111',
         borderRadius: '20%', 
         borderColor: '#FFFFFF',
@@ -230,7 +243,15 @@ export const containerStyles = StyleSheet.create({
         paddingVertical: '5%',
         paddingHorizontal: '4%',
         backgroundColor: '#4044AB',
-        marginVertical: '10%',
-        width: '100%'
+        marginVertical: '1%',
+        width: '100%',
+        gap: '1%',
+        marginBottom: '5%'
+    },
+    divider: {
+        width: '100%',
+        height: 1,
+        backgroundColor: '#939393',
+        marginVertical: '5%',
     },
 })

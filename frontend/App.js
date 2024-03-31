@@ -14,6 +14,8 @@ import ConfirmGroupScreen from "./screens/ConfirmGroupScreen";
 import GroupCodeScreen from "./screens/GroupCodeScreen";
 import AddGoalScreen from "./screens/AddGoalScreen";
 import GoalsScreen from "./screens/GoalsScreen";
+import AddLongTermGoalScreen from "./screens/AddLongTermGoalScreen";
+import AddRecurringGoalScreen from "./screens/AddRecurringGoalScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -24,15 +26,10 @@ import post from "./assets/post.png";
 import group from "./assets/group.png";
 import profile from "./assets/user.png";
 
-<<<<<<< HEAD
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-=======
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
->>>>>>> f6d9b77e76e7ae350cfd27f3a91965d1156299dd
+
 
 const Stack = createNativeStackNavigator();
 //const Tab = createBottomTabNavigator();
@@ -103,8 +100,6 @@ export default function App() {
 function AppContent() {
   const { user } = useAuth();
   return (
-<<<<<<< HEAD
-=======
     /*
     <NavigationContainer>
       <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
@@ -172,20 +167,18 @@ function AppContent() {
     </NavigationContainer>
     */
 
->>>>>>> f6d9b77e76e7ae350cfd27f3a91965d1156299dd
     // only show the goals screen for now
 
     <NavigationContainer>
     <Stack.Navigator initialRouteName="Goals">
       <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
-      <Stack.Screen name="AddGoals" component={AddGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   </NavigationContainer>
 
-<<<<<<< HEAD
   /*
-=======
->>>>>>> f6d9b77e76e7ae350cfd27f3a91965d1156299dd
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({route}) => ({

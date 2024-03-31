@@ -56,10 +56,10 @@ const GoalsScreen = ({navigation}) => {
         <View style={containerStyles.buttonContainer}>
           <View style={containerStyles.headerContainer}>
             <Text style={textStyles.header}>Goals</Text>
+              <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
+                  <Image source={addButton} style={{width: 35, height: 35}}/>
+              </TouchableOpacity>
           </View> 
-          <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
-              <Image source={addButton} style={{width: 20, height: 20}}/>
-          </TouchableOpacity>
         </View>
 
         <View style={containerStyles.pinnedGoalContainer}>
@@ -80,6 +80,9 @@ const GoalsScreen = ({navigation}) => {
               {exampleGoals.map((goal, index) => (
                 <View key={index} style={containerStyles.goalContainer}>
                   <Text style={textStyles.goalText}>{goal}</Text>
+                  <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("TakePhoto")}>
+                    <Image source={addButton} style={{width: 20, height: 20}}/>
+                  </TouchableOpacity>
                 </View>
               ))}
             </ScrollView>
@@ -87,19 +90,23 @@ const GoalsScreen = ({navigation}) => {
         </View>
 
         <View style={containerStyles.listContainer}>
+          <View style={containerStyles.divider}></View>
           <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
-          <Image source={backgroundImage} style={styles.backgroundImage}/>
-          <FlatList
-            data={longTermGoals}
-            renderItem={({ item }) => (
-              <Text
-                title={item.title}
-                checked={item.checked}
-                onCheck={() => toggleCheckbox(item.id)}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-          />
+          {longTermGoals.length != 0 ? (
+            <Image source={backgroundImage} style={styles.backgroundImage} />
+          ) : (
+            <FlatList
+              data={longTermGoals}
+              renderItem={({ item }) => (
+                <Text
+                  title={item.title}
+                  checked={item.checked}
+                  onCheck={() => toggleCheckbox(item.id)}
+                />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          )}
         </View>
       </View>
     </View>
@@ -135,14 +142,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'transparent',
     padding: '10%',
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: '5%', // Adjust position to appear above the list of goals
-    right: '10%', // I want the button to be right aligned
-    backgroundColor: 'black',
-    borderRadius: '20%',
-    padding: '5%',
   },
 });
 
