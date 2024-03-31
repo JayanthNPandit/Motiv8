@@ -24,7 +24,7 @@ const JoinGroupScreen = ({navigation}) => {
 
     return (
         <View style={containerStyles.background}>
-            <View style={styles.container}>
+            <View style={containerStyles.container}>
                 <View style={containerStyles.headerContainer}>
                     <Text style={textStyles.header}>Join a group</Text>
                     <Text style={textStyles.textBodyGray}>See what your friends are up to!</Text>
@@ -48,15 +48,6 @@ const JoinGroupScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor:'white', 
-        marginVertical: '20%',
-        backgroundColor: 'white'
-    },
     // IMAGE STYLING
     image: {
         width: '70%',

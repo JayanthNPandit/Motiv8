@@ -26,7 +26,7 @@ const CreateGroupScreen = ({navigation}) => {
 
     return (
         <View style={containerStyles.background}>
-            <View style={styles.container}>
+            <View style={containerStyles.container}>
                 <View style={containerStyles.headerContainer}>
                     <Text style={textStyles.header}>Create a group</Text>
                     <Text style={textStyles.textBodyGray}>Create a Motiv8 Group!</Text>
@@ -50,15 +50,6 @@ const CreateGroupScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor:'white', 
-        marginVertical: '20%',
-        backgroundColor: 'white'
-    },
     // IMAGE STYLING
     image: {
         width: '70%',

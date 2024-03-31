@@ -11,8 +11,7 @@ const GroupsScreen = ({navigation}) => {
 
     return (
       <View style={containerStyles.background}>
-        <Text>Groups Screen</Text>
-        <View style={styles.container}>
+        <View style={containerStyles.container}>
           <View style={containerStyles.headerContainer}>
             <Text style={textStyles.header}>Find Your Friends</Text>
             <Text style={textStyles.textBodyGray}>Motiv8 Group Options</Text>
@@ -33,15 +32,6 @@ const GroupsScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor:'white', 
-    marginVertical: '20%',
-    backgroundColor: 'white'
-  },
   // IMAGE STYLING
   image: {
     width: '75%',

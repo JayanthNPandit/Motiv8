@@ -17,12 +17,12 @@ import GoalsScreen from './screens/GoalsScreen';
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
-//import { Image } from 'react-native';
-import home from './assets/typcn_home.png';
-import goal from './assets/octicon_goal-16.png';
-import post from './assets/Vector.png';
-import group from './assets/mingcute_group-fill.png';
-import profile from './assets/mingcute_user-4-fill.png';
+import { Image } from 'react-native';
+import home from './assets/home.png';
+import goal from './assets/goal.png';
+import post from './assets/post.png';
+import group from './assets/group.png';
+import profile from './assets/user.png';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -64,36 +64,36 @@ function AppContent() {
     // only show the goals screen for now
     
 
-    <NavigationContainer>
-        <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}}/>
-        <Stack.Screen name="AddGoals" component={AddGoalScreen} options={{headerShown: false}}/>
-    </NavigationContainer>
+    // <NavigationContainer>
+    //     <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}}/>
+    //     <Stack.Screen name="AddGoals" component={AddGoalScreen} options={{headerShown: false}}/>
+    // </NavigationContainer>
 
-    /*
+  
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({route}) => ({
           tabBarIcon: ({ focused, color, size }) => {
             if (route.name === 'Welcome') {
-              return <Image source={home} />
+              return <Image source={home}/>
             } else if (route.name === 'SignUp') {
-              return <Image source={goal} />
+              return <Image source={goal}/>
             } else if (route.name === 'Login') {
-              return <Image source={post} />
+              return <Image source={post}/>
             } else if (route.name === 'ForgotPassword') {
-              return <Image source={group} />
+              return <Image source={group}/>
             } else {
-              return <Image source={profile} />
+              return <Image source={profile}/>
             }
           },
           tabBarShowLabel: false,
-          tabBarActiveBackgroundColor: 'black',
-          tabBarInactiveBackgroundColor: 'black',
+          tabBarActiveBackgroundColor: 'white',
+          tabBarInactiveBackgroundColor: 'white',
           tabBarActiveTintColor: 'white',
           tabBarStyle: {
-            height: '10%',
+            height: '11%',
             width: '100%',
-            paddingBottom: 0,
+            bottom: -10
           },
           tabBarItemStyle: {
             alignItems: 'center',
@@ -108,6 +108,5 @@ function AppContent() {
         <Tab.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
       </Tab.Navigator>
     </NavigationContainer>
-    */
   );
 }
