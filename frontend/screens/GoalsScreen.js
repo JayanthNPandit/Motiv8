@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import addButton from '../assets/zondicons_add-solid.png';
+import backgroundImage from '../assets/Fitz Personal Training.png';
+import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
 
 const GoalsScreen = ({navigation}) => {
   const [goals, setGoals] = useState([]);
+
+  const [showList, setShowList] = useState(false); // State to manage whether to show the list or not
+
+
+  const exampleGoals = [
+    'Run 5 miles',
+    'Read 50 pages',
+    'Drink 8 cups of water',
+    'Meditate for 10 minutes',
+    'Complete a coding challenge',
+    'Cook a new recipe',
+    'Write in a journal',
+  ];
+
+  const pinnedGoal = 'Run 5 miles';
+
+  const longTermGoals = [ 'Complete a marathon', 'Learn to play the guitar', 'Travel to Japan' ];
 
   useEffect(() => {
     fetchGoals(); // Fetch goals from the backend when component mounts
@@ -31,25 +50,58 @@ const GoalsScreen = ({navigation}) => {
       return 0; // both goals have the same completion status, so maintain the original order
     }
   });
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Current Goals:</Text>
-      <FlatList
-        data={sortedGoals}
-        renderItem={({ item }) => (
-          <View style={styles.ellipse}>
-            <Text style={styles.goalText}>{item}</Text>
-            <TouchableOpacity style={{...containerStyles.button}} onPress ={() => navigation.navigate("AddGoal")}>
-              <Image name="check" size={'24%'} color="white" />
-            </TouchableOpacity>
+    <View style={containerStyles.background}>
+      <View style={containerStyles.container}>
+        <View style={containerStyles.buttonContainer}>
+          <View style={containerStyles.headerContainer}>
+            <Text style={textStyles.header}>Goals</Text>
+          </View> 
+          <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
+              <Image source={addButton} style={{width: 20, height: 20}}/>
+          </TouchableOpacity>
+        </View>
+
+        <View style={containerStyles.pinnedGoalContainer}>
+            <Text style={textStyles.textBodyHeaderWhite}>Pinned Goal:</Text>
+            <Text style={textStyles.goalText}>{pinnedGoal}</Text>
+        </View>
+
+        <View style={containerStyles.buttonContainer}>
+          <View style={containerStyles.headerContainer}>
+            <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
+          </View> 
+            <Image source={dropDownImage} style={{width: 20, height: 20}}/>
+        </View>
+
+        <View style={containerStyles.buttonContainer}>
+          <View style={styles.itemContainer}>
+            <ScrollView horizontal={true}>
+              {exampleGoals.map((goal, index) => (
+                <View key={index} style={containerStyles.goalContainer}>
+                  <Text style={textStyles.goalText}>{goal}</Text>
+                </View>
+              ))}
+            </ScrollView>
           </View>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      <TouchableOpacity style={styles.addButton} onPress={navigation.navigate("")}>
-        <Image onPress = {navigation.navigate("")}></Image>
-      </TouchableOpacity>
+        </View>
+
+        <View style={containerStyles.listContainer}>
+          <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
+          <Image source={backgroundImage} style={styles.backgroundImage}/>
+          <FlatList
+            data={longTermGoals}
+            renderItem={({ item }) => (
+              <Text
+                title={item.title}
+                checked={item.checked}
+                onCheck={() => toggleCheckbox(item.id)}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        </View>
+      </View>
     </View>
   );
 };
@@ -87,8 +139,8 @@ const styles = StyleSheet.create({
   addButton: {
     position: 'absolute',
     bottom: '5%', // Adjust position to appear above the list of goals
-    right: '10%',
-    backgroundColor: 'green',
+    right: '10%', // I want the button to be right aligned
+    backgroundColor: 'black',
     borderRadius: '20%',
     padding: '5%',
   },

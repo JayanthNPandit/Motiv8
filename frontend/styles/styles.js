@@ -21,6 +21,15 @@ export const textStyles = StyleSheet.create({
         fontWeight: '500',
         lineHeight: 32,
     },
+    sectionHeader: {
+        color: 'black',
+        fontSize: 20,
+        fontFamily: 'Poppins',
+        fontWeight: '500',
+        lineHeight: 32,
+        textAlign: 'left',
+        justifyContent: 'flex-start',
+    },
     textBodyHeader: {
         color: 'black',
         fontSize: 16,
@@ -77,7 +86,14 @@ export const textStyles = StyleSheet.create({
         fontWeight: '400',
         textDecorationLine: 'underline',
         lineHeight: 24,
-    }
+    },
+    goalText: {
+        color: 'white',
+        fontSize: 16,
+        fontFamily: 'Poppins',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
 })
 
 export const containerStyles = StyleSheet.create({
@@ -131,18 +147,18 @@ export const containerStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 10,
+        marginVertical: '5%',
     },
     whiteButton: {
         display: 'flex',
         justifyContent: 'center', 
         alignItems: 'center',
-        paddingVertical: '4%',
-        paddingHorizontal: '15%',
+        paddingVertical: '1%',
+        paddingHorizontal: '2%',
         backgroundColor: 'white',
-        borderRadius: 31, 
-        gap: 10,
-        marginVertical: '5%',
-        borderWidth: 1,
+        borderRadius: '1%', 
+        gap: '1%',
+        marginVertical: '1%',
     },
     purpleButton: {
         display: 'flex',
@@ -153,6 +169,16 @@ export const containerStyles = StyleSheet.create({
         backgroundColor: '#4044AB',
         borderRadius: 31, 
         gap: 10,
+        marginVertical: '5%'
+    },
+    greenButton: {
+        display: 'flex',
+        justifyContent: 'right', 
+        alignItems: 'center',
+        paddingVertical: '4%',
+        paddingHorizontal: '4%',
+        backgroundColor: '#1B7032',
+        borderRadius: 5, 
         marginVertical: '5%'
     },
     longWhiteButton: {
@@ -177,5 +203,34 @@ export const containerStyles = StyleSheet.create({
         borderRadius: 29, 
         gap: 10,
         marginVertical: '4%'
-    }
+    },
+    // LIST
+    listContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: '10%'
+    },
+    // GOAL CONTAINER
+    goalContainer: {
+        alignItems: 'flex-start', 
+        paddingVertical: '5%',
+        paddingHorizontal: '4%',
+        backgroundColor: '#111111',
+        borderRadius: '20%', 
+        borderColor: '#FFFFFF',
+        borderWidth: '10%',
+        gap: '10%',
+        marginVertical: '4%'
+    },
+    pinnedGoalContainer: {
+        alignItems: 'flex-start', 
+        paddingVertical: '5%',
+        paddingHorizontal: '4%',
+        backgroundColor: '#4044AB',
+        marginVertical: '10%',
+        width: '100%'
+    },
 })

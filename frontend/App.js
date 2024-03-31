@@ -26,10 +26,10 @@ import profile from './assets/user.png';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+//const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
@@ -42,34 +42,16 @@ export default function App() {
 function AppContent() {
   const { user } = useAuth(); 
   return (
-     /*
-     <NavigationContainer>
-       <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
-         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
-         <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}}/>
-       </Stack.Navigator>
-    </NavigationContainer>
-    */
-
     // only show the goals screen for now
-    
 
-    // <NavigationContainer>
-    //     <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}}/>
-    //     <Stack.Screen name="AddGoals" component={AddGoalScreen} options={{headerShown: false}}/>
-    // </NavigationContainer>
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName="Goals">
+      <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddGoals" component={AddGoalScreen} options={{headerShown: false}} />
+    </Stack.Navigator>
+  </NavigationContainer>
 
-  
+  /*
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({route}) => ({
@@ -108,5 +90,6 @@ function AppContent() {
         <Tab.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
       </Tab.Navigator>
     </NavigationContainer>
+    */
   );
 }
