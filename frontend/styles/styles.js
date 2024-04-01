@@ -118,7 +118,6 @@ export const containerStyles = StyleSheet.create({
     // HEADER CONTAINER
     headerContainer: {
         display: 'flex',
-        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-start',
         marginBottom: '5%',
@@ -129,11 +128,17 @@ export const containerStyles = StyleSheet.create({
         flexDirection: 'column', 
         justifyContent: 'flex-start', 
         alignItems: 'flex-start',
-        gap: 10, 
+        gap: '10%', 
         display: 'flex',
         marginBottom: '5%',
         width: '92%',
-        marginTop: '5%'
+        marginTop: '5%',
+        marginHorizontal: '10%',
+        borderColor: '#111111',
+        borderWidth: '1%',
+        borderRadius: '10%',
+        padding: '5%',
+        backgroundColor: '#DEDEED',
     },
     input: {
         borderRadius: 16,
@@ -142,6 +147,14 @@ export const containerStyles = StyleSheet.create({
         width: '100%', 
         paddingHorizontal: '2%',
         paddingVertical: '4.5%',
+    },
+    biggerInput: {
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: '#939393',
+        width: '100%', 
+        paddingHorizontal: '2%',
+        paddingVertical: '5%',
     },
     // BUTTONS
     buttonContainer: {
@@ -162,6 +175,17 @@ export const containerStyles = StyleSheet.create({
         borderRadius: '1%', 
         gap: '1%',
         marginVertical: '1%',
+    },
+    bigWhiteButton: {
+        display: 'flex',
+        justifyContent: 'center', 
+        alignItems: 'center',
+        paddingVertical: '4%',
+        paddingHorizontal: '15%',
+        backgroundColor: 'white',
+        borderRadius: 31, 
+        gap: 10,
+        marginVertical: '5%'
     },
     purpleButton: {
         display: 'flex',
@@ -223,7 +247,7 @@ export const containerStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        marginBottom: '10%'
+        marginBottom: '10%',
     },
     // GOAL CONTAINER
     goalContainer: {
@@ -252,6 +276,14 @@ export const containerStyles = StyleSheet.create({
         width: '100%',
         height: 1,
         backgroundColor: '#939393',
+        marginVertical: '5%',
+    },
+    frequencyContainer: {
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '1%',
         marginVertical: '5%',
     },
 })

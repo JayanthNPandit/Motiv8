@@ -16,6 +16,7 @@ import AddGoalScreen from "./screens/AddGoalScreen";
 import GoalsScreen from "./screens/GoalsScreen";
 import AddLongTermGoalScreen from "./screens/AddLongTermGoalScreen";
 import AddRecurringGoalScreen from "./screens/AddRecurringGoalScreen";
+import TakePhotoScreen from "./screens/TakePhotoScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -170,11 +171,12 @@ function AppContent() {
     // only show the goals screen for now
 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Goals">
+    <Stack.Navigator initialRouteName="AddRecurringGoal">
       <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   </NavigationContainer>
 
