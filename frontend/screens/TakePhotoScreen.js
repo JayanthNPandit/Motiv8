@@ -1,15 +1,19 @@
+// a screen that allows the user to take a picture, add a caption, and select goals to apply to the image
+
 import React, { useState, useEffect } from 'react';
+import { useAuth } from "../contexts/AuthContext";
+import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
 import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
-import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
-
+import { useNavigation } from '@react-navigation/native';
 
 const TakePhotoScreen = ({navigation}) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [caption, setCaption] = useState('');
+  const [goals, setGoals] = useState([]);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageData, setImageData] = useState([]);
 
@@ -19,31 +23,6 @@ const TakePhotoScreen = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const { user } = useAuth();
-
-  // YASH
-  const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
-  const goalID = 'nPnXBLlRi6LCeCAZtUyP';
-  const groupID = '2vc4eiJZ8eap0fnmfDVf';
-  
-  // VENKAT
-  const userID2 = 'ED7pVVZgH1PigTO4pwA3B9WM9bX2';
-  const goalID2 = 'xRBJHrwlWTvBKrS821jS';
-
-  // JJ
-
-  // Basically force the user to accept camera permissions
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(status === 'granted');
-      fetchImages();
-      // reprompt for camera permissions if they deny
-      if (status !== 'granted') {
-        alert('We need camera permissions for this app to work');
-        // reprompt
-      }
-    })();
-  }, []);
 
   // fetch some recent images from storage
   const fetchImages = async () => {
@@ -64,224 +43,122 @@ const TakePhotoScreen = ({navigation}) => {
     });
 
     if (!result.cancelled && result.assets) {
-      const url = result.assets[0].uri;
-      const fileInfo = await FileSystem.getInfoAsync(url);
-      const originalFileSize = fileInfo.size;
-      // compress if greater than 1.5 MB (prevents crashing)
-      if (originalFileSize > (1024 * 1024 * 1.5)) {
-        const compressedImage = await manipulateAsync(url, [], { compress: 0.3 });
-        setImageUrl(compressedImage.uri);
-      } else {
-        setImageUrl(url);
-      }
+      setImageUrl(result.assets[0].uri);
     }
   };
 
-  // taking the image using the camera
+  // taking the image
   const takeImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
       quality: 1,
+      flashMode: Camera.Constants.FlashMode.off,
     });
 
     if (!result.cancelled && result.assets) {
-      const uri = result.assets[0].uri;
-      const fileInfo = await FileSystem.getInfoAsync(uri);
-      const originalFileSize = fileInfo.size;
-      // compress if greater than 1.5 MB to avoid crashes
-      if (originalFileSize > (1024 * 768 * 1.5)) { // 1024 x 78 for 4:3 aspect ratio for images
-        const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
-        setImageUrl(compressedImage.uri);
-      } else {
-        setImageUrl(uri);
-      }
-    }
-  }
-
-  // adding the image to the screen
-  const addImage = async () => {
-    if (imageUrl) {
-      const {downloadUrl, name} = await addToBucket(imageUrl);
-      await addImageToDatabase(userID, goalID, caption, name, downloadUrl);
-      setImageData([{ url: downloadUrl, caption: caption}, ...imageData]);
-      setImageUrl(null);
-      setCaption('');
+      setImageUrl(result.assets[0].uri);
     }
   };
 
-  const cancelImage = async () => {
-    setImageUrl(null);
-    setCaption('');
-  }
+  // upload the image
+  const uploadImage = async () => {
+    if (imageUrl) {
+      const image = await FileSystem.readAsStringAsync(imageUrl, { encoding: FileSystem.EncodingType.Base64 });
+      const url = await addToBucket(image);
+      const id = await addImageToDatabase(user, groupID, caption, url, goals);
+      if (!id) {
+        Alert.alert("Error uploading image. Try again");
+      }
+      else {
+        setImageUrl(null);
+        setCaption('');
+        setGoals([]);
+        navigation.navigate("Feed");
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
-        <Text style={styles.header}> MOTI-V8 </Text>
-        <FlatList
-            data={imageData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedImage(item.url);
-                  setModalVisible(true);
-                }}
-              >
-                <View style={styles.message}>
-                  <Image source={{url: item.url}} style={styles.image} />
-                  <Text>{item.caption}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={fetchImages}
-              />
-            }
-        />
-        
-        {!imageUrl && (
-        <View style={styles.choosing}>
-            <TouchableOpacity style={styles.button} onPress={pickImage}>
-                <Text style={styles.text}>Choose picture</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={takeImage}>
-                <Text style={styles.text}>Take picture</Text>
-            </TouchableOpacity>
-        </View>
-        )}
-            
-        {imageUrl && (
-        <KeyboardAvoidingView style={styles.miniContainer} 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={75}>
-            <View style={styles.halfContainer}>
-                <Image source={{ url: imageUrl }} style={{ width: 275, height: 200, borderRadius: 10, borderWidth: 1 }} />
-                <TextInput 
-                    placeholder='add a caption' 
-                    placeholderTextColor='#88898a'
-                    onChangeText={setCaption}
-                    style = {{padding: 3, fontSize: 18}}
-                />
-            </View>
-            
-            <View style={styles.halfContainer}>
-              <TouchableOpacity style={styles.button} onPress={addImage}>
-                  <Text style={styles.text}>Send</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={cancelImage}>
-                  <Text style={styles.text}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-            
-        </KeyboardAvoidingView>
-        )}
-
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalView}>
-          <Image
-            source={{ url: selectedImage }}
-            style={styles.fullscreenImage}
-          />
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
+      <Text style={styles.header}></Text>
+      <Text style={styles.header}></Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}> Take a Photo </Text>
+        <Text style={styles.subheader}> Add a caption and select goals </Text>
+      </View>
+      <View style={styles.imageContainer}>
+        {imageUrl && <Image style={styles.image} source={{uri: imageUrl}}/>}
+      </View>
+      <View style={styles.miniContainer}>
+        <TextInput style={styles.input} value={caption} onChangeText={setCaption} placeholder="Add a caption"/>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={pickImage}>
+          <Text style={styles.buttonText}> Choose Image </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={takeImage}>
+          <Text style={styles.buttonText}> Take Image </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+          <Text style={styles.buttonText}> Select Goals </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={uploadImage}>
+          <Text style={styles.buttonText}> Upload Image </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
+  },
+  headerContainer: {
+    padding: 20,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 70,
-    marginBottom: 30
-  },
-  miniContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#7b948b',
-    borderRadius: 10,
-    width: '95%'
-  },
-  halfContainer: {
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    margin: 5,
-  },
-  choosing: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#a68d8d',
-    padding: 10,
-    marginHorizontal: 2,
-    marginVertical: 5
   },
   header: {
-    fontSize: 48,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 5
   },
-  text: {
-    fontSize: 18
+  subheader: {
+    fontSize: 18,
+    color: 'gray',
+  },
+  imageContainer: {
+    alignItems: 'center',
   },
   image: {
-    width: 350, 
-    height: 200, 
-    resizeMode: 'cover',
-    borderRadius: 10,
+    width: 300,
+    height: 300,
+    margin: 20,
+  },
+  miniContainer: {
+    padding: 20,
+  },
+  input: {
     borderWidth: 1,
-  },
-  message: {
-    marginVertical: 7
-  },
-  modalView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
-  },
-  fullscreenImage: {
-    width: "100%",
-    height: "80%",
-    resizeMode: "contain",
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: "white",
+    borderColor: 'gray',
     padding: 10,
-    borderRadius: 5,
+    margin: 10,
   },
-  closeButtonText: {
-    fontSize: 16,
-    color: "black",
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
-})
+  button: {
+    backgroundColor: 'purple',
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
 
 export default TakePhotoScreen;

@@ -171,7 +171,7 @@ function AppContent() {
     // only show the goals screen for now
 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="AddRecurringGoal">
+    <Stack.Navigator initialRouteName="TakePhoto">
       <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
