@@ -9,6 +9,9 @@ import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
+import defaultImage from '../assets/camera.png';
+import { containerStyles, textStyles } from '../styles/styles.js';
+
 
 const TakePhotoScreen = ({navigation}) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -22,7 +25,19 @@ const TakePhotoScreen = ({navigation}) => {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const [takenImage, setTakenImage] = useState(false);
+
   const { user } = useAuth();
+
+  exampleGoals = [
+    'Run 5 miles',
+    'Read 50 pages',
+    'Drink 8 cups of water',
+    'Meditate for 10 minutes',
+    'Complete a coding challenge',
+    'Cook a new recipe',
+    'Write in a journal',
+  ];
 
   // fetch some recent images from storage
   const fetchImages = async () => {
@@ -58,6 +73,7 @@ const TakePhotoScreen = ({navigation}) => {
 
     if (!result.cancelled && result.assets) {
       setImageUrl(result.assets[0].uri);
+      setTakenImage(true);
     }
   };
 
@@ -79,33 +95,52 @@ const TakePhotoScreen = ({navigation}) => {
     }
   };
 
+  const addToGoals = (goal) => {
+    if (goals.includes(goal)) {
+      setGoals(goals.filter((item) => item !== goal));
+    } else {
+      setGoals([...goals, goal]);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}></Text>
       <Text style={styles.header}></Text>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}> Take a Photo </Text>
-        <Text style={styles.subheader}> Add a caption and select goals </Text>
-      </View>
-      <View style={styles.imageContainer}>
-        {imageUrl && <Image style={styles.image} source={{uri: imageUrl}}/>}
-      </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}> Share your Photo! </Text>
+        </View>
+      <TouchableOpacity onPress={takeImage}>
+        <View style={styles.imageContainer}>
+        {takenImage ? (
+          <Image style={styles.image} source={{uri: imageUrl}} />
+        ) : (
+          <Image style={styles.image} source={defaultImage} />
+        )}
+        </View>
+      </TouchableOpacity>
+      <Text style={styles.buttonText}> Take Image </Text>
       <View style={styles.miniContainer}>
         <TextInput style={styles.input} value={caption} onChangeText={setCaption} placeholder="Add a caption"/>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={pickImage}>
           <Text style={styles.buttonText}> Choose Image </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={takeImage}>
-          <Text style={styles.buttonText}> Take Image </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-          <Text style={styles.buttonText}> Select Goals </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>        
         <TouchableOpacity style={styles.button} onPress={uploadImage}>
           <Text style={styles.buttonText}> Upload Image </Text>
         </TouchableOpacity>
+      </View>
+      <View style={containerStyles.listContainer}>
+        <FlatList
+          data={exampleGoals}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={containerStyles.purpleButton} onPress={addToGoals(item)}>
+              <Text style={textStyles.goalText}>{item}</Text>
+            </TouchableOpacity>
+          )}
+        />
       </View>
     </View>
   );
@@ -132,8 +167,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     margin: 20,
   },
   miniContainer: {

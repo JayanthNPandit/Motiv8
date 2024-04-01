@@ -247,7 +247,7 @@ export const containerStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        marginBottom: '10%',
+        marginBottom: '20%',
     },
     // GOAL CONTAINER
     goalContainer: {
