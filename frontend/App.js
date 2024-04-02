@@ -102,6 +102,7 @@ function AppContent() {
   const { user } = useAuth();
   return (
     
+    /*
     <NavigationContainer>
       <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
@@ -116,21 +117,26 @@ function AppContent() {
         <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Feed" component={UploadPhotoScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
+        <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
+        <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
+        <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
+        <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
-    
+    */
 
     // only show the goals screen for now
 
-  //   <NavigationContainer>
-  //   <Stack.Navigator initialRouteName="TakePhoto">
-  //     <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
-  //     <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
-  //     <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
-  //     <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
-  //     <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
-  //   </Stack.Navigator>
-  // </NavigationContainer>
+    <NavigationContainer>
+     <Stack.Navigator initialRouteName="TakePhoto">
+       <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
+       <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
+       <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
+       <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
+       <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+     </Stack.Navigator>
+   </NavigationContainer>
 
   /*
     <NavigationContainer>

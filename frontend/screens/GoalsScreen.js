@@ -54,7 +54,7 @@ const GoalsScreen = ({navigation}) => {
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
         <View style={containerStyles.buttonContainer}>
-          <View style={containerStyles.headerContainer}>
+          <View style={containerStyles.goalsHeaderContainer}>
             <Text style={textStyles.header}>Goals</Text>
               <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
                   <Image source={addButton} style={{width: 35, height: 35}}/>

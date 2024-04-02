@@ -103,6 +103,13 @@ export const textStyles = StyleSheet.create({
         fontWeight: '400',
         lineHeight: 24,
     },
+    cameraGoalText: {
+        color: 'black',
+        fontSize: 16,
+        fontFamily: 'Poppins',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
 })
 
 export const containerStyles = StyleSheet.create({
@@ -127,6 +134,13 @@ export const containerStyles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: '5%',
+        gap: 4
+    },
+    goalsHeaderContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
         marginBottom: '5%',
         gap: 4
     },
@@ -304,5 +318,8 @@ export const containerStyles = StyleSheet.create({
         alignItems: 'center',
         gap: '1%',
         marginVertical: '5%',
+    },
+    imageContainer: {
+        alignItems: 'center',
     },
 })
