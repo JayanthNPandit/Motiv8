@@ -51,7 +51,7 @@ const AddRecurringGoalScreen = ({navigation}) => {
                     <Text style={textStyles.textBodyGray}>You can always change this later! </Text>
                 </View>
 
-                <View style={containerStyles.inputContainer}>
+                <View style={containerStyles.purpleInputContainer}>
                     <Text style={textStyles.textBodyHeader}> Enter a name for your goal: </Text>
                     <TextInput style={containerStyles.input} value={goalName} onChangeText={setGoalName}/>
                     <Text style={textStyles.textBodyHeader}> Choose a goal type: </Text>

@@ -8,7 +8,6 @@ import image from '../assets/default-pfp.png';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { manipulateAsync } from 'expo-image-manipulator';
-import { Camera } from 'expo-camera';
 
 const Onboarding = ({navigation}) => {
 
@@ -16,21 +15,8 @@ const Onboarding = ({navigation}) => {
     const [name, setName] = useState("");
     const [isClickable, setIsClickable] = useState(true);
     const [imageUrl, setImageUrl] = useState(null);
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
     const { user } = useAuth();
-
-    useEffect(() => {
-        (async () => {
-          const { status } = await Camera.requestCameraPermissionsAsync();
-          setHasCameraPermission(status === 'granted');
-          // reprompt for camera permissions if they deny
-          if (status !== 'granted') {
-            alert('We need camera permissions for this app to work');
-            // reprompt
-          }
-        })();
-    }, []);
 
     // choosing the image
     const pickImage = async () => {
@@ -126,8 +112,8 @@ const styles = StyleSheet.create({
     // IMAGE
     image: {
         width: '80%',
-        height: '40%',
-        borderRadius: 2000,
+        height: '42%',
+        borderRadius: 1000,
         marginVertical: '5%'
     }
 });

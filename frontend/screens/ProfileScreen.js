@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { fetchUserData, changeUserData } from "../backendFunctions";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { textStyles, containerStyles } from '../styles/styles';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import image from '../assets/default-pfp.png';
 
 const ProfileScreen = ({navigation}) => {
     
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
     const [name, setName] = useState("");
     const [origName, setOrigName] = useState("");
     const [username, setUsername] = useState("");
     const [imageUrl, setImageUrl] = useState(null);
+    const [edit, setEdit] = useState(false);
     const [isClickable, setIsClickable] = useState(true);
     
     const { user, logout } = useAuth();
@@ -22,10 +23,34 @@ const ProfileScreen = ({navigation}) => {
             setOrigName(data.name);
             setUsername(data.username);
             setImageUrl(data.profilePicture);
-            console.log(name)
+            setEdit(false);
         })
     }, []);
 
+    const pickImage = async () => {
+
+        // selected image
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: false,
+            quality: 1,
+        });
+
+        if (!result.cancelled && result.assets) {
+            const url = result.assets[0].uri;
+            const fileInfo = await FileSystem.getInfoAsync(url);
+            const originalFileSize = fileInfo.size;
+            // compress if greater than 1.5 MB (prevents crashing)
+            if (originalFileSize > (1024 * 1024 * 1.5)) {
+                const compressedImage = await manipulateAsync(url, [], { compress: 0.3 });
+                setImageUrl(compressedImage.uri);
+            } else {
+                setImageUrl(url);
+            }
+        }
+    };
+
+    // logout function
     const handleLogout = async () => {
         setIsClickable(false);
         await logout();
@@ -33,140 +58,78 @@ const ProfileScreen = ({navigation}) => {
         navigation.navigate("Welcome");
     }
 
+    // change data
     const handleChange = async () => {
         setIsClickable(false);
         await changeUserData(user, name, username, imageUrl);
         setOrigName(name);
         setIsClickable(true);
+        setEdit(false);
     }
 
     // copied from
     return (
-        <View style={{backgroundColor:'white', flex: 1}}>
-            <View style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Hi, {origName}! </Text>
-                    <Text style={styles.subheader}> Let's edit your profile </Text>
+        <View style={containerStyles.background}>
+            {!edit && (<View style={containerStyles.container}>
+                <View style={containerStyles.headerContainer}>
+                    <Text style={textStyles.header}> Hi, {origName}! </Text>
+                    <Text style={textStyles.textBodyGray}> Let's view your profile </Text>
                 </View>
                 <Image style={styles.image} source={imageUrl=="" ? image : {url: imageUrl}}/>
-                <View style={styles.miniContainer}>
-                    <TextInput style={styles.input} value={name} onChangeText={setName}/>
-                    <TextInput style={styles.input} value={username} onChangeText={setUsername}/>
+                <View style={containerStyles.inputContainer}>
+                    <Text style={textStyles.textBodyHeader}> Name </Text>
+                    <TextInput style={containerStyles.input} value={name} editable={false}/>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.backButton} onPress={handleLogout} disabled={!isClickable}>
-                        <Text style={styles.backButtonText}> Back </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={handleChange} disabled={!isClickable}>
-                        <Text style={styles.buttonText}> Confirm </Text>
-                    </TouchableOpacity>
+                <View style={containerStyles.inputContainer}>
+                    <Text style={textStyles.textBodyHeader}> Username </Text>
+                    <TextInput style={containerStyles.input} value={username} editable={false}/>
                 </View>
-            </View>
+                <TouchableOpacity style={{...containerStyles.longPurpleButton, paddingHorizontal: '25%', marginVertical: '2%'}}>
+                    <Text style={{...textStyles.textBodySmall, color:'white'}}> View all your photos </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.editContainer} onPress={() => setEdit(true)}>
+                    <Text style={{...textStyles.textBodyBoldPurple, textDecorationLine:'underline'}}>Edit Profile</Text>
+                </TouchableOpacity>
+            </View>)}
+
+            {edit && (<View style={containerStyles.container}>
+                <View style={containerStyles.headerContainer}>
+                    <Text style={textStyles.header}> Hi, {origName}! </Text>
+                    <Text style={textStyles.textBodyGray}> Let's edit your profile </Text>
+                </View>
+                <Image style={styles.image} source={imageUrl == "" ? image : {url: imageUrl}}/>
+                <TouchableOpacity style={{...containerStyles.purpleButton, marginTop:'1%'}} onPress={pickImage}>
+                    <Text style={{...textStyles.textBodySmall, color:'white'}}> Change your profile photo </Text>
+                </TouchableOpacity>
+                <View style={containerStyles.inputContainer}>
+                    <Text style={textStyles.textBodyHeader}> Enter Name: </Text>
+                    <TextInput style={containerStyles.input} value={name} onChangeText={setName}/>
+                </View>
+                <View style={containerStyles.inputContainer}>
+                    <Text style={textStyles.textBodyHeader}> Enter Username: </Text>
+                    <TextInput style={containerStyles.input} value={username} onChangeText={setUsername}/>
+                </View>
+                <TouchableOpacity style={{...containerStyles.purpleButton, marginTop:'1%'}} disabled={!isClickable} onPress={handleChange}>
+                    <Text style={{...textStyles.textBodySmall, color:'white'}}> Save </Text>
+                </TouchableOpacity>
+            </View>)}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    editContainer: {
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        marginHorizontal: '5%',
-        marginVertical: '20%',
-        backgroundColor: 'white'
-    },
-    // HEADER CONTAINER STYLING
-    headerContainer: {
-        display: 'flex',
-        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: '5%',
-        gap: 8
+        marginVertical: '2%'
     },
-    header: {
-        color: 'black', 
-        fontSize: 24, 
-        fontFamily: 'Poppins-Bold',
-    },
-    subheader: {
-        color: '#8692A6',
-        fontSize: 16,
-        fontFamily: 'Poppins',
-        fontWeight: '400',
-        lineHeight: 28
-    },
-    // SIGN IN BUTTON STYLING
-    button: {
-        display: 'flex',
-        justifyContent: 'center', 
-        alignItems: 'center',
-        paddingVertical: '4%',
-        paddingHorizontal: '15%',
-        backgroundColor: '#4044AB',
-        borderRadius: 31, 
-        gap: 10,
-        marginVertical: '5%'
-    },
-    buttonText: {
-        color: 'white', 
-        fontSize: 14, 
-        fontFamily: 'Poppins', 
-        fontWeight: '400'
-    },
-    // INPUT CONTAINER STYLING
-    miniContainer: {
-        flexDirection: 'column', 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        gap: 35, 
-        display: 'flex',
-        marginVertical: '5%',
-        width: '92%'
-    },
-    input: {
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#9A9A9A',
-        width: '100%', 
-        paddingHorizontal: '2%',
-        paddingVertical: '4.5%',
-    },
-    // BUTTON CONTAINER
-    buttonContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 10,
-    },
-    // BACK BUTTON
-    backButton: {
-        display: 'flex',
-        justifyContent: 'center', 
-        alignItems: 'center',
-        paddingVertical: '4%',
-        paddingHorizontal: '15%',
-        backgroundColor: 'white',
-        borderRadius: 62, 
-        borderWidth: 1,
-        gap: 10,
-        marginVertical: '4%'
-    },
-    backButtonText: {
-        color: 'black', 
-        fontSize: 14, 
-        fontFamily: 'Poppins', 
-        fontWeight: '400'
-    },
-    // IMAGE
     image: {
-        width: '80%',
-        height: '40%',
-        borderRadius: 2000,
-        marginVertical: '5%'
-    }
+        width: '70%',
+        height: '35%',
+        borderRadius: 1000,
+        marginVertical: '3%',
+    },
 });
 
 export default ProfileScreen;

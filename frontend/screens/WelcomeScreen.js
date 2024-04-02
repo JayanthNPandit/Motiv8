@@ -1,9 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Camera } from 'expo-camera';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/working-out.png';
 
 const WelcomeScreen = ({navigation}) => {
+
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    useEffect(() => {
+        (async () => {
+          const { status } = await Camera.requestCameraPermissionsAsync();
+          setHasCameraPermission(status === 'granted');
+          // reprompt for camera permissions if they deny
+          if (status !== 'granted') {
+            alert('We need camera permissions for this app to work');
+            // reprompt
+          }
+        })();
+    }, []);
 
     return (
         <View style={containerStyles.background}>

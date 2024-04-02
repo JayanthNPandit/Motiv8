@@ -74,6 +74,13 @@ export const textStyles = StyleSheet.create({
         fontWeight: '400',
         lineHeight: 24,
     },
+    textBodyBoldPurple: {
+        color: '#4044AB',
+        fontSize: 16,
+        fontFamily: 'Poppins-Bold',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
     textBodySmall: {
         color: 'black',
         fontSize: 14,
@@ -119,12 +126,24 @@ export const containerStyles = StyleSheet.create({
     headerContainer: {
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         marginBottom: '5%',
         gap: 4
     },
     // TEXT INPUT
     inputContainer: {
+        flexDirection: 'column', 
+        justifyContent: 'flex-start', 
+        alignItems: 'flex-start',
+        gap: '10%', 
+        display: 'flex',
+        marginBottom: '5%',
+        width: '92%',
+        marginHorizontal: '10%',
+        borderColor: '#111111',
+        borderRadius: '10%',
+    },
+    purpleInputContainer: {
         flexDirection: 'column', 
         justifyContent: 'flex-start', 
         alignItems: 'flex-start',
