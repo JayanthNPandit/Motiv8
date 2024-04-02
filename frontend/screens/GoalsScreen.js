@@ -4,11 +4,15 @@ import { textStyles, containerStyles } from '../styles/styles';
 import addButton from '../assets/zondicons_add-solid.png';
 import backgroundImage from '../assets/Fitz Personal Training.png';
 import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
+import { fetchGoals } from '../backendFunctions';
+
 
 const GoalsScreen = ({navigation}) => {
   const [goals, setGoals] = useState([]);
 
   const [showList, setShowList] = useState(false); // State to manage whether to show the list or not
+
+  const {user} = useAuth();
 
 
   const exampleGoals = [
@@ -23,33 +27,10 @@ const GoalsScreen = ({navigation}) => {
 
   const pinnedGoal = 'Run 5 miles';
 
-  const longTermGoals = [ 'Complete a marathon', 'Learn to play the guitar', 'Travel to Japan' ];
+  const exampleLongTermGoals = [ 'Complete a marathon', 'Learn to play the guitar', 'Travel to Japan' ];
 
-  useEffect(() => {
-    fetchGoals(); // Fetch goals from the backend when component mounts
-  }, []);
+  goals = fetchGoals(user);
 
-  // Function to fetch goals from the backend
-  const fetchGoals = async () => {
-    try {
-      const response = await fetch('fetchGoalsEndpoint');
-      const data = await response.json();
-      setGoals(data.goals);
-    } catch (error) {
-      console.error('Error fetching goals:', error);
-    }
-  };
-
-  // Sort the goals by completion status
-  const sortedGoals = [...goals].sort((a, b) => {
-    if (a.completed && !b.completed) {
-      return 1; // a is finished, b is unfinished, so a should come after b
-    } else if (!a.completed && b.completed) {
-      return -1; // a is unfinished, b is finished, so a should come before b
-    } else {
-      return 0; // both goals have the same completion status, so maintain the original order
-    }
-  });
   return (
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
@@ -77,7 +58,7 @@ const GoalsScreen = ({navigation}) => {
         <View style={containerStyles.buttonContainer}>
           <View style={styles.itemContainer}>
             <ScrollView horizontal={true}>
-              {exampleGoals.map((goal, index) => (
+              {goals.map((goal, index) => (
                 <View key={index} style={containerStyles.goalContainer}>
                   <Text style={textStyles.goalText}>{goal}</Text>
                   <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("TakePhoto")}>
@@ -92,11 +73,11 @@ const GoalsScreen = ({navigation}) => {
         <View style={containerStyles.listContainer}>
           <View style={containerStyles.divider}></View>
           <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
-          {longTermGoals.length != 0 ? (
+          {goals.length != 0 ? (
             <Image source={backgroundImage} style={styles.backgroundImage} />
           ) : (
             <FlatList
-              data={longTermGoals}
+              data={goals}
               renderItem={({ item }) => (
                 <Text
                   title={item.title}

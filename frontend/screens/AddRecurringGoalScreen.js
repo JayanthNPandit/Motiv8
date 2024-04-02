@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
-import { addGoal } from '../backendFunctions';
+import { addGoal, getUser } from '../backendFunctions';
 
 const AddRecurringGoalScreen = ({navigation}) => {
     const [goalName, setGoalName] = useState('');
@@ -20,11 +20,21 @@ const AddRecurringGoalScreen = ({navigation}) => {
 
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
+
+        console.log(user.email);
+        console.log(goalName);
+        console.log(frequency);
+        console.log(description);
+
         setIsClickable(false);
-        const id = await addRecurringGoal(user, goalName, frequency, description);
+        const id = await addGoal(user, goalName, frequency, description);
+
+        console.log(id);
+
+
         if (!id) {
             setIsClickable(true);
-            Alert.alert("Error adding goal. Try again");
+            console.error("Error adding goal. Try again");
         }
         else {
             setGoalName('');
@@ -33,6 +43,8 @@ const AddRecurringGoalScreen = ({navigation}) => {
             setIsClickable(true);
             navigation.navigate("Goals");
         }
+
+        navigation.navigate("Goals");
     }
 
     const toggleFrequency = (frequency) => {

@@ -15,30 +15,9 @@ const AddGoalScreen = ({navigation}) => {
     const [isClickable, setIsClickable] = useState(true);
 
     const {user} = useAuth();
-  
-    // Placeholder data for goal types and frequencies, you can replace these with your actual data
-    const goalTypes = ['Recurring', 'Long Term'];
-    const frequencies = ['Daily', 'Weekly', 'Monthly'];
 
-    // function to add the entered goal to the backend
-    const handleNewGoal = async () => {
-        setIsClickable(false);
-        const id = await addGoal(user, goalName, goalType, frequency, description);
-        if (!id) {
-            setIsClickable(true);
-            Alert.alert("Error adding goal. Try again");
-        }
-        else {
-            setGoalName('');
-            setGoalType('');
-            setFrequency('');
-            setDescription('');
-            setIsClickable(true);
-            navigation.navigate("Goals");
-        }
-    }
+    const check = user.email;
 
-  
     return (
       <View style={containerStyles.background}>
         <View style={containerStyles.container}>
@@ -46,8 +25,9 @@ const AddGoalScreen = ({navigation}) => {
             <Text style={textStyles.header}> Add a Goal </Text>
           </View>
           <Text style={textStyles.textBodyGray}> Choose your Goal Type: </Text>
-
             <View style={containerStyles.listContainer}>
+              <Text style={textStyles.sectionHeader}></Text>
+              <Text style={textStyles.sectionHeader}></Text>
               <Image source={recurringImage} style={styles.image}/>
               <Text style={textStyles.textBodyGray}> For goals that you want to {'\n'} complete at a specific frequency </Text>
               <TouchableOpacity style={containerStyles.blackButton} onPress={() => navigation.navigate("AddRecurringGoal")}>
