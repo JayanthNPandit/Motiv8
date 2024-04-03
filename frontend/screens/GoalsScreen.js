@@ -4,24 +4,18 @@ import { textStyles, containerStyles } from '../styles/styles';
 import addButton from '../assets/zondicons_add-solid.png';
 import backgroundImage from '../assets/Fitz Personal Training.png';
 import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
-import { fetchGoals } from '../backendFunctions';
+import { fetchUserGoals } from '../backendFunctions';
 import { useAuth } from '../contexts/AuthContext';
 
 
 const GoalsScreen = ({navigation}) => {
   const {user} = useAuth();
 
-  const [goals, setGoals] = fetchGoals(user);
-
   const [showList, setShowList] = useState(false); // State to manage whether to show the list or not
 
-  useEffect(() => {
-    const fetchGoals = async () => {
-      const goals = await fetchGoals(user);
-      setGoals(goals);
-    };
-    fetchGoals();
-  }, []);
+  const [goals, setGoals] = useState([""]); // State to store the goals
+  const [recurringGoals, setRecurringGoals] = useState([]);
+  const [longTermGoals, setLongTermGoals] = useState([]);
 
   const exampleGoals = [
     'Run 5 miles',
@@ -36,6 +30,36 @@ const GoalsScreen = ({navigation}) => {
   const pinnedGoal = 'Run 5 miles';
 
   const exampleLongTermGoals = [ 'Complete a marathon', 'Learn to play the guitar', 'Travel to Japan' ];
+
+  useEffect(() => {
+    fetchGoals(); // Fetch goals when the component is mounted
+  }, []);
+
+  const fetchGoals = async () => {
+    const goals = await fetchUserGoals(user); // Fetch the goals from the backend
+    console.log("in fetch goals");
+    console.log(goals);
+    setGoals(goals); // Set the goals to the state
+    console.log("after set goals");
+    filterGoals(goals); // Filter the goals into recurring and long-term goals
+  }
+
+  const filterGoals = (goals) => {
+    const recurring = [];
+    const longTerm = [];
+    goals.forEach((goal) => {
+      if (goal.type === 'Recurring') {
+        recurring.push(goal.name);
+      } else if (goal.type === 'Long Term') {
+        longTerm.push(goal.name);
+      } else
+      {
+        console.log("Other goal type");
+      }
+    });
+    setRecurringGoals(recurring);
+    setLongTermGoals(longTerm);
+  }
 
   return (
     <View style={containerStyles.background}>
@@ -57,40 +81,27 @@ const GoalsScreen = ({navigation}) => {
         <View style={containerStyles.buttonContainer}>
           <View style={containerStyles.headerContainer}>
             <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
-          </View> 
-            <Image source={dropDownImage} style={{width: 20, height: 20}}/>
-        </View>
-
-        <View style={containerStyles.buttonContainer}>
-          <View style={styles.itemContainer}>
             <ScrollView horizontal={true}>
-              {goals.map((goal, index) => (
-                <View key={index} style={containerStyles.goalContainer}>
-                  <Text style={textStyles.goalText}>{goal}</Text>
-                </View>
+              {recurringGoals.map((goal, index) => (
+                <TouchableOpacity key={index} style={styles.button}>
+                  <Text>{goal}</Text>
+                </TouchableOpacity>
               ))}
             </ScrollView>
-          </View>
+          </View> 
+            <Image source={dropDownImage} style={{width: 20, height: 20}}/>
         </View>
 
         <View style={containerStyles.listContainer}>
           <View style={containerStyles.divider}></View>
           <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
-          {goals.length != 0 ? (
-            <Image source={backgroundImage} style={styles.backgroundImage} />
-          ) : (
-            <FlatList
-              data={goals}
-              renderItem={({ item }) => (
-                <Text
-                  title={item.title}
-                  checked={item.checked}
-                  onCheck={() => toggleCheckbox(item.id)}
-                />
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          )}
+          <ScrollView horizontal={true}>
+            {longTermGoals.map((goal, index) => (
+              <TouchableOpacity key={index} style={styles.button}>
+                <Text>{goal}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
       </View>
     </View>

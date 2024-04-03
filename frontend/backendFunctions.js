@@ -34,13 +34,15 @@ export const getUser = async (userID) => {
 }
 
 // add a goal to the user and checks if the user does not have a goals collection and calls createGoalsCollection if so
-export const addGoal = async (user, goalName, frequency, description) => {
+export const addGoal = async (user, goalName, type, frequency, date, description) => {
   try {
     const userID = user.uid; 
     console.log(userID);
     const goalData = {
       name: goalName,
+      type: type,
       frequency: frequency,
+      date: date,
       description: description,
       images: []
     }
@@ -64,32 +66,28 @@ export const createGoalsCollection = async (user) => {
   try {
     const userID = user.uid;
     const goalsCollection = collection(db, 'users', userID, 'goals');
-    await addDoc(goalsCollection, {name: 'default', type: 'default', frequency: 'default', description: 'default', images: []});
+    //await addDoc(goalsCollection, {name: 'default', type: 'default', frequency: 'default', description: 'default', images: []});
   } catch (error) {
     console.error('Error creating goals collection:', error);
   }
 }
 
 // return the goals collection for a specific user
-export const fetchGoals = async (user) => {
+export const fetchUserGoals = async (user) => {
   try {
-    console.log(user.email);
-    console.log("hi");
+
     const userID = user.uid;
+
     const goalsCollection = await collection(db, 'users', userID, 'goals');
+
     const goalsSnapshot = await getDocs(goalsCollection);
-    console.log(goalsSnapshot);
-    console.log("hi snapshot");
-    let goals = [];
+
     try {
-      goals = goalsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const goals = goalsSnapshot.docs.map((doc) => doc.data());
+      return goals;
     } catch (error) {
-      console.error('Error mapping goals:', error);
+      console.error('Error with the mapping:', error);
     }
-    return goals;
   } catch (error) {
     console.error('Error fetching goals:', error);
   }

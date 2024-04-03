@@ -21,10 +21,10 @@ const AddLongTermGoalScreen = ({navigation}) => {
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
         setIsClickable(false);
-        const id = await addGoal(user, goalName, frequency, description);
+        const id = await addGoal(user, goalName, type, frequency, date, description);
         if (!id) {
             setIsClickable(true);
-            Alert.alert("Error adding goal. Try again");
+            console.log("Error adding goal. Try again");
         }
         else {
             setGoalName('');

@@ -21,20 +21,15 @@ const AddRecurringGoalScreen = ({navigation}) => {
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
 
-        console.log(user.email);
-        console.log(goalName);
-        console.log(frequency);
-        console.log(description);
-
         setIsClickable(false);
-        const id = await addGoal(user, goalName, frequency, description);
+        const id = await addGoal(user, goalName, type, frequency, date, description);
 
         console.log(id);
 
 
         if (!id) {
             setIsClickable(true);
-            console.error("Error adding goal. Try again");
+            console.log("Error adding goal. Try again");
         }
         else {
             setGoalName('');
