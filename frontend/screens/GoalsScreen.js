@@ -5,15 +5,23 @@ import addButton from '../assets/zondicons_add-solid.png';
 import backgroundImage from '../assets/Fitz Personal Training.png';
 import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
 import { fetchGoals } from '../backendFunctions';
+import { useAuth } from '../contexts/AuthContext';
 
 
 const GoalsScreen = ({navigation}) => {
-  const [goals, setGoals] = useState([]);
+  const {user} = useAuth();
+
+  const [goals, setGoals] = fetchGoals(user);
 
   const [showList, setShowList] = useState(false); // State to manage whether to show the list or not
 
-  const {user} = useAuth();
-
+  useEffect(() => {
+    const fetchGoals = async () => {
+      const goals = await fetchGoals(user);
+      setGoals(goals);
+    };
+    fetchGoals();
+  }, []);
 
   const exampleGoals = [
     'Run 5 miles',
@@ -28,8 +36,6 @@ const GoalsScreen = ({navigation}) => {
   const pinnedGoal = 'Run 5 miles';
 
   const exampleLongTermGoals = [ 'Complete a marathon', 'Learn to play the guitar', 'Travel to Japan' ];
-
-  goals = fetchGoals(user);
 
   return (
     <View style={containerStyles.background}>
@@ -61,9 +67,6 @@ const GoalsScreen = ({navigation}) => {
               {goals.map((goal, index) => (
                 <View key={index} style={containerStyles.goalContainer}>
                   <Text style={textStyles.goalText}>{goal}</Text>
-                  <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("TakePhoto")}>
-                    <Image source={addButton} style={{width: 20, height: 20}}/>
-                  </TouchableOpacity>
                 </View>
               ))}
             </ScrollView>

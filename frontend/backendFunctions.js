@@ -72,15 +72,23 @@ export const createGoalsCollection = async (user) => {
 
 // return the goals collection for a specific user
 export const fetchGoals = async (user) => {
-  // i dont need the uid, just get a list of all the goals for that user
   try {
+    console.log(user.email);
+    console.log("hi");
     const userID = user.uid;
     const goalsCollection = await collection(db, 'users', userID, 'goals');
     const goalsSnapshot = await getDocs(goalsCollection);
-    const goals = goalsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    console.log(goalsSnapshot);
+    console.log("hi snapshot");
+    let goals = [];
+    try {
+      goals = goalsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error mapping goals:', error);
+    }
     return goals;
   } catch (error) {
     console.error('Error fetching goals:', error);
