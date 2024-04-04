@@ -36,7 +36,6 @@ const AddRecurringGoalScreen = ({navigation}) => {
             setFrequency('');
             setDescription('');
             setIsClickable(true);
-            navigation.navigate("Goals");
         }
 
         navigation.navigate("Goals");

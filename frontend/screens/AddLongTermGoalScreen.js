@@ -31,8 +31,9 @@ const AddLongTermGoalScreen = ({navigation}) => {
             setFrequency('');
             setDescription('');
             setIsClickable(true);
-            navigation.navigate("Goals");
         }
+
+        navigation.navigate("Goals");
     }
 
     const toggleFrequency = (frequency) => {

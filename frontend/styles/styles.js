@@ -103,6 +103,13 @@ export const textStyles = StyleSheet.create({
         fontWeight: '400',
         lineHeight: 24,
     },
+    blackGoalText: {
+        color: 'black',
+        fontSize: 16,
+        fontFamily: 'Poppins',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
     cameraGoalText: {
         color: 'black',
         fontSize: 16,
@@ -198,6 +205,14 @@ export const containerStyles = StyleSheet.create({
         gap: '10%',
         marginVertical: '5%',
     },
+    goalsButtonContainer: {
+        alignItems: 'flex-start', 
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: '10%',
+        marginVertical: '1%',
+    },
     whiteButton: {
         display: 'flex',
         justifyContent: 'center', 
@@ -283,17 +298,39 @@ export const containerStyles = StyleSheet.create({
         marginBottom: '20%',
     },
     // GOAL CONTAINER
-    goalContainer: {
+    itemContainer: {
+        alignItems: 'flex-start', 
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: '10%',
+        marginVertical: '5%',
+    },
+    recurringGoalContainer: {
         alignItems: 'flex-start',
         flexDirection: 'row', 
-        paddingVertical: '2%',
-        paddingHorizontal: '2%',
+        justifyContent: 'space-between',
+        paddingVertical: '5%',
+        paddingHorizontal: '15%',
         backgroundColor: '#111111',
-        borderRadius: '20%', 
+        borderRadius: '15%', 
         borderColor: '#FFFFFF',
-        borderWidth: '10%',
-        gap: '10%',
-        marginVertical: '4%'
+        borderWidth: '5%',
+        gap: '30%',
+        marginVertical: '2%'
+    },
+    longTermGoalContainer: {
+        alignItems: 'flex-start',
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        paddingVertical: '5%',
+        paddingHorizontal: '4%',
+        backgroundColor: '#E9EAFF',
+        marginVertical: '3%',
+        width: '100%',
+        borderRadius: '10%',
+        borderColor: '#000000',
+        borderWidth: '1%',
     },
     pinnedGoalContainer: {
         alignItems: 'flex-start', 
