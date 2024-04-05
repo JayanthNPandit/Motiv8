@@ -389,6 +389,10 @@ export const containerStyles = StyleSheet.create({
         alignItems: 'center',
     },
     dropdownContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         position: 'absolute',
         top: '100%', // Position it below the container
         left: 0,
@@ -409,9 +413,9 @@ export const containerStyles = StyleSheet.create({
         marginVertical: '5%',
     },
     datePicker: {
+        
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#939393',
         backgroundColor: '#111111',
         width: '100%', 
         paddingHorizontal: '2%',
