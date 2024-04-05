@@ -24,7 +24,7 @@ export const textStyles = StyleSheet.create({
     sectionHeader: {
         color: 'black',
         fontSize: 20,
-        fontFamily: 'Poppins',
+        fontFamily: 'Poppins-Regular',
         fontWeight: '500',
         lineHeight: 32,
         textAlign: 'left',
@@ -99,21 +99,21 @@ export const textStyles = StyleSheet.create({
     goalText: {
         color: 'white',
         fontSize: 16,
-        fontFamily: 'Poppins',
+        fontFamily: 'Poppins-Regular',
         fontWeight: '400',
         lineHeight: 24,
     },
     blackGoalText: {
         color: 'black',
         fontSize: 16,
-        fontFamily: 'Poppins',
+        fontFamily: 'Poppins-Regular',
         fontWeight: '400',
         lineHeight: 24,
     },
     cameraGoalText: {
         color: 'black',
         fontSize: 16,
-        fontFamily: 'Poppins',
+        fontFamily: 'Poppins-Regular',
         fontWeight: '400',
         lineHeight: 24,
     },
@@ -222,6 +222,7 @@ export const containerStyles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: '1%', 
         gap: '1%',
+        borderWidth: '1%',
         marginVertical: '1%',
     },
     bigWhiteButton: {

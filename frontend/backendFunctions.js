@@ -309,6 +309,7 @@ export const addImageToDatabase = async (user, goals, caption, name, url) => {
       imageName: name,
       imageUrl: url,
       timestamp: new Date(),
+      // add list of people who liked the image
     };
     console.log(data);
     const addedImage = await addDoc(collection(db, 'users', userID, 'images'), data);
