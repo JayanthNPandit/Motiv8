@@ -9,29 +9,39 @@ const SignUpScreen = ({navigation}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isClickable, setIsClickable] = useState(true);
+    const [called, setCalled] = useState(false);
 
     const { user, register, loginError } = useAuth();
-    
-    const handleRegister = async () => {
-        if (email === '' || password === '') {
-            Alert.alert('Email and/or password fields are empty. Try again');
-            return;
-        }
 
-        setIsClickable(false);
-        await register(email, password);
+    useEffect(() => {
+        console.log(user);
         if (loginError) {
             Alert.alert('Failed to create an account. Try again');
             setEmail('');
             setPassword('');
             setIsClickable(true);
         } else {
-            await createUser(user, '', '', '');
             setEmail('');
             setPassword('');
             setIsClickable(true);
             navigation.navigate("Onboarding");
         }
+    }, [called])
+    
+    const handleRegister = async () => {
+        if (email === '' || password === '') {
+            Alert.alert('Email and/or password fields are empty. Try again');
+            return;
+        }
+        if (password.length < 6) {
+            Alert.alert('Password needs to be longer than 6 characters');
+            return;
+        }
+
+        setIsClickable(false);
+        await register(email, password);
+        setCalled(!called);
+        
     }
 
     return (

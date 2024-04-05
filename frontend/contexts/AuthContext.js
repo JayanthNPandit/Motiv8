@@ -1,6 +1,6 @@
 import { auth } from '../firebaseConfig.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -11,52 +11,53 @@ export const useAuth = () => {
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
-  const [loginError, setLoginError] = useState(null);
-  const [resetError, setResetError] = useState(null);
+  const [loginError, setLoginError] = useState(false);
+  const [resetError, setResetError] = useState(false);
   
   // Login function that validates the provided username and password.
   const login = async (email, password) => {
-    setLoginError(null);
     try {
+      setLoginError(false);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
     } catch (error) {
-      setLoginError(error.message);
+      setLoginError(true);
     }
   };
 
   // Logout function to clear user data and redirect to the login page.
   const logout = async () => {
-    const response = await auth.signOut();
+    await auth.signOut();
     setUser(null);
   };
 
   // Register function
   const register = async (email, password) => {
-    setLoginError(null);
     try {
+      setLoginError(false);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
     } catch (error) {
-      setLoginError(error.message);
-      console.log(error.message);
+      setLoginError(true);
     }
   };
 
+
   const remember = async () => {
-    setLoginError(null);
     try {
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      setLoginError(false);
+      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     } catch (error) {
-      setLoginError(error.message);
+      setLoginError(true);
     }
   }
 
   const resetPassword = async (email) => {
     try {
+      setResetError(false);
       await sendPasswordResetEmail(auth, email);
     } catch (error) {
-      setResetError(error.message);
+      setResetError(true);
     }
   }
 
@@ -70,7 +71,7 @@ export function AuthProvider({ children }) {
     logout,
     register,
     remember,
-    resetPassword
+    resetPassword,
   };
 
   // The AuthProvider component uses the AuthContext.Provider to wrap its children.

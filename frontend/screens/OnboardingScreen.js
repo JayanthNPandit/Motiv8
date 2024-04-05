@@ -18,6 +18,11 @@ const Onboarding = ({navigation}) => {
 
     const { user } = useAuth();
 
+    useEffect(() => {
+        const creation = async () => { await createUser(user, '', '', ''); }
+        creation();
+    }, []);
+
     // choosing the image
     const pickImage = async () => {
 
