@@ -1,15 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
-import { Camera } from 'expo-camera';
-import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  KeyboardAvoidingView,
+  RefreshControl,
+  Platform,
+  Modal,
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { ImageManipulator, manipulateAsync } from "expo-image-manipulator";
+import { Camera } from "expo-camera";
+import {
+  fetchGroupImages,
+  fetchRecentGroupImages,
+  addImageToDatabase,
+  addToBucket,
+} from "../backendFunctions.js";
 
-
-const UploadPhotoScreen = ({navigation}) => {
+const UploadPhotoScreen = ({ navigation }) => {
   const [imageUrl, setImageUrl] = useState(null);
-  const [caption, setCaption] = useState('');
+  const [caption, setCaption] = useState("");
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageData, setImageData] = useState([]);
 
@@ -21,13 +38,13 @@ const UploadPhotoScreen = ({navigation}) => {
   const { user } = useAuth();
 
   // YASH
-  const userID = 'H4W3jcMJTVUXc3KOWmg0PlSpdsy2';
-  const goalID = 'nPnXBLlRi6LCeCAZtUyP';
-  const groupID = '2vc4eiJZ8eap0fnmfDVf';
-  
+  const userID = "H4W3jcMJTVUXc3KOWmg0PlSpdsy2";
+  const goalID = "nPnXBLlRi6LCeCAZtUyP";
+  const groupID = "2vc4eiJZ8eap0fnmfDVf";
+
   // VENKAT
-  const userID2 = 'ED7pVVZgH1PigTO4pwA3B9WM9bX2';
-  const goalID2 = 'xRBJHrwlWTvBKrS821jS';
+  const userID2 = "ED7pVVZgH1PigTO4pwA3B9WM9bX2";
+  const goalID2 = "xRBJHrwlWTvBKrS821jS";
 
   // JJ
 
@@ -35,11 +52,11 @@ const UploadPhotoScreen = ({navigation}) => {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(status === 'granted');
+      setHasCameraPermission(status === "granted");
       fetchImages();
       // reprompt for camera permissions if they deny
-      if (status !== 'granted') {
-        alert('We need camera permissions for this app to work');
+      if (status !== "granted") {
+        alert("We need camera permissions for this app to work");
         // reprompt
       }
     })();
@@ -55,7 +72,6 @@ const UploadPhotoScreen = ({navigation}) => {
 
   // choosing the image
   const pickImage = async () => {
-
     // selected image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -68,8 +84,10 @@ const UploadPhotoScreen = ({navigation}) => {
       const fileInfo = await FileSystem.getInfoAsync(url);
       const originalFileSize = fileInfo.size;
       // compress if greater than 1.5 MB (prevents crashing)
-      if (originalFileSize > (1024 * 1024 * 1.5)) {
-        const compressedImage = await manipulateAsync(url, [], { compress: 0.3 });
+      if (originalFileSize > 1024 * 1024 * 1.5) {
+        const compressedImage = await manipulateAsync(url, [], {
+          compress: 0.3,
+        });
         setImageUrl(compressedImage.uri);
       } else {
         setImageUrl(url);
@@ -91,94 +109,103 @@ const UploadPhotoScreen = ({navigation}) => {
       const fileInfo = await FileSystem.getInfoAsync(uri);
       const originalFileSize = fileInfo.size;
       // compress if greater than 1.5 MB to avoid crashes
-      if (originalFileSize > (1024 * 768 * 1.5)) { // 1024 x 78 for 4:3 aspect ratio for images
-        const compressedImage = await manipulateAsync(uri, [], { compress: 0.3 });
+      if (originalFileSize > 1024 * 768 * 1.5) {
+        // 1024 x 78 for 4:3 aspect ratio for images
+        const compressedImage = await manipulateAsync(uri, [], {
+          compress: 0.3,
+        });
         setImageUrl(compressedImage.uri);
       } else {
         setImageUrl(uri);
       }
     }
-  }
+  };
 
   // adding the image to the screen
   const addImage = async () => {
     if (imageUrl) {
-      const {downloadUrl, name} = await addToBucket(imageUrl);
+      const { downloadUrl, name } = await addToBucket(imageUrl);
       await addImageToDatabase(userID, goalID, caption, name, downloadUrl);
-      setImageData([{ url: downloadUrl, caption: caption}, ...imageData]);
+      setImageData([{ url: downloadUrl, caption: caption }, ...imageData]);
       setImageUrl(null);
-      setCaption('');
+      setCaption("");
     }
   };
 
   const cancelImage = async () => {
     setImageUrl(null);
-    setCaption('');
-  }
+    setCaption("");
+  };
 
   return (
     <View style={styles.container}>
-        <Text style={styles.header}> MOTI-V8 </Text>
-        <FlatList
-            data={imageData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedImage(item.url);
-                  setModalVisible(true);
-                }}
-              >
-                <View style={styles.message}>
-                  <Image source={{url: item.url}} style={styles.image} />
-                  <Text>{item.caption}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={fetchImages}
-              />
-            }
-        />
-        
-        {!imageUrl && (
+      <Text style={styles.header}> MOTI-V8 </Text>
+      <FlatList
+        data={imageData}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedImage(item.url);
+              setModalVisible(true);
+            }}
+          >
+            <View style={styles.message}>
+              <Image source={{ url: item.url }} style={styles.image} />
+              <Text>{item.caption}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchImages} />
+        }
+      />
+
+      {!imageUrl && (
         <View style={styles.choosing}>
-            <TouchableOpacity style={styles.button} onPress={pickImage}>
-                <Text style={styles.text}>Choose picture</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={takeImage}>
-                <Text style={styles.text}>Take picture</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={pickImage}>
+            <Text style={styles.text}>Choose picture</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={takeImage}>
+            <Text style={styles.text}>Take picture</Text>
+          </TouchableOpacity>
         </View>
-        )}
-            
-        {imageUrl && (
-        <KeyboardAvoidingView style={styles.miniContainer} 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={75}>
-            <View style={styles.halfContainer}>
-                <Image source={{ url: imageUrl }} style={{ width: 275, height: 200, borderRadius: 10, borderWidth: 1 }} />
-                <TextInput 
-                    placeholder='add a caption' 
-                    placeholderTextColor='#88898a'
-                    onChangeText={setCaption}
-                    style = {{padding: 3, fontSize: 18}}
-                />
-            </View>
-            
-            <View style={styles.halfContainer}>
-              <TouchableOpacity style={styles.button} onPress={addImage}>
-                  <Text style={styles.text}>Send</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={cancelImage}>
-                  <Text style={styles.text}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-            
+      )}
+
+      {imageUrl && (
+        <KeyboardAvoidingView
+          style={styles.miniContainer}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={75}
+        >
+          <View style={styles.halfContainer}>
+            <Image
+              source={{ url: imageUrl }}
+              style={{
+                width: 275,
+                height: 200,
+                borderRadius: 10,
+                borderWidth: 1,
+              }}
+            />
+            <TextInput
+              placeholder="add a caption"
+              placeholderTextColor="#88898a"
+              onChangeText={setCaption}
+              style={{ padding: 3, fontSize: 18 }}
+            />
+          </View>
+
+          <View style={styles.halfContainer}>
+            <TouchableOpacity style={styles.button} onPress={addImage}>
+              <Text style={styles.text}>Send</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={cancelImage}>
+              <Text style={styles.text}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
-        )}
+      )}
 
       <Modal
         animationType="slide"
@@ -203,63 +230,61 @@ const UploadPhotoScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </Modal>
-
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 70,
-    marginBottom: 30
+    marginBottom: 30,
   },
   miniContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: '#7b948b',
+    borderColor: "#7b948b",
     borderRadius: 10,
-    width: '95%'
+    width: "95%",
   },
   halfContainer: {
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+    alignItems: "flex-start",
+    justifyContent: "center",
     margin: 5,
   },
   choosing: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   button: {
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#a68d8d',
+    borderColor: "#a68d8d",
     padding: 10,
     marginHorizontal: 2,
-    marginVertical: 5
+    marginVertical: 5,
   },
   header: {
     fontSize: 48,
-    fontWeight: 'bold',
-    marginBottom: 5
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   text: {
-    fontSize: 18
+    fontSize: 18,
   },
   image: {
-    width: 350, 
-    height: 200, 
-    resizeMode: 'cover',
+    width: 350,
+    height: 200,
+    resizeMode: "cover",
     borderRadius: 10,
     borderWidth: 1,
   },
   message: {
-    marginVertical: 7
+    marginVertical: 7,
   },
   modalView: {
     flex: 1,
@@ -282,6 +307,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "black",
   },
-})
+});
 
 export default UploadPhotoScreen;

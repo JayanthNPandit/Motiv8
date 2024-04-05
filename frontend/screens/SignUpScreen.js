@@ -8,16 +8,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
 
 const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [isClickable, setIsClickable] = useState(true);
-  const [called, setCalled] = useState(false);
 
-  const { user, register, loginError } = useAuth();
+  const { user, register } = useAuth();
 
   useEffect(() => {
     console.log(user);
@@ -26,6 +28,10 @@ const SignUpScreen = ({ navigation }) => {
   const handleRegister = async () => {
     if (email === "" || password === "") {
       Alert.alert("Email and/or password fields are empty. Try again");
+      return;
+    }
+    if (password !== password2) {
+      Alert.alert("Passwords do not match");
       return;
     }
     if (password.length < 6) {
@@ -73,6 +79,15 @@ const SignUpScreen = ({ navigation }) => {
             secureTextEntry={true}
             style={containerStyles.input}
             onChangeText={setPassword}
+          />
+        </View>
+        <View style={containerStyles.inputContainer}>
+          <Text style={textStyles.textBodyHeader}> Confirm Password: </Text>
+          <TextInput
+            value={password2}
+            secureTextEntry={true}
+            style={containerStyles.input}
+            onChangeText={setPassword2}
           />
         </View>
 
