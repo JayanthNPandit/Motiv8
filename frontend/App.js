@@ -102,7 +102,7 @@ export default function App() {
 function AppContent() {
   const { user } = useAuth();
   return (
-    /*
+    
     <NavigationContainer>
       <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
@@ -124,8 +124,8 @@ function AppContent() {
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
-    */
     
+    /*
     <NavigationContainer>
       <Stack.Navigator initialRouteName={"AddLongTermGoal"}>
         <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
@@ -137,6 +137,7 @@ function AppContent() {
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
+    */
 
   /*
     <NavigationContainer>

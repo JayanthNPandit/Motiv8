@@ -16,18 +16,18 @@ const LoginScreen = ({navigation}) => {
     const handleLogin = async () => {
         setIsClickable(false);
         if (isSelected) await remember();
-        await login(email, password);
-        if (loginError) {
-            Alert.alert('Entered incorrect credentials. Try again.');
-            setIsClickable(true);
+        const result = await login(email, password);
+        if (!result.success) {
+          Alert.alert("Login failed", result.message); // Use the error message
+          setIsClickable(true);
         } else {
-            setEmail('');
-            setPassword('');
-            setSelection(false);
-            setIsClickable(true);
-            navigation.navigate("Profile");
+          setEmail('');
+          setPassword('');
+          setSelection(false);
+          setIsClickable(true);
+          navigation.navigate("Profile");
         }
-    }
+      };      
 
     return (
         <View style={containerStyles.background}>
