@@ -99,10 +99,52 @@ export default function App() {
   );
 }
 
-function AppContent() {
-  const { user } = useAuth();
+function TabContent() {
   return (
-    
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            if (route.name === 'Welcome') {
+              return <Image source={home}/>
+            } else if (route.name === 'SignUp') {
+              return <Image source={goal}/>
+            } else if (route.name === 'Login') {
+              return <Image source={post}/>
+            } else if (route.name === 'ForgotPassword') {
+              return <Image source={group}/>
+            } else {
+              return <Image source={profile}/>
+            }
+          },
+          tabBarShowLabel: false,
+          tabBarActiveBackgroundColor: 'white',
+          tabBarInactiveBackgroundColor: 'white',
+          tabBarActiveTintColor: 'white',
+          tabBarStyle: {
+            height: '11%',
+            width: '100%',
+            bottom: -10
+          },
+          tabBarItemStyle: {
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+          }
+        })}
+      >
+        <Tab.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
+        <Tab.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
+        <Tab.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
+        <Tab.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}}/>
+        <Tab.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function AppContent() {
+  const { user, userData } = useAuth();
+  return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />

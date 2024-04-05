@@ -5,6 +5,7 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { fetchUserData } from '../backendFunctions.js'
 
 const AuthContext = createContext();
 
@@ -14,6 +15,17 @@ export const useAuth = () => {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (user) {
+        const data = await fetchUserData(user.uid);
+        setUserData(data);
+      }
+    }
+    getData();    
+  }, [user])
 
   // Login function that validates the provided username and password.
   const login = async (email, password) => {
@@ -75,6 +87,7 @@ export function AuthProvider({ children }) {
   // By using this context, child components can easily access and use these without prop drilling.
   const contextValue = {
     user,
+    userData,
     login,
     logout,
     register,
