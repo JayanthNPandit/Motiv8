@@ -283,8 +283,6 @@ export const containerStyles = StyleSheet.create({
         right:'-200%',
         paddingVertical: '0%',
         paddingHorizontal: '0%',
-        backgroundColor: '#111111',
-        borderRadius: '100%',
     },
     longWhiteButton: {
         display: 'flex',
