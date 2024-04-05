@@ -96,9 +96,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   image: {
-    width: "15%",
-    height: "30%",
-    padding: "10%",
+    width: "20%",
+    height: "40%",
+    padding: "15%",
+    borderRadius: 1000,
   },
 });
 

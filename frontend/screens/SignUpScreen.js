@@ -47,10 +47,12 @@ const SignUpScreen = ({ navigation }) => {
       Alert.alert("Failed to create an account", result.message); // Use the error message
       setEmail("");
       setPassword("");
+      setPassword2("");
       setIsClickable(true);
     } else {
       setEmail("");
       setPassword("");
+      setPassword2("");
       setIsClickable(true);
       navigation.navigate("Onboarding");
     }

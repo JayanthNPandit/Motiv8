@@ -19,8 +19,6 @@ const SharePhotoScreen = ({navigation, imageUrl}) => {
     
     const [goalID, setGoalID] = useState(null);
     const [groupID, setGroupID] = useState(null);
-    
-    const navigation = useNavigation();
 
     
     // upload the image
