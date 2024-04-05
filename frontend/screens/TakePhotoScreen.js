@@ -9,14 +9,17 @@ import * as FileSystem from 'expo-file-system';
 import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
-import defaultImage from '../assets/camera.png';
 import { containerStyles, textStyles } from '../styles/styles.js';
+
+import snapImage from '../assets/snappicture.png';
+import galleryImage from '../assets/gallery.png';
+import uploadPictureImage from '../assets/uploadimage.jpg';
+
+import defaultImage from '../assets/camera.png';
 
 
 const TakePhotoScreen = ({navigation}) => {
   const [imageUrl, setImageUrl] = useState(null);
-  const [caption, setCaption] = useState('');
-  const [goals, setGoals] = useState([]);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageData, setImageData] = useState([]);
 
@@ -28,24 +31,6 @@ const TakePhotoScreen = ({navigation}) => {
   const [takenImage, setTakenImage] = useState(false);
 
   const { user } = useAuth();
-
-  exampleGoals = [
-    'Run 5 miles',
-    'Read 50 pages',
-    'Drink 8 cups of water',
-    'Meditate for 10 minutes',
-    'Complete a coding challenge',
-    'Cook a new recipe',
-    'Write in a journal',
-  ];
-
-  // fetch some recent images from storage
-  const fetchImages = async () => {
-    var limit = 7;
-    const images = await fetchRecentGroupImages(user, groupID, limit); // hard coded value for now
-    setImageData(images);
-    setRefreshing(false);
-  };
 
   // choosing the image
   const pickImage = async () => {
@@ -78,30 +63,14 @@ const TakePhotoScreen = ({navigation}) => {
   };
 
   // upload the image
-  const uploadImage = async () => {
-    if (imageUrl) {
-      const image = await FileSystem.readAsStringAsync(imageUrl, { encoding: FileSystem.EncodingType.Base64 });
-      const url = await addToBucket(image);
-      const id = await addImageToDatabase(user, groupID, caption, url, goals);
-      if (!id) {
-        Alert.alert("Error uploading image. Try again");
-      }
-      else {
-        setImageUrl(null);
-        setCaption('');
-        setGoals([]);
-        navigation.navigate("Feed");
-      }
-    }
+  const confirmImage = async () => {
+    navigation.navigate("SharePhoto", {imageUrl: imageUrl});
   };
 
-  const addToGoals = (goal) => {
-    if (goals.includes(goal)) {
-      setGoals(goals.filter((item) => item !== goal));
-    } else {
-      setGoals([...goals, goal]);
-    }
-  }
+  const tryAgain = () => {
+    setImageUrl(null);
+    setTakenImage(false);
+  };
 
   return (
     <View style={containerStyles.background}>
@@ -109,7 +78,7 @@ const TakePhotoScreen = ({navigation}) => {
       <Text style={textStyles.header}></Text>
       <Text style={textStyles.header}></Text>
         <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}> Share your Photo! </Text>
+          <Text style={textStyles.header}> Snap your Progress! </Text>
         </View>
       <TouchableOpacity onPress={takeImage}>
         <View style={containerStyles.imageContainer}>
@@ -121,28 +90,25 @@ const TakePhotoScreen = ({navigation}) => {
         </View>
       </TouchableOpacity>
       <Text style={styles.buttonText}> Take Image </Text>
-      <View style={styles.miniContainer}>
-        <TextInput style={styles.input} value={caption} onChangeText={setCaption} placeholder="Add a caption"/>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={pickImage}>
-          <Text style={styles.buttonText}> Choose Image </Text>
-        </TouchableOpacity>        
-        <TouchableOpacity style={styles.button} onPress={uploadImage}>
-          <Text style={styles.buttonText}> Upload Image </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={containerStyles.listContainer}>
-        <Text style={textStyles.sectionHeader}>Select Goals:</Text>
-        <ScrollView horizontal={true}>
-          {exampleGoals.map((goal, index) => (
-            <TouchableOpacity key={index} style={containerStyles.goalContainer} onPress={() => addToGoals(goal)}>
-              <Text style={textStyles.goalText}>{goal}</Text>
-              {goals.includes(goal) ? <Image source={checkmark} style={{width: 20, height: 20}}/> : null}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+      {takenImage ? (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={tryAgain}>
+            <Text>Try Again</Text>
+          </TouchableOpacity>        
+          <TouchableOpacity style={styles.button} onPress={uploadImage}>
+          <Text>Confirm Image</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={pickImage}>
+            <Image source={galleryImage}/>
+          </TouchableOpacity>        
+          <TouchableOpacity style={styles.button} onPress={takeImage}>
+            <Image source={snapImage}/>
+          </TouchableOpacity>
+        </View>
+      )}
       </View>
     </View>
   );

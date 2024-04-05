@@ -37,6 +37,7 @@ const Stack = createNativeStackNavigator();
 
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import SharePhotoScreen from "./screens/SharePhotoScreen";
 
 // Prevent native splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -132,6 +133,7 @@ function AppContent() {
         <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
         <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
         <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+        <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

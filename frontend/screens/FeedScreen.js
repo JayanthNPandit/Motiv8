@@ -24,52 +24,12 @@ const FeedScreen = ({navigation}) => {
 
   const { user } = useAuth();
 
-  /*
-  // Basically force the user to accept camera permissions
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(status === 'granted');
-      fetchImages();
-      // reprompt for camera permissions if they deny
-      if (status !== 'granted') {
-        alert('We need camera permissions for this app to work');
-        // reprompt
-      }
-    })();
-  }, []);
-  */
-
   // fetch some recent images from storage
   const fetchImages = async () => {
-    var limit = 7;
+    var limit = 30;
     const images = await fetchRecentGroupImages(user, groupID, limit); // hard coded value for now
     setImageData(images);
     setRefreshing(false);
-  };
-
-  // choosing the image
-  const pickImage = async () => {
-
-    // selected image
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.cancelled && result.assets) {
-      const url = result.assets[0].uri;
-      const fileInfo = await FileSystem.getInfoAsync(url);
-      const originalFileSize = fileInfo.size;
-      // compress if greater than 1.5 MB (prevents crashing)
-      if (originalFileSize > (1024 * 1024 * 1.5)) {
-        const compressedImage = await manipulateAsync(url, [], { compress: 0.3 });
-        setImageUrl(compressedImage.uri);
-      } else {
-        setImageUrl(url);
-      }
-    }
   };
 
   // taking the image using the camera
