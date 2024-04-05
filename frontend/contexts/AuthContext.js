@@ -5,6 +5,7 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { fetchUserData } from '../backendFunctions.js'
 
 const AuthContext = createContext();
 
@@ -14,13 +15,21 @@ export const useAuth = () => {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loginError, setLoginError] = useState(false);
-  const [resetError, setResetError] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (user) {
+        const data = await fetchUserData(user.uid);
+        setUserData(data);
+      }
+    }
+    getData();    
+  }, [user])
 
   // Login function that validates the provided username and password.
   const login = async (email, password) => {
     try {
-      setLoginError(false);
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -29,7 +38,6 @@ export function AuthProvider({ children }) {
       setUser(userCredential.user);
       return { success: true };
     } catch (error) {
-      setLoginError(true);
       return { success: false, message: error.message }; // Return the error message
     }
   };
@@ -43,7 +51,6 @@ export function AuthProvider({ children }) {
   // Register function
   const register = async (email, password) => {
     try {
-      setLoginError(false);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -52,28 +59,27 @@ export function AuthProvider({ children }) {
       setUser(userCredential.user);
       return { success: true };
     } catch (error) {
-      setLoginError(true);
       return { success: false, message: error.message }; // Return the error message
     }
   };
 
   const remember = async () => {
     try {
-      setLoginError(false);
       await firebase
         .auth()
         .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      return { success: true };
     } catch (error) {
-      setLoginError(true);
+      return { success: false, message: error.message }; // Return the error message
     }
   };
 
   const resetPassword = async (email) => {
     try {
-      setResetError(false);
       await sendPasswordResetEmail(auth, email);
+      return { success: true };
     } catch (error) {
-      setResetError(true);
+      return { success: false, message: error.message }; // Return the error message
     }
   };
 
@@ -81,8 +87,7 @@ export function AuthProvider({ children }) {
   // By using this context, child components can easily access and use these without prop drilling.
   const contextValue = {
     user,
-    loginError,
-    resetError,
+    userData,
     login,
     logout,
     register,

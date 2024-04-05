@@ -145,7 +145,9 @@ export const delUser = async (user) => {
 export const fetchUserData = async (userID) => {
   try {
     const response = await getDoc(doc(db, 'users', userID));
-    if (response.exists()) return response.data();
+    if (response.exists()) {
+      return response.data(); 
+    }
     else throw error("User does not exist");
   } catch (error) {
     console.log('Error fetching users data:', error);
