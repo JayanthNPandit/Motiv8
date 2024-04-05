@@ -1,27 +1,36 @@
-import { auth } from '../firebaseConfig.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { auth } from "../firebaseConfig.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
-  return useContext(AuthContext);    
+  return useContext(AuthContext);
 };
 
 export function AuthProvider({ children }) {
-
   const [user, setUser] = useState(null);
   const [loginError, setLoginError] = useState(false);
   const [resetError, setResetError] = useState(false);
-  
+
   // Login function that validates the provided username and password.
   const login = async (email, password) => {
     try {
       setLoginError(false);
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       setUser(userCredential.user);
+      return { success: true };
     } catch (error) {
       setLoginError(true);
+      return { success: false, message: error.message }; // Return the error message
     }
   };
 
@@ -35,22 +44,29 @@ export function AuthProvider({ children }) {
   const register = async (email, password) => {
     try {
       setLoginError(false);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       setUser(userCredential.user);
+      return { success: true };
     } catch (error) {
       setLoginError(true);
+      return { success: false, message: error.message }; // Return the error message
     }
   };
-
 
   const remember = async () => {
     try {
       setLoginError(false);
-      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      await firebase
+        .auth()
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     } catch (error) {
       setLoginError(true);
     }
-  }
+  };
 
   const resetPassword = async (email) => {
     try {
@@ -59,15 +75,15 @@ export function AuthProvider({ children }) {
     } catch (error) {
       setResetError(true);
     }
-  }
+  };
 
   // An object containing our state and functions related to authentication.
   // By using this context, child components can easily access and use these without prop drilling.
   const contextValue = {
-    user, 
+    user,
     loginError,
     resetError,
-    login, 
+    login,
     logout,
     register,
     remember,
@@ -79,9 +95,7 @@ export function AuthProvider({ children }) {
   // Instead of manually passing down data and functions, components inside this provider can
   // simply use the useAuth() hook to access anything they need.
   return (
-    <AuthContext.Provider value={contextValue}>
-        {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 
