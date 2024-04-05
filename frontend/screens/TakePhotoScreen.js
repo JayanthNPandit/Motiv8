@@ -104,14 +104,15 @@ const TakePhotoScreen = ({navigation}) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}></Text>
-      <Text style={styles.header}></Text>
-        <View style={styles.headerContainer}>
-          <Text style={styles.header}> Share your Photo! </Text>
+    <View style={containerStyles.background}>
+      <View style={containerStyles.container}>
+      <Text style={textStyles.header}></Text>
+      <Text style={textStyles.header}></Text>
+        <View style={containerStyles.headerContainer}>
+          <Text style={textStyles.header}> Share your Photo! </Text>
         </View>
       <TouchableOpacity onPress={takeImage}>
-        <View style={styles.imageContainer}>
+        <View style={containerStyles.imageContainer}>
         {takenImage ? (
           <Image style={styles.image} source={{uri: imageUrl}} />
         ) : (
@@ -132,15 +133,16 @@ const TakePhotoScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <View style={containerStyles.listContainer}>
-        <FlatList
-          data={exampleGoals}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={containerStyles.purpleButton} onPress={addToGoals(item)}>
-              <Text style={textStyles.goalText}>{item}</Text>
+        <Text style={textStyles.sectionHeader}>Select Goals:</Text>
+        <ScrollView horizontal={true}>
+          {exampleGoals.map((goal, index) => (
+            <TouchableOpacity key={index} style={containerStyles.goalContainer} onPress={() => addToGoals(goal)}>
+              <Text style={textStyles.goalText}>{goal}</Text>
+              {goals.includes(goal) ? <Image source={checkmark} style={{width: 20, height: 20}}/> : null}
             </TouchableOpacity>
-          )}
-        />
+          ))}
+        </ScrollView>
+      </View>
       </View>
     </View>
   );
@@ -162,9 +164,6 @@ const styles = StyleSheet.create({
   subheader: {
     fontSize: 18,
     color: 'gray',
-  },
-  imageContainer: {
-    alignItems: 'center',
   },
   image: {
     width: 200,

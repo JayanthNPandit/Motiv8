@@ -22,22 +22,77 @@ const validateUser = (token) => {
     });
 }
 
-export const addGoal = async (user, goalName, goalType, frequency, description) => {
+// get a user when passed in an id
+export const getUser = async (userID) => {
+  try {
+    const userDoc = await doc(db, 'users', userID);
+    const userDocRef = await getDoc(userDoc);
+    return userDocRef.data();
+  } catch (error) {
+    console.error('Error getting user:', error);
+  }
+}
+
+// add a goal to the user and checks if the user does not have a goals collection and calls createGoalsCollection if so
+export const addGoal = async (user, goalName, type, frequency, date, description) => {
   try {
     const userID = user.uid; 
+    console.log(userID);
     const goalData = {
       name: goalName,
-      type: goalType,
+      type: type,
       frequency: frequency,
+      date: date,
       description: description,
       images: []
     }
+
+    // if user does not have a goals collection
+    if (user.goals === undefined) {
+      console.log("creating goals collection");
+      await createGoalsCollection(user);
+    }
+
     const goalDocRef = collection(db, 'users', userID, 'goals');
     await addDoc(goalDocRef, goalData);
+    console.log("added goal" + goalData.name);
   } catch (error) {
     console.error('Error adding goal:', error);
   }
 }
+
+// create a goals collection for a certain user
+export const createGoalsCollection = async (user) => {
+  try {
+    const userID = user.uid;
+    const goalsCollection = collection(db, 'users', userID, 'goals');
+    //await addDoc(goalsCollection, {name: 'default', type: 'default', frequency: 'default', description: 'default', images: []});
+  } catch (error) {
+    console.error('Error creating goals collection:', error);
+  }
+}
+
+// return the goals collection for a specific user
+export const fetchUserGoals = async (user) => {
+  try {
+
+    const userID = user.uid;
+
+    const goalsCollection = await collection(db, 'users', userID, 'goals');
+
+    const goalsSnapshot = await getDocs(goalsCollection);
+
+    try {
+      const goals = goalsSnapshot.docs.map((doc) => doc.data());
+      return goals;
+    } catch (error) {
+      console.error('Error with the mapping:', error);
+    }
+  } catch (error) {
+    console.error('Error fetching goals:', error);
+  }
+}
+
 
 
 export const createUser = async (user, username, name, pfp) => {
@@ -254,6 +309,7 @@ export const addImageToDatabase = async (user, goals, caption, name, url) => {
       imageName: name,
       imageUrl: url,
       timestamp: new Date(),
+      // add list of people who liked the image
     };
     console.log(data);
     const addedImage = await addDoc(collection(db, 'users', userID, 'images'), data);

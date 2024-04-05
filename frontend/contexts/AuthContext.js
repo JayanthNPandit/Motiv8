@@ -39,6 +39,7 @@ export function AuthProvider({ children }) {
       setUser(userCredential.user);
     } catch (error) {
       setLoginError(error.message);
+      console.log(error.message);
     }
   };
 

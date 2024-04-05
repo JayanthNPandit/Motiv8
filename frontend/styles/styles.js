@@ -24,7 +24,7 @@ export const textStyles = StyleSheet.create({
     sectionHeader: {
         color: 'black',
         fontSize: 20,
-        fontFamily: 'Poppins',
+        fontFamily: 'Poppins-Regular',
         fontWeight: '500',
         lineHeight: 32,
         textAlign: 'left',
@@ -99,7 +99,21 @@ export const textStyles = StyleSheet.create({
     goalText: {
         color: 'white',
         fontSize: 16,
-        fontFamily: 'Poppins',
+        fontFamily: 'Poppins-Regular',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
+    blackGoalText: {
+        color: 'black',
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
+    cameraGoalText: {
+        color: 'black',
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
         fontWeight: '400',
         lineHeight: 24,
     },
@@ -127,6 +141,13 @@ export const containerStyles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: '5%',
+        gap: 4
+    },
+    goalsHeaderContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
         marginBottom: '5%',
         gap: 4
     },
@@ -184,7 +205,26 @@ export const containerStyles = StyleSheet.create({
         gap: '10%',
         marginVertical: '5%',
     },
+    goalsButtonContainer: {
+        alignItems: 'flex-start', 
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: '10%',
+        marginVertical: '1%',
+    },
     whiteButton: {
+        display: 'flex',
+        justifyContent: 'center', 
+        alignItems: 'center',
+        paddingVertical: '1%',
+        paddingHorizontal: '2%',
+        backgroundColor: 'white',
+        borderRadius: '1%', 
+        gap: '1%',
+        marginVertical: '1%',
+    },
+    bigWhiteButton: {
         display: 'flex',
         justifyContent: 'center', 
         alignItems: 'center',
@@ -259,17 +299,39 @@ export const containerStyles = StyleSheet.create({
         marginBottom: '20%',
     },
     // GOAL CONTAINER
-    goalContainer: {
+    itemContainer: {
+        alignItems: 'flex-start', 
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: '10%',
+        marginVertical: '5%',
+    },
+    recurringGoalContainer: {
         alignItems: 'flex-start',
         flexDirection: 'row', 
-        paddingVertical: '2%',
-        paddingHorizontal: '2%',
+        justifyContent: 'space-between',
+        paddingVertical: '5%',
+        paddingHorizontal: '15%',
         backgroundColor: '#111111',
-        borderRadius: '20%', 
+        borderRadius: '15%', 
         borderColor: '#FFFFFF',
-        borderWidth: '10%',
-        gap: '10%',
-        marginVertical: '4%'
+        borderWidth: '5%',
+        gap: '30%',
+        marginVertical: '2%'
+    },
+    longTermGoalContainer: {
+        alignItems: 'flex-start',
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        paddingVertical: '5%',
+        paddingHorizontal: '4%',
+        backgroundColor: '#E9EAFF',
+        marginVertical: '3%',
+        width: '100%',
+        borderRadius: '10%',
+        borderColor: '#000000',
+        borderWidth: '1%',
     },
     pinnedGoalContainer: {
         alignItems: 'flex-start', 
@@ -294,5 +356,8 @@ export const containerStyles = StyleSheet.create({
         alignItems: 'center',
         gap: '1%',
         marginVertical: '5%',
+    },
+    imageContainer: {
+        alignItems: 'center',
     },
 })

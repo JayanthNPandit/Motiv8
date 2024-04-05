@@ -87,6 +87,10 @@ const ProfileScreen = ({navigation}) => {
                 <TouchableOpacity style={{...containerStyles.longPurpleButton, paddingHorizontal: '25%', marginVertical: '2%'}}>
                     <Text style={{...textStyles.textBodySmall, color:'white'}}> View all your photos </Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={{...containerStyles.longPurpleButton, paddingHorizontal: '25%', marginVertical: '2%'}} onPress={() => navigation.navigate("Goals")}>
+                    <Text style={{...textStyles.textBodySmall, color:'white'}}> See all your goals </Text>
+                    {console.log("going to goals")}
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.editContainer} onPress={() => setEdit(true)}>
                     <Text style={{...textStyles.textBodyBoldPurple, textDecorationLine:'underline'}}>Edit Profile</Text>
                 </TouchableOpacity>
