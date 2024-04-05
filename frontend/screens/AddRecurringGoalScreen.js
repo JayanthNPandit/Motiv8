@@ -1,7 +1,7 @@
 // add recurring goal screen
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
 import { addGoal, getUser } from '../backendFunctions';
@@ -10,13 +10,17 @@ const AddRecurringGoalScreen = ({navigation}) => {
     const [goalName, setGoalName] = useState('');
     const [type, setType] = useState('Recurring');
     const [frequency, setFrequency] = useState('');
+    const [counter, setCounter] = useState(1);
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
     const [isClickable, setIsClickable] = useState(true);
 
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+
+
     const {user} = useAuth();
 
-    const frequencies = ['Daily', 'Weekly', 'Monthly'];
+    const frequencies = ['Day', 'Week', 'Month', 'Year'];
 
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
@@ -42,12 +46,25 @@ const AddRecurringGoalScreen = ({navigation}) => {
     }
 
     const toggleFrequency = (frequency) => {
-        const newSelection = frequencies.includes(frequency)
-          ? frequencies.filter((selected) => selected !== frequency)
-          : [...frequencies, frequency];
-    
         setFrequency(frequency);
-      }
+    }
+
+    const FrequencyDropdown = () => {
+        return (
+            <FlatList
+                data={frequencies}
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => toggleFrequency(item)}>
+                    <Text>{item}</Text>
+                    </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                initialNumToRender={3} // Example value, adjust as needed
+                maxToRenderPerBatch={3} // Example value, adjust as needed
+                windowSize={3} // Example value, adjust as needed
+            />
+        );
+    };
 
     return (
         <View style={containerStyles.background}>
@@ -60,32 +77,31 @@ const AddRecurringGoalScreen = ({navigation}) => {
                 <View style={containerStyles.purpleInputContainer}>
                     <Text style={textStyles.textBodyHeader}> Enter a name for your goal: </Text>
                     <TextInput style={containerStyles.input} value={goalName} onChangeText={setGoalName}/>
+
                     <Text style={textStyles.textBodyHeader}> Choose a goal type: </Text>
                     <TextInput style={containerStyles.input} value={type} onChangeText={setType} editable={false}/>
+
                     <Text style={textStyles.textBodyHeader}> Choose a frequency: </Text>
-                    <TextInput style={containerStyles.input} value={frequency} onChangeText={setFrequency} editable={false}/>
+                    <View style={containerStyles.buttonContainer}>
+                        <TextInput style={containerStyles.counterInput} value={counter} onChangeText={setCounter}/>
 
-                    <View style={containerStyles.frequencyContainer}>
-                        {frequencies.map((frequency, index) => (
-                            <TouchableOpacity
-                            key={index}
-                            onPress={() => toggleFrequency(frequency)}
-                            style={[
-                                styles.frequencyButton,
-                                frequencies.includes(frequency) && styles.selectedButton,
-                            ]}
-                            >
-                            <Text>{frequency}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>   
+                        <Text style={textStyles.textBodyHeader}> times per </Text>
 
+                        <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)}>
+                            <View style={containerStyles.frequencyInput}>
+                                <Text>{frequency}</Text>
+                                <Text>{dropdownVisible ? '▲' : '▼'}</Text>  
+                            </View>
+                            {dropdownVisible && (<FrequencyDropdown/>)}
+                        </TouchableOpacity>
+                        
+                    </View>
 
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
                     <TextInput style={containerStyles.biggerInput} value={description} onChangeText={setDescription} placeholder='This is optional'/>
 
                     <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity style={containerStyles.bigWhiteButton} onPress={() => navigation.navigate("AddGoal")}>
+                        <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("AddGoal")}>
                             <Text style={textStyles.textBodyHeader}> Back </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={containerStyles.purpleButton} onPress={handleNewGoal} disabled={!isClickable}>
@@ -121,6 +137,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         margin: 5,
         backgroundColor: 'darkpurple',
+      },
+      frequencyChoices: {
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 5,
+        backgroundColor: 'white',
       },
 });
 
