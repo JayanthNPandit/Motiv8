@@ -122,10 +122,15 @@ export const createUser = async (user, username, name, pfp) => {
 
 export const changeUserData = async (user, name, username, imageUrl) => {
   try {
+    let url = "";
+    if (pfp) {
+      const {downloadUrl} = await addToBucket(user, 'profiles', pfp);
+      url = downloadUrl;
+    }
     const updatedFields = {
       name: name,
       username: username,
-      profilePicture: imageUrl,
+      profilePicture: url,
     }
     await updateDoc(doc(db, 'users', user.uid), updatedFields);
   } catch (error) {
