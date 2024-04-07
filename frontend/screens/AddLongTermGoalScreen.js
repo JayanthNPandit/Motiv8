@@ -61,9 +61,11 @@ const AddLongTermGoalScreen = ({navigation}) => {
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
                     <TextInput style={containerStyles.biggerInput} value={description} onChangeText={setDescription} placeholder='This is optional' />
 
+                    <Text>    </Text>
+
                     <TouchableOpacity onPress={() => toggleShowCalendar()}>
                         <View style={containerStyles.datePicker}>
-                            <Text style={textStyles.whiteDateText}>{date}</Text>
+                            <TextInput style={containerStyles.dateInput} value={date} onChangeText={setDate} editable={false}/>
                         </View>
                     </TouchableOpacity>
 

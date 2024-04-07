@@ -124,6 +124,18 @@ export const textStyles = StyleSheet.create({
         fontWeight: '400',
         lineHeight: 24,
     },
+    bottomText: {
+        color: 'black',
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+        lineHeight: 50,
+    },
+    arrowText: {
+        color: 'black',
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+        lineHeight: 20,
+    },
 })
 
 export const containerStyles = StyleSheet.create({
@@ -149,6 +161,13 @@ export const containerStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: '5%',
+        gap: '4%'
+    },
+    addGoalHeaderContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '2%',
         gap: 4
     },
     goalsHeaderContainer: {
@@ -190,10 +209,23 @@ export const containerStyles = StyleSheet.create({
     input: {
         borderRadius: 16,
         borderWidth: 1,
+        borderColor: '#111111',
+        width: '100%', 
+        paddingHorizontal: '2%',
+        paddingVertical: '4.5%',
+    },
+    dateInput: {
+        borderRadius: 16,
+        borderWidth: 1,
         borderColor: '#939393',
         width: '100%', 
         paddingHorizontal: '2%',
         paddingVertical: '4.5%',
+        color: 'white',
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+        fontWeight: '400',
+        lineHeight: 24,
     },
     frequencyInput: {
         borderRadius: 16,
@@ -283,6 +315,10 @@ export const containerStyles = StyleSheet.create({
         right:'-200%',
         paddingVertical: '0%',
         paddingHorizontal: '0%',
+        borderColor: '#000000',
+        borderWidth: 1,
+        borderRadius: 31,
+        backgroundColor: '#000000',
     },
     longWhiteButton: {
         display: 'flex',
@@ -314,7 +350,7 @@ export const containerStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        marginBottom: '20%',
+        marginBottom: '1%',
     },
     // GOAL CONTAINER
     itemContainer: {
@@ -336,7 +372,7 @@ export const containerStyles = StyleSheet.create({
         borderColor: '#FFFFFF',
         borderWidth: '5%',
         gap: '30%',
-        marginVertical: '2%'
+        marginVertical: '1%'
     },
     longTermGoalContainer: {
         alignItems: 'flex-start',
@@ -410,8 +446,14 @@ export const containerStyles = StyleSheet.create({
         gap: '5%',
         marginVertical: '5%',
     },
+    menuContainer: {
+        flexDirection: 'row',
+        alignItems: 'center', // Center items vertically
+        paddingHorizontal: 20,
+        flex: 1, // Ensure the container takes full width
+        justifyContent: 'space-between', // Distribute items along the row
+    },
     datePicker: {
-        
         borderRadius: 16,
         borderWidth: 1,
         backgroundColor: '#111111',

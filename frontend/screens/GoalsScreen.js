@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ScrollView, RefreshControl } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ScrollView, RefreshControl, Animated } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import addButton from '../assets/zondicons_add-solid.png';
 import backgroundImage from '../assets/Fitz Personal Training.png';
 import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
 import takePhotoButton from '../assets/gg_check-o.png';
 import editGoalButton from '../assets//gay.png';
+import menuButton from '../assets/f7_menu.png'; 
+
 import { fetchUserGoals } from '../backendFunctions';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -74,6 +76,13 @@ const GoalsScreen = ({navigation}) => {
     fetchGoals(); // Fetch goals again
   }
 
+  const scrollX = useRef(new Animated.Value(0)).current;
+
+  const handleScroll = (event) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    scrollX.setValue(offsetX);
+  };
+
   return (
     <View style={containerStyles.background}>
       <ScrollView style={styles.scrollView}
@@ -90,8 +99,10 @@ const GoalsScreen = ({navigation}) => {
             </View> 
           </View>
           <View style={containerStyles.pinnedGoalContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate("TakePhoto")}>
               <Text style={textStyles.textBodyHeaderWhite}>Pinned Goal:</Text>
               <Text style={textStyles.goalText}>{pinnedGoal}</Text>
+            </TouchableOpacity>
           </View>
           <View style={containerStyles.goalsButtonContainer}>
             <View style={containerStyles.headerContainer}>
@@ -100,42 +111,63 @@ const GoalsScreen = ({navigation}) => {
               <Image source={dropDownImage} style={{width: 20, height: 20}}/>
           </View>
           <View style={containerStyles.goalsButtonContainer}>
-            <View style={styles.itemContainer}>
-              <ScrollView horizontal={true} pagingEnabled={true}>
-                {recurringGoals.map((goal, index) => (
-                  <View key={index} style={containerStyles.recurringGoalContainer}>
-                    <Text style={textStyles.goalText}>{goal}</Text>
-                    <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("TakePhoto")}>
-                      <Image source={editGoalButton} style={{width: 20, height: 20}}/>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
+          <View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={true}
+              onScroll={handleScroll}
+              scrollEventThrottle={5}
+            >
+              {recurringGoals.map((goal, index) => (
+                <TouchableOpacity key={index} style={containerStyles.recurringGoalContainer}>
+                  <Text style={textStyles.goalText}>{goal}</Text>
+                  <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
+                    <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
           </View>
 
           <View style={containerStyles.divider}></View>
 
           <View style={containerStyles.listContainer}>
-            <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
-              <View style={containerStyles.buttonContainer}>
-                {longTermGoals.length == 0 ? (
-                  <Image source={backgroundImage} style={styles.backgroundImage} />
-                ) : (
-                  <FlatList
-                    data={longTermGoals}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity onPress={() => navigation.navigate("TakePhoto")}>
+            <View style={containerStyles.menuContainer}>
+              <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
+              <TouchableOpacity onPress={() => setShowList(!showList)}>
+                <Image source={menuButton} style={{width: 20, height: 20}}/>
+              </TouchableOpacity>
+            </View>
+            <View style={containerStyles.buttonContainer}>
+              {longTermGoals.length === 0 ? (
+                <Image source={backgroundImage} style={styles.backgroundImage} />
+              ) : (
+                <>
+                  {showList ? (
+                    <FlatList
+                      data={longTermGoals}
+                      renderItem={({ item }) => (
                         <View style={containerStyles.longTermGoalContainer}>
                           <Text style={textStyles.blackGoalText}>{item}</Text>
-                          <Image source={takePhotoButton} style={{width: 20, height: 20}}/>
                         </View>
-                      </TouchableOpacity>
-                    )}
-                    keyExtractor={(item) => item.id}
-                  />
-                )}
-              </View>
+                      )}
+                      keyExtractor={(item) => item.id}
+                    />
+                  ) : (
+                    <FlatList
+                      data={longTermGoals.slice(0, 3)} // Show only the first 3 goals
+                      renderItem={({ item }) => (
+                        <View style={containerStyles.longTermGoalContainer}>
+                          <Text style={textStyles.blackGoalText}>{item}</Text>
+                        </View>
+                      )}
+                      keyExtractor={(item) => item.id}
+                    />
+                  )}
+                </>
+              )}
+            </View>
           </View>
         </View>
       </ScrollView>
