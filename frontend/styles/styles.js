@@ -88,6 +88,13 @@ export const textStyles = StyleSheet.create({
         fontWeight: '400',
         lineHeight: 24,
     },
+    textBodySmallWhite: {
+        color: 'white',
+        fontSize: 14,
+        fontFamily: 'Poppins-Regular',
+        fontWeight: '400',
+        lineHeight: 24,
+    },
     textBodySmallUnderline: {
         color: 'black',
         fontSize: 14,

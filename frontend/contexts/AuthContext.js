@@ -5,7 +5,7 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { fetchUserData } from '../backendFunctions.js'
+import { fetchUserData } from "../backendFunctions.js";
 
 const AuthContext = createContext();
 
@@ -18,14 +18,12 @@ export function AuthProvider({ children }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const getData = async () => {
-      if (user) {
-        const data = await fetchUserData(user.uid);
-        setUserData(data);
-      }
+    if (user) {
+      fetchUserData(user.uid).then((data) => {
+        setUserData(data)
+      });
     }
-    getData();    
-  }, [user])
+  }, [user]);
 
   // Login function that validates the provided username and password.
   const login = async (email, password) => {

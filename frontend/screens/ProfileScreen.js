@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchUserData, changeUserData } from "../backendFunctions";
+import {
+  fetchGroupData,
+  leaveGroup,
+  changeUserData,
+  fetchUserData,
+} from "../backendFunctions";
 import { textStyles, containerStyles } from "../styles/styles";
 import {
   View,
@@ -13,6 +18,7 @@ import {
   Alert,
 } from "react-native";
 import image from "../assets/default-pfp.png";
+import remove from "../assets/Add.png";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { manipulateAsync } from "expo-image-manipulator";
@@ -24,6 +30,9 @@ const ProfileScreen = ({ navigation }) => {
   const [origUsername, setOrigUsername] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [origImageUrl, setOrigImageUrl] = useState("");
+  const [group, setGroup] = useState("");
+  const [origGroup, setOrigGroup] = useState("");
+  const [groupData, setGroupData] = useState("");
   const [edit, setEdit] = useState(false);
   const [isClickable, setIsClickable] = useState(false);
 
@@ -37,7 +46,15 @@ const ProfileScreen = ({ navigation }) => {
       setOrigUsername(data.username);
       setImageUrl(data.profilePicture);
       setOrigImageUrl(data.profilePicture);
+      setGroup(data.groupID);
+      setOrigGroup(data.groupID);
       setEdit(false);
+
+      if (data.groupID !== "") {
+        fetchGroupData(data.groupID).then((groupData) => {
+          setGroupData(groupData);
+        });
+      }
     });
   }, []);
 
@@ -80,18 +97,13 @@ const ProfileScreen = ({ navigation }) => {
     navigation.navigate("Welcome");
   };
 
-  const chooseImage = () => {
-    if (imageUrl === "") return { image };
-    if (!edit) return { uri: origImageUrl };
-    else return { uri: imageUrl };
-  };
-
   const handleCancel = () => {
     setEdit(false);
     setIsClickable(false);
     setName(origName);
     setUsername(origUsername);
     setImageUrl(origImageUrl);
+    setGroup(origGroup);
   };
 
   // change data
@@ -101,6 +113,7 @@ const ProfileScreen = ({ navigation }) => {
       return;
     }
     setIsClickable(false);
+    if (group == "") await leaveGroup(user, origGroup, groupData);
     await changeUserData(user, name, username, imageUrl);
     setOrigName(name);
     setOrigUsername(username);
@@ -118,6 +131,7 @@ const ProfileScreen = ({ navigation }) => {
             {!edit ? "Let's view your profile" : "Let's edit your profile"}
           </Text>
         </View>
+
         <TouchableOpacity
           style={styles.imageContainer}
           disabled={!isClickable}
@@ -131,6 +145,18 @@ const ProfileScreen = ({ navigation }) => {
           )}
           {edit && <Image style={styles.image} source={{ url: imageUrl }} />}
         </TouchableOpacity>
+
+        {groupData !== "" && group !== '' && (
+          <View style={styles.groupTag}>
+            <Text style={textStyles.textBodySmallWhite}>{groupData.name}</Text>
+            {edit && (
+              <TouchableOpacity onPress={() => setGroup("")}>
+                <Image source={remove} />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
         <View style={containerStyles.inputContainer}>
           <Text style={textStyles.textBodyHeader}> Username: </Text>
           <TextInput
@@ -231,7 +257,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "58%",
     height: "30%",
-    marginBottom: "2%",
+    marginBottom: "5%",
+  },
+  groupTag: {
+    width: "40%",
+    height: "5.5%",
+    backgroundColor: "#9FA1D1",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: "5%",
   },
 });
 
