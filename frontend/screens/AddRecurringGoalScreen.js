@@ -26,7 +26,7 @@ const AddRecurringGoalScreen = ({navigation}) => {
     const handleNewGoal = async () => {
 
         setIsClickable(false);
-        const id = await addGoal(user, goalName, type, frequency, date, description);
+        const id = await addGoal(user, goalName, type, frequency, counter, date, description);
 
         console.log(id);
 
@@ -51,18 +51,25 @@ const AddRecurringGoalScreen = ({navigation}) => {
 
     const FrequencyDropdown = () => {
         return (
-            <FlatList
-                data={frequencies}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => toggleFrequency(item)}>
-                    <Text>{item}</Text>
-                    </TouchableOpacity>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                initialNumToRender={3} // Example value, adjust as needed
-                maxToRenderPerBatch={3} // Example value, adjust as needed
-                windowSize={3} // Example value, adjust as needed
-            />
+            dropdownVisible ? (
+                <FlatList
+                    data={frequencies}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => toggleFrequency(item)}>
+                            <Text>{item}</Text>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    initialNumToRender={3} // Example value, adjust as needed
+                    maxToRenderPerBatch={3} // Example value, adjust as needed
+                    windowSize={3} // Example value, adjust as needed
+                />
+            ) : (
+                <FlatList
+                    renderItem={<Text>empty</Text>}
+                    windowSize={3}
+                />
+            )
         );
     };
 
@@ -85,14 +92,15 @@ const AddRecurringGoalScreen = ({navigation}) => {
                     <View style={containerStyles.buttonContainer}>
                         <TextInput style={containerStyles.counterInput} value={counter} onChangeText={setCounter}/>
 
-                        <Text style={textStyles.textBodyHeader}> times per </Text>
+                        <Text style={textStyles.bottomText}> times per </Text>
 
                         <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)}>
                             <View style={containerStyles.frequencyInput}>
                                 <Text>{frequency}</Text>
-                                <Text>{dropdownVisible ? '▲' : '▼'}</Text>  
+                                <Text>    </Text>
+                                <FrequencyDropdown/>
+                                <Text style={textStyles.arrowText}>{dropdownVisible ? '▲' : '▼'}</Text> 
                             </View>
-                            {dropdownVisible && (<FrequencyDropdown/>)}
                         </TouchableOpacity>
                         
                     </View>

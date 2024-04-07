@@ -21,29 +21,29 @@ const AddGoalScreen = ({navigation}) => {
     return (
       <View style={containerStyles.background}>
         <View style={containerStyles.container}>
-          <View style={containerStyles.headerContainer}>
+          <View style={containerStyles.addGoalHeaderContainer}>
             <Text style={textStyles.header}> Add a Goal </Text>
           </View>
           <Text style={textStyles.textBodyGray}> Choose your Goal Type: </Text>
-            <View style={containerStyles.listContainer}>
-              <Text style={textStyles.sectionHeader}></Text>
-              <Text style={textStyles.sectionHeader}></Text>
-              <Image source={recurringImage} style={styles.image}/>
-              <Text style={textStyles.textBodyGray}> For goals that you want to {'\n'} complete at a specific frequency </Text>
-              <TouchableOpacity style={containerStyles.blackButton} onPress={() => navigation.navigate("AddRecurringGoal")}>
-                <Text style={textStyles.textBodyHeaderWhite}> Add a Recurring Goal </Text>
-              </TouchableOpacity>
-            </View>
+          <View style={containerStyles.listContainer}>
+            <Text style={textStyles.sectionHeader}></Text>
+            <Text style={textStyles.sectionHeader}></Text>
+            <Image source={recurringImage} style={styles.image}/>
+            <Text style={textStyles.textBodyGray}> For goals that you want to {'\n'} complete at a specific frequency </Text>
+            <TouchableOpacity style={containerStyles.blackButton} onPress={() => navigation.navigate("AddRecurringGoal")}>
+              <Text style={textStyles.textBodyHeaderWhite}> Add a Recurring Goal </Text>
+            </TouchableOpacity>
+          </View>
 
-            <View style={containerStyles.divider}></View>
+          <View style={containerStyles.divider}></View>
 
-            <View style={containerStyles.listContainer}>
-              <TouchableOpacity style={containerStyles.purpleButton} onPress={() => navigation.navigate("AddLongTermGoal")}>
-                <Text style={textStyles.textBodyHeaderWhite}> Add a Long-Term Goal </Text>
-              </TouchableOpacity>
-              <Text style={textStyles.textBodyGray}> For goals where you want to {'\n'} achieve a certain milestone </Text>
-              <Image source={longTermImage} style={styles.image}/>              
-            </View>
+          <View style={containerStyles.listContainer}>
+            <TouchableOpacity style={containerStyles.purpleButton} onPress={() => navigation.navigate("AddLongTermGoal")}>
+              <Text style={textStyles.textBodyHeaderWhite}> Add a Long-Term Goal </Text>
+            </TouchableOpacity>
+            <Text style={textStyles.textBodyGray}> For goals where you want to {'\n'} achieve a certain milestone </Text>
+            <Image source={longTermImage} style={styles.image}/>              
+          </View>
         </View>
       </View>
     );

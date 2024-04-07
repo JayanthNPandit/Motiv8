@@ -13,9 +13,8 @@ import { containerStyles, textStyles } from '../styles/styles.js';
 
 import snapImage from '../assets/snappicture.png';
 import galleryImage from '../assets/gallery.png';
-import uploadPictureImage from '../assets/uploadimage.jpg';
 
-import defaultImage from '../assets/camera.png';
+import defaultImage from '../assets/graybox.png';
 
 
 const TakePhotoScreen = ({navigation}) => {
@@ -60,7 +59,7 @@ const TakePhotoScreen = ({navigation}) => {
       setImageUrl(result.assets[0].uri);
       setTakenImage(true);
     }
-  };
+  }; 
 
   // upload the image
   const confirmImage = async () => {
@@ -92,20 +91,21 @@ const TakePhotoScreen = ({navigation}) => {
       <Text style={styles.buttonText}> Take Image </Text>
       {takenImage ? (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={tryAgain}>
+          <TouchableOpacity style={containerStyles.whiteButton} onPress={tryAgain}>
             <Text>Try Again</Text>
-          </TouchableOpacity>        
-          <TouchableOpacity style={styles.button} onPress={uploadImage}>
+          </TouchableOpacity>
+          <Text>      </Text>    
+          <TouchableOpacity style={containerStyles.purpleButton} onPress={confirmImage}>
           <Text>Confirm Image</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={pickImage}>
-            <Image source={galleryImage}/>
+            <Image source={galleryImage} style={{ width: 50, height: 50 }}/>
           </TouchableOpacity>        
           <TouchableOpacity style={styles.button} onPress={takeImage}>
-            <Image source={snapImage}/>
+            <Image source={snapImage} style={{ width: 50, height: 50 }}/>
           </TouchableOpacity>
         </View>
       )}
@@ -132,9 +132,9 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   image: {
-    width: 200,
-    height: 200,
-    margin: 20,
+    width: 400,
+    height: 450,
+    margin: 0,
   },
   miniContainer: {
     padding: 20,
@@ -150,10 +150,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   button: {
-    backgroundColor: 'purple',
     padding: 10,
     margin: 10,
     borderRadius: 10,
+    backgroundColor: 'black',
   },
   buttonText: {
     color: 'white',

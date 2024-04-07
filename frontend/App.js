@@ -17,7 +17,7 @@ import GoalsScreen from "./screens/GoalsScreen";
 import AddLongTermGoalScreen from "./screens/AddLongTermGoalScreen";
 import AddRecurringGoalScreen from "./screens/AddRecurringGoalScreen";
 import TakePhotoScreen from "./screens/TakePhotoScreen";
-
+import EditGoalScreen from "./screens/EditGoalScreen";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
 import { Image } from "react-native";
@@ -164,22 +164,10 @@ function AppContent() {
         <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
         <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    </NavigationContainer>
-    
-    /*
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName={"AddLongTermGoal"}>
-        <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
-        <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
-        <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
-        <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
-        <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+        <Stack.Screen name="EditGoal" component={EditGoalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
-    */
 
   /*
     <NavigationContainer>

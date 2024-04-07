@@ -40,17 +40,10 @@ export const getUser = async (userID) => {
   } catch (error) {
     console.error("Error getting user:", error);
   }
-};
+}
 
 // add a goal to the user and checks if the user does not have a goals collection and calls createGoalsCollection if so
-export const addGoal = async (
-  user,
-  goalName,
-  type,
-  frequency,
-  date,
-  description
-) => {
+export const addGoal = async (user, goalName, type, frequency, date, description) => {
   try {
     const userID = user.uid;
     console.log(userID);
@@ -58,6 +51,8 @@ export const addGoal = async (
       name: goalName,
       type: type,
       frequency: frequency,
+      counter: counter,
+      currentCounter: counter,
       date: date,
       description: description,
       images: [],

@@ -11,6 +11,7 @@ const AddLongTermGoalScreen = ({navigation}) => {
     const [goalName, setGoalName] = useState('');
     const [type, setType] = useState('Long Term');
     const [frequency, setFrequency] = useState('');
+    const [counter, setCounter] = useState(1);
     const [date, setDate] = useState('Set a target date');
     const [description, setDescription] = useState('');
     const [isClickable, setIsClickable] = useState(true);
@@ -24,7 +25,7 @@ const AddLongTermGoalScreen = ({navigation}) => {
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
         setIsClickable(false);
-        const id = await addGoal(user, goalName, type, frequency, date, description);
+        const id = await addGoal(user, goalName, type, frequency, counter, date, description);
         if (!id) {
             setIsClickable(true);
             console.log("Error adding goal. Try again");
@@ -61,9 +62,11 @@ const AddLongTermGoalScreen = ({navigation}) => {
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
                     <TextInput style={containerStyles.biggerInput} value={description} onChangeText={setDescription} placeholder='This is optional' />
 
+                    <Text>    </Text>
+
                     <TouchableOpacity onPress={() => toggleShowCalendar()}>
                         <View style={containerStyles.datePicker}>
-                            <Text style={textStyles.whiteDateText}>{date}</Text>
+                            <TextInput style={containerStyles.dateInput} value={date} onChangeText={setDate} editable={false}/>
                         </View>
                     </TouchableOpacity>
 
