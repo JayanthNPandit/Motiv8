@@ -33,8 +33,10 @@ export const getUser = async (userID) => {
   }
 }
 
+// add goal adds a value that stores how many times it needs to occur in some time frame. this is counter. i still need to add the functionality where it edits that value each time the goal is checked off
+
 // add a goal to the user and checks if the user does not have a goals collection and calls createGoalsCollection if so
-export const addGoal = async (user, goalName, type, frequency, date, description) => {
+export const addGoal = async (user, goalName, type, frequency, counter, date, description) => {
   try {
     const userID = user.uid; 
     console.log(userID);
@@ -42,6 +44,8 @@ export const addGoal = async (user, goalName, type, frequency, date, description
       name: goalName,
       type: type,
       frequency: frequency,
+      counter: counter,
+      currentCounter: counter,
       date: date,
       description: description,
       images: []

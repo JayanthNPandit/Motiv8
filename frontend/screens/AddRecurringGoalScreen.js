@@ -26,7 +26,7 @@ const AddRecurringGoalScreen = ({navigation}) => {
     const handleNewGoal = async () => {
 
         setIsClickable(false);
-        const id = await addGoal(user, goalName, type, frequency, date, description);
+        const id = await addGoal(user, goalName, type, frequency, counter, date, description);
 
         console.log(id);
 
