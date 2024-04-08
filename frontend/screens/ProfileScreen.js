@@ -70,7 +70,8 @@ const ProfileScreen = ({ navigation }) => {
     // selected image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      allowsEditing: true,
+      aspect: [1,1],
       quality: 1,
     });
     if (!result.cancelled && result.assets) {
@@ -113,7 +114,7 @@ const ProfileScreen = ({ navigation }) => {
       return;
     }
     setIsClickable(false);
-    if (group == "") await leaveGroup(user, origGroup, groupData);
+    if (group === "" && origGroup !== "") await leaveGroup(user, origGroup, groupData);
     await changeUserData(user, name, username, imageUrl);
     setOrigName(name);
     setOrigUsername(username);

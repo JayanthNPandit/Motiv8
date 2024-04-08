@@ -70,8 +70,7 @@ const LoginScreen = ({ navigation }) => {
               style={styles.checkbox}
             />
             <Text style={{ ...textStyles.textBodySmall, color: "#545454" }}>
-              {" "}
-              Remember me?{" "}
+              Remember me?
             </Text>
           </View>
           <TouchableOpacity
@@ -85,8 +84,7 @@ const LoginScreen = ({ navigation }) => {
                 textDecorationLine: "underline",
               }}
             >
-              {" "}
-              Forgot Password?{" "}
+              Forgot Password?
             </Text>
           </TouchableOpacity>
         </View>
@@ -103,8 +101,7 @@ const LoginScreen = ({ navigation }) => {
           <Text
             style={{ ...textStyles.textBodySmallUnderline, color: "#8E99AB" }}
           >
-            {" "}
-            Don't have an account? Sign up{" "}
+            Don't have an account? Sign up
           </Text>
         </TouchableOpacity>
       </View>
