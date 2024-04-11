@@ -44,6 +44,15 @@ const AddLongTermGoalScreen = ({navigation}) => {
         setShowCalendar(!showCalendar);
     }
 
+    const customTheme = {
+        // Customize the background color of the calendar
+        backgroundColor: 'white',
+        // Customize the text color
+        textSectionTitleColor: 'blue',
+        // Add more customizations as needed
+        // ...
+      };
+
     return (
         <View style={containerStyles.background}>
             <View style={containerStyles.container}>
@@ -79,14 +88,15 @@ const AddLongTermGoalScreen = ({navigation}) => {
                     >
                         <View style={containerStyles.modalContainer}>
                             <View style={containerStyles.modalContent}>
-                                <Calendar
-                                    current={date}
-                                    minDate={new Date()} // Set minimum date to today
-                                    onDayPress={(day) => {
-                                        setDate(day.dateString); // Update selected date
-                                        setShowCalendar(false); // Close the calendar
-                                    }}
-                                />
+                            <Calendar
+                                current={date}
+                                minDate={new Date()} // Set minimum date to today
+                                onDayPress={(day) => {
+                                    setDate(day.dateString); // Update selected date
+                                    setShowCalendar(false); // Close the calendar
+                                }}
+                                theme={customTheme} // Apply the custom theme
+                            />
                             </View>
                         </View>
                     </Modal>
