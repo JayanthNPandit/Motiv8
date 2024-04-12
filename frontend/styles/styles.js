@@ -181,8 +181,6 @@ export const containerStyles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        marginBottom: '5%',
-        gap: 4
     },
     // TEXT INPUT
     inputContainer: {
@@ -208,10 +206,9 @@ export const containerStyles = StyleSheet.create({
         marginTop: '5%',
         marginHorizontal: '10%',
         borderColor: '#111111',
-        borderWidth: '1%',
+        borderWidth: '0%',
         borderRadius: '10%',
-        padding: '5%',
-        backgroundColor: '#DEDEED',
+        backgroundColor: '#FFFFFF',
     },
     input: {
         borderRadius: 16,
@@ -224,15 +221,12 @@ export const containerStyles = StyleSheet.create({
     dateInput: {
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#939393',
+        borderColor: '#111111',
         width: '100%', 
         paddingHorizontal: '2%',
         paddingVertical: '4.5%',
-        color: 'white',
-        fontSize: 16,
-        fontFamily: 'Poppins-Regular',
-        fontWeight: '400',
-        lineHeight: 24,
+        marginVertical: '3%',
+        backgroundColor: '#8098D5',
     },
     frequencyInput: {
         borderRadius: 16,
@@ -274,6 +268,14 @@ export const containerStyles = StyleSheet.create({
         justifyContent: 'center',
         gap: '10%',
         marginVertical: '5%',
+    },
+    goalsHeaderButtonContainer: {
+        alignItems: 'flex-start', 
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: '10%',
+        marginBottom: '5%',
     },
     goalsButtonContainer: {
         alignItems: 'flex-start', 
