@@ -45,7 +45,7 @@ const GroupCodeScreen = ({route, navigation}) => {
                     <TouchableOpacity style={containerStyles.whiteButton} onPress={handleGroupDelete} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeader}> Back </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={containerStyles.purpleButton} onPress={() => navigation.navigate("Profile")} disabled={!isClickable}>
+                    <TouchableOpacity style={containerStyles.purpleButton} onPress={() => navigation.navigate("Tab")} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeaderWhite}> Next </Text>
                     </TouchableOpacity>
                 </View>

@@ -23,7 +23,7 @@ const GroupsScreen = ({navigation}) => {
           <TouchableOpacity style={{...containerStyles.longWhiteButton, paddingHorizontal: '32%'}} onPress={() => navigation.navigate("JoinGroup")}>
             <Text style={textStyles.textBodyHeader}> Join a group </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}> 
+          <TouchableOpacity onPress={() => navigation.navigate("Tab")}> 
             <Text style={{...textStyles.textBodySmallUnderline, color: "#8E99AB"}}> Skip </Text> 
           </TouchableOpacity>
         </View>

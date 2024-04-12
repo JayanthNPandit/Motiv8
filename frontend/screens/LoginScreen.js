@@ -31,7 +31,7 @@ const LoginScreen = ({ navigation }) => {
       setPassword("");
       setSelection(false);
       setIsClickable(true);
-      navigation.navigate("Profile");
+      navigation.navigate("Tab");
     }
   };
 

@@ -12,6 +12,7 @@ import CreateGroupScreen from "./screens/CreateGroupScreen";
 import JoinGroupScreen from "./screens/JoinGroupScreen";
 import ConfirmGroupScreen from "./screens/ConfirmGroupScreen";
 import GroupCodeScreen from "./screens/GroupCodeScreen";
+import MyGroupScreen from "./screens/MyGroupScreen";
 import AddGoalScreen from "./screens/AddGoalScreen";
 import GoalsScreen from "./screens/GoalsScreen";
 import AddLongTermGoalScreen from "./screens/AddLongTermGoalScreen";
@@ -20,20 +21,26 @@ import TakePhotoScreen from "./screens/TakePhotoScreen";
 import EditGoalScreen from "./screens/EditGoalScreen";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
+import { fetchUserData } from "./backendFunctions";
 import { Image } from "react-native";
 import home from "./assets/home.png";
+import purpleHome from "./assets/purple_home.png";
 import goal from "./assets/goal.png";
+import purpleGoal from "./assets/purple_goal.png";
 import post from "./assets/post.png";
+import purplePost from "./assets/purple_post.png";
 import group from "./assets/group.png";
+import purpleGroup from "./assets/purple_group.png";
 import profile from "./assets/user.png";
+import purpleProfile from "./assets/purple_profile.png";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
 const Stack = createNativeStackNavigator();
-//const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -101,52 +108,109 @@ export default function App() {
 
 function TabContent() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            if (route.name === 'Welcome') {
-              return <Image source={home}/>
-            } else if (route.name === 'SignUp') {
-              return <Image source={goal}/>
-            } else if (route.name === 'Login') {
-              return <Image source={post}/>
-            } else if (route.name === 'ForgotPassword') {
-              return <Image source={group}/>
-            } else {
-              return <Image source={profile}/>
-            }
-          },
-          tabBarShowLabel: false,
-          tabBarActiveBackgroundColor: 'white',
-          tabBarInactiveBackgroundColor: 'white',
-          tabBarActiveTintColor: 'white',
-          tabBarStyle: {
-            height: '11%',
-            width: '100%',
-            bottom: -10
-          },
-          tabBarItemStyle: {
-            alignItems: 'center',
-            justifyContent: 'flex-start'
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          if (route.name === 'Feed') {
+            return focused ? <Image source={purpleHome}/> : <Image source={home}/>
+          } else if (route.name === 'GoalStack') {
+            return focused ? <Image source={purpleGoal}/> : <Image source={goal}/>
+          } else if (route.name === 'PhotoStack') {
+            return focused ? <Image source={purplePost}/> : <Image source={post}/>
+          } else if (route.name === 'GroupStack') {
+            return focused ? <Image source={purpleGroup}/> : <Image source={group}/>
+          } else {
+            return focused ? <Image source={purpleProfile}/> : <Image source={profile}/>
           }
-        })}
-      >
-        <Tab.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
-      </Tab.Navigator>
-    </NavigationContainer>
+        },
+        tabBarShowLabel: false,
+        tabBarActiveBackgroundColor: 'white',
+        tabBarInactiveBackgroundColor: 'white',
+        tabBarActiveTintColor: 'white',
+        tabBarStyle: {
+          height: '11%',
+          width: '100%',
+        },
+        tabBarItemStyle: {
+          alignItems: 'center',
+          justifyContent: 'center'
+        }
+      })}
+    >
+      <Tab.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
+      <Tab.Screen name="GoalStack" component={GoalStack} options={{headerShown: false}}/>
+      <Tab.Screen name="PhotoStack" component={PhotoStack} options={{headerShown: false}}/>
+      <Tab.Screen name="GroupStack" component={GroupStack} options={{headerShown: false}}/>
+      <Tab.Screen name="ProfileStack" component={ProfileStack} options={{headerShown: false}}/>
+    </Tab.Navigator>
   );
 }
 
+function PhotoStack() {
+  return (
+    <Stack.Navigator initialRouteName="TakePhoto">
+      <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+      <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
+}
+
+function GroupStack() {
+
+  const { user } = useAuth();
+  const [initialRoute, setInitialRoute] = useState('MyGroup');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const data = await fetchUserData(user.uid);
+        const result = data.groupID ? 'MyGroup' : 'Groups';
+        return result;
+      }
+    };
+    fetchData().then((result) => setInitialRoute(result));
+  }, [user]);
+
+  return (
+    <Stack.Navigator initialRouteName={initialRoute}>
+      <Stack.Screen name="Groups" component={GroupsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="MyGroup" component={MyGroupScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator initialRouteName="Profile">
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
+      {/* <Stack.Screen name="Settings" component={SettingsScreen} options={{headerShown: false}} /> */}
+    </Stack.Navigator>
+  )
+}
+
+function GoalStack() {
+  return (
+    <Stack.Navigator initialRouteName="Goals">
+      <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
+      <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+      <Stack.Screen name="EditGoal" component={EditGoalScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
+}
+
 function AppContent() {
-  const { user, userData } = useAuth();
+  const { user } = useAuth();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={!user ? "Welcome" : "Profile"}>
+      <Stack.Navigator initialRouteName={!user ? "Welcome" : "Tab"}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -157,57 +221,8 @@ function AppContent() {
         <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Feed" component={UploadPhotoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
-        <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
-        <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
-        <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
-        <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
-        <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EditGoal" component={EditGoalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Tab" component={TabContent} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
-
-  /*
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            if (route.name === 'Welcome') {
-              return <Image source={home}/>
-            } else if (route.name === 'SignUp') {
-              return <Image source={goal}/>
-            } else if (route.name === 'Login') {
-              return <Image source={post}/>
-            } else if (route.name === 'ForgotPassword') {
-              return <Image source={group}/>
-            } else {
-              return <Image source={profile}/>
-            }
-          },
-          tabBarShowLabel: false,
-          tabBarActiveBackgroundColor: 'white',
-          tabBarInactiveBackgroundColor: 'white',
-          tabBarActiveTintColor: 'white',
-          tabBarStyle: {
-            height: '11%',
-            width: '100%',
-            bottom: -10
-          },
-          tabBarItemStyle: {
-            alignItems: 'center',
-            justifyContent: 'flex-start'
-          }
-        })}
-      >
-        <Tab.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="Groups" component={GroupsScreen} options={{headerShown: false}}/>
-      </Tab.Navigator>
-    </NavigationContainer>
-    */
   );
 }
