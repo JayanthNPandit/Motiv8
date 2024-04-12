@@ -90,7 +90,7 @@ const GoalsScreen = ({navigation}) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <View style={containerStyles.container}>
-          <View style={containerStyles.buttonContainer}>
+          <View style={containerStyles.goalsHeaderButtonContainer}>
             <View style={containerStyles.goalsHeaderContainer}>
               <Text style={textStyles.header}>Goals</Text>
                 <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
@@ -141,7 +141,14 @@ const GoalsScreen = ({navigation}) => {
             </View>
             <View style={containerStyles.buttonContainer}>
               {longTermGoals.length === 0 ? (
-                <Image source={backgroundImage} style={styles.backgroundImage} />
+                <View>
+                  <Image source={backgroundImage} style={styles.backgroundImage} />
+                  <TouchableOpacity onPress={() => navigation.navigate("AddGoal")}>
+                    <View style={containerStyles.whiteButton}>
+                      <Text style={textStyles.blackGoalText}>Add your first goal!</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               ) : (
                 <>
                   {showList ? (
