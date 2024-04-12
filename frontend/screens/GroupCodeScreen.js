@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { deleteGroup } from  "../backendFunctions";
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
 import { textStyles, containerStyles } from '../styles/styles';
 import image from '../assets/working-out-4.png';
@@ -45,7 +46,7 @@ const GroupCodeScreen = ({route, navigation}) => {
                     <TouchableOpacity style={containerStyles.whiteButton} onPress={handleGroupDelete} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeader}> Back </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={containerStyles.purpleButton} onPress={() => navigation.navigate("Tab")} disabled={!isClickable}>
+                    <TouchableOpacity style={containerStyles.purpleButton} onPress={() => navigation.dispatch(CommonActions.reset( {index: 0, routes: [{ name: 'Tab' }]} ))} disabled={!isClickable}>
                         <Text style={textStyles.textBodyHeaderWhite}> Next </Text>
                     </TouchableOpacity>
                 </View>

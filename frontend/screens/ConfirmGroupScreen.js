@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
+import { CommonActions } from '@react-navigation/native';
 import image from "../assets/default-pfp.png";
 
 const ConfirmGroupScreen = ({ route, navigation }) => {
@@ -41,7 +42,12 @@ const ConfirmGroupScreen = ({ route, navigation }) => {
     setIsClickable(false);
     await joinGroup(user, groupData, groupID);
     setIsClickable(true);
-    navigation.navigate("Profile");
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Tab' }],
+      })
+    );
   };
 
   return (

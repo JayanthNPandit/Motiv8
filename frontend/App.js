@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import UploadPhotoScreen from "./screens/UploadPhotoScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
@@ -187,7 +188,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator initialRouteName="Profile">
       <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
-      {/* <Stack.Screen name="Settings" component={SettingsScreen} options={{headerShown: false}} /> */}
+      <Stack.Screen name="Settings" component={SettingsScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }

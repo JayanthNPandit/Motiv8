@@ -28,7 +28,7 @@ const ConfirmGroupScreen = ({ navigation }) => {
       await Promise.all(
         users.map(async (user) => {
           const data = await fetchUserData(user);
-          names.push({ name: data.name, pfp: data.profilePicture });
+          names.push({ name: data.name, pfp: data.profilePicture, });
         })
       );
       setNames(names);
@@ -44,7 +44,7 @@ const ConfirmGroupScreen = ({ navigation }) => {
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
         <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}>{groupData.name}</Text>
+          <Text style={textStyles.header}>Your Group</Text>
           <Text style={textStyles.textBodyGray}>Your friends in this group!</Text>
         </View>
         <FlatList

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import { textStyles, containerStyles } from "../styles/styles";
+import { CommonActions } from '@react-navigation/native';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -31,7 +32,12 @@ const LoginScreen = ({ navigation }) => {
       setPassword("");
       setSelection(false);
       setIsClickable(true);
-      navigation.navigate("Tab");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Tab' }],
+        })
+      );
     }
   };
 
@@ -123,6 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    gap: '3%'
   },
   checkbox: {
     borderColor: "black",

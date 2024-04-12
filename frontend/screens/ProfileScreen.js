@@ -18,6 +18,8 @@ import {
   Alert,
 } from "react-native";
 import image from "../assets/default-pfp.png";
+import settings from "../assets/settings.png";
+import back from "../assets/back_arrow.png";
 import remove from "../assets/Add.png";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -36,7 +38,7 @@ const ProfileScreen = ({ navigation }) => {
   const [edit, setEdit] = useState(false);
   const [isClickable, setIsClickable] = useState(false);
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchUserData(user.uid).then((data) => {
@@ -71,7 +73,7 @@ const ProfileScreen = ({ navigation }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [1,1],
+      aspect: [1, 1],
       quality: 1,
     });
     if (!result.cancelled && result.assets) {
@@ -90,14 +92,6 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
-  // logout function
-  const handleLogout = async () => {
-    setIsClickable(false);
-    await logout();
-    setIsClickable(true);
-    navigation.navigate("Welcome");
-  };
-
   const handleCancel = () => {
     setEdit(false);
     setIsClickable(false);
@@ -114,7 +108,8 @@ const ProfileScreen = ({ navigation }) => {
       return;
     }
     setIsClickable(false);
-    if (group === "" && origGroup !== "") await leaveGroup(user, origGroup, groupData);
+    if (group === "" && origGroup !== "")
+      await leaveGroup(user, origGroup, groupData);
     await changeUserData(user, name, username, imageUrl);
     setOrigName(name);
     setOrigUsername(username);
@@ -133,6 +128,24 @@ const ProfileScreen = ({ navigation }) => {
           </Text>
         </View>
 
+        {edit && (
+          <TouchableOpacity
+            style={styles.back}
+            onPress={handleCancel}
+          >
+            <Image source={back} />
+          </TouchableOpacity>
+        )}
+
+        {!edit && (
+          <TouchableOpacity
+            style={styles.settings}
+            onPress={() => navigation.navigate("Settings")}
+          >
+            <Image source={settings} />
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
           style={styles.imageContainer}
           disabled={!isClickable}
@@ -147,7 +160,7 @@ const ProfileScreen = ({ navigation }) => {
           {edit && <Image style={styles.image} source={{ url: imageUrl }} />}
         </TouchableOpacity>
 
-        {groupData !== "" && group !== '' && (
+        {groupData !== "" && group !== "" && (
           <View style={styles.groupTag}>
             <Text style={textStyles.textBodySmallWhite}>{groupData.name}</Text>
             {edit && (
@@ -177,25 +190,21 @@ const ProfileScreen = ({ navigation }) => {
           />
         </View>
         {!edit && (
-          <View>
+          <View style={styles.editContainer}>
             <TouchableOpacity
-              style={styles.editContainer}
+              style={{
+                ...containerStyles.longWhiteButton,
+                paddingHorizontal: "35%",
+                marginBottom: "1%",
+              }}
               onPress={() => setEdit(true)}
             >
-              <Text
-                style={{
-                  ...containerStyles.longWhiteButton,
-                  borderRadius: 25,
-                }}
-              >
-                Edit Profile
-              </Text>
+              <Text style={textStyles.textBodySmall}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 ...containerStyles.longPurpleButton,
                 paddingHorizontal: "25%",
-                marginVertical: "2%",
               }}
             >
               <Text style={{ ...textStyles.textBodySmall, color: "white" }}>
@@ -206,13 +215,6 @@ const ProfileScreen = ({ navigation }) => {
         )}
         {edit && (
           <View style={containerStyles.buttonContainer}>
-            <TouchableOpacity
-              style={containerStyles.whiteButton}
-              disabled={!isClickable}
-              onPress={handleCancel}
-            >
-              <Text style={textStyles.textBodyHeader}>Cancel</Text>
-            </TouchableOpacity>
             <TouchableOpacity
               style={containerStyles.purpleButton}
               disabled={!isClickable}
@@ -244,9 +246,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "58%",
-    height: "30%",
-    marginBottom: "5%",
+    width: "48%",
+    height: "27%",
+    marginVertical: "5%",
   },
   groupTag: {
     width: "40%",
@@ -258,8 +260,19 @@ const styles = StyleSheet.create({
     gap: 10,
     display: "flex",
     flexDirection: "row",
-    marginBottom: "5%",
+    marginTop: "5%",
+    marginBottom: "7%",
   },
+  settings: {
+    position: "absolute",
+    top: "1%",
+    right: "5%",
+  },
+  back: {
+    position: "absolute",
+    top: "1%",
+    left: "5%",
+  }
 });
 
 export default ProfileScreen;

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
+import { CommonActions } from '@react-navigation/native';
 import image from '../assets/working-out-2.png';
 import { useAuth } from "../contexts/AuthContext";
 
@@ -23,7 +24,7 @@ const GroupsScreen = ({navigation}) => {
           <TouchableOpacity style={{...containerStyles.longWhiteButton, paddingHorizontal: '32%'}} onPress={() => navigation.navigate("JoinGroup")}>
             <Text style={textStyles.textBodyHeader}> Join a group </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Tab")}> 
+          <TouchableOpacity onPress={() => navigation.dispatch(CommonActions.reset( {index: 0, routes: [{ name: 'Tab' }]} )) }> 
             <Text style={{...textStyles.textBodySmallUnderline, color: "#8E99AB"}}> Skip </Text> 
           </TouchableOpacity>
         </View>

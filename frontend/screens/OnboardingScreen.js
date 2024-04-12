@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
   },
   // IMAGE
   image: {
-    width: "80%",
-    height: "42%",
+    width: "60%",
+    height: "30%",
     borderRadius: 1000,
     marginVertical: "5%",
   },
