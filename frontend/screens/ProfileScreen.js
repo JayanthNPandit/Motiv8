@@ -202,18 +202,6 @@ const ProfileScreen = ({ navigation }) => {
                 View all your photos
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...containerStyles.longPurpleButton,
-                paddingHorizontal: "25%",
-                marginVertical: "2%",
-              }}
-              onPress={() => navigation.navigate("Goals")}
-            >
-              <Text style={{ ...textStyles.textBodySmall, color: "white" }}>
-                See all your goals
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
         {edit && (
