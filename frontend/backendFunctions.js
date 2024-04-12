@@ -219,8 +219,12 @@ export const leaveGroup = async (user, groupID, groupData) => {
   try {
     let users = groupData.users;
     users = users.filter((element) => element !== user.uid);
-    const updatedData = { user: users };
-    await updateDoc(doc(db, "groups", groupID), updatedData);
+    if (users.length == 0) {
+      deleteDoc(doc(db, "groups", groupID));
+    } else {
+      const updatedData = { users: users };
+      await updateDoc(doc(db, "groups", groupID), updatedData);
+    }
     const updatedUser = { groupID: "" };
     await updateDoc(doc(db, "users", user.uid), updatedUser);
   } catch (error) {
