@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ScrollView, RefreshControl, Animated } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ScrollView, RefreshControl, Animated, Dimensions } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import addButton from '../assets/zondicons_add-solid.png';
 import backgroundImage from '../assets/Fitz Personal Training.png';
@@ -7,9 +7,12 @@ import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
 import takePhotoButton from '../assets/gg_check-o.png';
 import editGoalButton from '../assets//gay.png';
 import menuButton from '../assets/f7_menu.png'; 
+import pinButton from '../assets/pin.png';
+import removeButton from '../assets/pin.png';
 
 import { fetchUserGoals } from '../backendFunctions';
 import { useAuth } from '../contexts/AuthContext';
+
 
 
 const GoalsScreen = ({navigation}) => {
@@ -21,21 +24,11 @@ const GoalsScreen = ({navigation}) => {
   const [recurringGoals, setRecurringGoals] = useState([]);
   const [longTermGoals, setLongTermGoals] = useState([]);
 
+  const [pinnedGoal, setPinnedGoal] = useState(); // State to store the pinned goal
+  const [pinnedGoalDescription, setPinnedGoalDescription] = useState(); // State to store the pinned goal description
+  const [pinned, setPinned] = useState(false); // State to manage whether a goal is pinned or not
+
   const [refreshing, setRefreshing] = useState(false); // State to manage refreshing the list 
-
-  const exampleGoals = [
-    'Run 5 miles',
-    'Read 50 pages',
-    'Drink 8 cups of water',
-    'Meditate for 10 minutes',
-    'Complete a coding challenge',
-    'Cook a new recipe',
-    'Write in a journal',
-  ];
-
-  const pinnedGoal = 'Run 5 miles';
-
-  const exampleLongTermGoals = [ 'Complete a marathon', 'Learn to play the guitar', 'Travel to Japan' ];
 
   useEffect(() => {
     fetchGoals(); // Fetch goals when the component is mounted
@@ -56,7 +49,7 @@ const GoalsScreen = ({navigation}) => {
     const longTerm = [];
     goals.forEach((goal) => {
       if (goal.type === "Recurring") {
-        recurring.push(goal.name);
+        recurring.push([goal.name, goal.currentCounter, goal.counter]);
       } else if (goal.type === "Long Term") {
         longTerm.push(goal.name);
       } else
@@ -69,6 +62,33 @@ const GoalsScreen = ({navigation}) => {
 
     console.log("Recurring goals: " + recurringGoals);
     console.log("Long term goals: " + longTermGoals);
+    console.log("Pinned goal: " + pinnedGoal);
+    console.log("Pinned goal description: " + pinnedGoalDescription);
+  }
+
+  const setPin = (goal) => {
+    // Put the current pinned goal back into the long-term goals list
+    setLongTermGoals(prevPinnedGoals => [pinnedGoal, ...prevPinnedGoals]);
+    
+    // Set pinned goal to the new goal
+    setPinnedGoal(goal);
+
+    // Set the description of the pinned goal
+    setPinnedGoalDescription(goals.find(item => item.name === goal).description);
+
+    // Set the pinned status
+    setPinned(true);
+  
+    // Remove the goal from the long-term goals list
+    setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== goal));
+  }
+
+  const removePin = () => {
+    // Put the current pinned goal back into the long-term goals list
+    setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
+
+    // Set pinned status
+    setPinned(false);
   }
 
   const onRefresh = () => {
@@ -76,11 +96,19 @@ const GoalsScreen = ({navigation}) => {
     fetchGoals(); // Fetch goals again
   }
 
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const calculateProgress = (completed, total) => {
+    return Math.round((completed / total) * 100);
+  }
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { width: screenWidth } = Dimensions.get('window');
+
+  const scrollViewRef = useRef();
 
   const handleScroll = (event) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    scrollX.setValue(offsetX);
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(contentOffsetX / screenWidth);
+    setActiveIndex(index);
   };
 
   return (
@@ -98,36 +126,79 @@ const GoalsScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View> 
           </View>
-          <View style={containerStyles.pinnedGoalContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("TakePhoto")}>
-              <Text style={textStyles.textBodyHeaderWhite}>Pinned Goal:</Text>
-              <Text style={textStyles.goalText}>{pinnedGoal}</Text>
-            </TouchableOpacity>
+          <View style={containerStyles.pinnedGoalsContainer}>
+            {pinned ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={textStyles.textBodyHeaderWhiteBold}>{pinnedGoal}</Text>
+                  {pinnedGoalDescription && <Text style={textStyles.goalText}>{pinnedGoalDescription}</Text>}
+                </View>
+                <TouchableOpacity onPress={removePin}>
+                  <Image source={pinButton} style={{ width: 20, height: 20 }} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text style={textStyles.textBodyHeaderWhite}>No pinned goals</Text>
+            )}
           </View>
           <View style={containerStyles.goalsButtonContainer}>
             <View style={containerStyles.headerContainer}>
               <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
             </View> 
-              <Image source={dropDownImage} style={{width: 20, height: 20}}/>
+              <Image source={dropDownImage} style={{width: 20, height: 20, position: 'absolute', left: 225, bottom: 20}}/>
           </View>
           <View style={containerStyles.goalsButtonContainer}>
-          <View>
+            <View>
             <ScrollView
               horizontal
-              showsHorizontalScrollIndicator={true}
+              showsHorizontalScrollIndicator={false}
               onScroll={handleScroll}
-              scrollEventThrottle={5}
+              scrollEventThrottle={16}
             >
-              {recurringGoals.map((goal, index) => (
-                <TouchableOpacity key={index} style={containerStyles.recurringGoalContainer}>
-                  <Text style={textStyles.goalText}>{goal}</Text>
+              {recurringGoals.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyText}>No goals yet!</Text>
                   <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
                     <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                   </TouchableOpacity>
-                </TouchableOpacity>
-              ))}
+                </View>
+              ) : (
+                <View>
+                  <ScrollView
+                    ref={scrollViewRef}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                  >
+                    {recurringGoals.map((item, index) => (
+                    <View key={index} style={[containerStyles.recurringGoalContainer, { width: screenWidth - 50 }]}>
+                      <View style={styles.progressBarContainer}>
+                        <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1]-2, item[2]))}%` }]} />
+                      </View>
+                      <View style={styles.goalContentContainer}>
+                        <Text style={textStyles.goalText}>{item[0]}</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate("EditGoal")}>
+                          <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
             </ScrollView>
-          </View>
+            </View>
+            <View style={styles.pagination}>
+              {recurringGoals.map((_, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.dot, { backgroundColor: index === activeIndex ? 'black' : 'lightgray' }]}
+                  onPress={() => scrollViewRef.current.scrollTo({ x: screenWidth * index, animated: true })}
+                />
+              ))}
+            </View>
           </View>
 
           <View style={containerStyles.divider}></View>
@@ -136,7 +207,7 @@ const GoalsScreen = ({navigation}) => {
             <View style={containerStyles.menuContainer}>
               <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
               <TouchableOpacity onPress={() => setShowList(!showList)}>
-                <Image source={menuButton} style={{width: 20, height: 20}}/>
+                <Text style={{ textDecorationLine: 'underline', color: 'lightgray', position: 'absolute', left: 30, bottom: 5 }}> View All </Text>
               </TouchableOpacity>
             </View>
             <View style={containerStyles.buttonContainer}>
@@ -156,20 +227,26 @@ const GoalsScreen = ({navigation}) => {
                       data={longTermGoals}
                       renderItem={({ item }) => (
                         <View style={containerStyles.longTermGoalContainer}>
-                          <Text style={textStyles.blackGoalText}>{item}</Text>
+                          <Text style={textStyles.grayGoalText}>{item}</Text>
+                          <TouchableOpacity onPress={() => setPin(item)}>
+                            <Image source={pinButton} style={{ width: 20, height: 20 }} />
+                          </TouchableOpacity>
                         </View>
                       )}
-                      keyExtractor={(item) => item.id}
+                      //keyExtractor={(item) => item.id}
                     />
                   ) : (
                     <FlatList
                       data={longTermGoals.slice(0, 3)} // Show only the first 3 goals
                       renderItem={({ item }) => (
                         <View style={containerStyles.longTermGoalContainer}>
-                          <Text style={textStyles.blackGoalText}>{item}</Text>
+                          <Text style={textStyles.grayGoalText}>{item}</Text>
+                          <TouchableOpacity onPress={() => setPin(item)}>
+                            <Image source={pinButton} style={{ width: 20, height: 20 }} />
+                          </TouchableOpacity>
                         </View>
                       )}
-                      keyExtractor={(item) => item.id}
+                      //keyExtractor={(item) => item.id}
                     />
                   )}
                 </>
@@ -211,6 +288,55 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'transparent',
     padding: '10%',
+  },
+  goalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemText: {
+    fontSize: 20,
+  },
+  pagination: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 16,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 5,
+    margin: 5,
+  },
+  button: {
+    position: 'absolute',
+    top: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: 'lightgray',
+  },
+  // New styles for progress bar
+  progressBarContainer: {
+    width: '100%',
+    height: 5,
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: 'white',
+    borderRadius: 5,
+  },
+  goalContentContainer: {
+    flexDirection: 'row', // Ensure text and image appear inline
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%', // Ensure full width to avoid stretching
   },
 });
 
