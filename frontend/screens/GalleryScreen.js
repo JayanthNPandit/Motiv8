@@ -93,7 +93,7 @@ const GalleryScreen = ({ route, navigation }) => {
           <Calendar
             current={date}
             onDayPress={(day) => setDate(day.dateString)}
-            theme={customCalendarTheme}
+            theme={containerStyles.customCalendarTheme}
             style={styles.calendar}
             // markedDates={marked}
           />
@@ -129,24 +129,6 @@ const GalleryScreen = ({ route, navigation }) => {
       </View>
     </ScrollView>
   );
-};
-
-const customCalendarTheme = {
-  calendarBackground: "#4C50BD",
-  arrowColor: "white",
-  monthTextColor: "white",
-  dayTextColor: "white",
-  selectedTextColor: "white",
-  selectedBackgroundColor: "black",
-  todayTextColor: "white",
-  textDayStyle: { margin: 5 },
-  textDisabledColor: "grey",
-  textSectionTitleColor: "white",
-  todayBackgroundColor: "black",
-  textSectionTitleEnabled: true,
-  textFontFamily: "Poppins-Regular",
-  indicatorColor: "black",
-  selectedDotColor: "black",
 };
 
 const styles = StyleSheet.create({

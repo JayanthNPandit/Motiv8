@@ -280,6 +280,8 @@ export const containerStyles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: "2%",
     paddingVertical: "5%",
+    height: '50%', 
+    textAlignVertical: 'top'
   },
   // BUTTONS
   buttonContainer: {
@@ -510,5 +512,23 @@ export const containerStyles = StyleSheet.create({
     position: "absolute",
     top: "1%",
     left: "5%",
+  },
+  // Way more definitions than i need, i just put it in so i can mess around with it
+  customCalendarTheme: {
+    calendarBackground: "#4C50BD",
+    arrowColor: "white",
+    monthTextColor: "white",
+    dayTextColor: "white",
+    selectedTextColor: "white",
+    selectedBackgroundColor: "black",
+    todayTextColor: "white",
+    textDayStyle: { margin: 5 },
+    textDisabledColor: "grey",
+    textSectionTitleColor: "white",
+    todayBackgroundColor: "black",
+    textSectionTitleEnabled: true,
+    textFontFamily: "Poppins-Regular",
+    indicatorColor: "black",
+    selectedDotColor: "black",
   },
 });
