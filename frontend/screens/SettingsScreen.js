@@ -63,7 +63,7 @@ const SettingsScreen = ({ navigation }) => {
         </View>
 
         <TouchableOpacity
-          style={styles.back}
+          style={containerStyles.back}
           onPress={() => navigation.navigate("Profile")}
         >
           <Image source={back} />
@@ -98,11 +98,6 @@ const SettingsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  back: {
-    position: "absolute",
-    top: "1%",
-    left: "5%",
-  },
   line: {
     width: "100%",
     borderWidth: 1,

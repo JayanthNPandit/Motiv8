@@ -22,6 +22,7 @@ import TakePhotoScreen from "./screens/TakePhotoScreen";
 import EditGoalScreen from "./screens/EditGoalScreen";
 import SharePhotoScreen from "./screens/SharePhotoScreen";
 import SnapProgressScreen from "./screens/SnapProgressScreen";
+import GalleryScreen from "./screens/GalleryScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -193,6 +194,7 @@ function ProfileStack() {
     <Stack.Navigator initialRouteName="Profile">
       <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
       <Stack.Screen name="Settings" component={SettingsScreen} options={{headerShown: false}} />
+      <Stack.Screen name="Gallery" component={GalleryScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }

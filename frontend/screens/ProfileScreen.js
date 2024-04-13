@@ -130,7 +130,7 @@ const ProfileScreen = ({ navigation }) => {
 
         {edit && (
           <TouchableOpacity
-            style={styles.back}
+            style={containerStyles.back}
             onPress={handleCancel}
           >
             <Image source={back} />
@@ -206,6 +206,7 @@ const ProfileScreen = ({ navigation }) => {
                 ...containerStyles.longPurpleButton,
                 paddingHorizontal: "25%",
               }}
+              onPress={() => navigation.navigate("Gallery", {username: origUsername})}
             >
               <Text style={{ ...textStyles.textBodySmall, color: "white" }}>
                 View all your photos
@@ -267,11 +268,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "1%",
     right: "5%",
-  },
-  back: {
-    position: "absolute",
-    top: "1%",
-    left: "5%",
   }
 });
 
