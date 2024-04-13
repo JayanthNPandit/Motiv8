@@ -20,6 +20,9 @@ import AddLongTermGoalScreen from "./screens/AddLongTermGoalScreen";
 import AddRecurringGoalScreen from "./screens/AddRecurringGoalScreen";
 import TakePhotoScreen from "./screens/TakePhotoScreen";
 import EditGoalScreen from "./screens/EditGoalScreen";
+import SharePhotoScreen from "./screens/SharePhotoScreen";
+import SnapProgressScreen from "./screens/SnapProgressScreen";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
 import { fetchUserData } from "./backendFunctions";
@@ -45,7 +48,7 @@ const Tab = createBottomTabNavigator();
 
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import SharePhotoScreen from "./screens/SharePhotoScreen";
+
 
 // Prevent native splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -149,7 +152,8 @@ function TabContent() {
 
 function PhotoStack() {
   return (
-    <Stack.Navigator initialRouteName="TakePhoto">
+    <Stack.Navigator initialRouteName="SnapProgress">
+      <Stack.Screen name="SnapProgress" component={SnapProgressScreen} options={{headerShown: false}} />
       <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
       <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
     </Stack.Navigator>

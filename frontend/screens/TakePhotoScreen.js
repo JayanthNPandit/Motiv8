@@ -10,6 +10,7 @@ import { ImageManipulator, manipulateAsync } from 'expo-image-manipulator';
 import { Camera } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
 import { containerStyles, textStyles } from '../styles/styles.js';
+import { useRoute } from '@react-navigation/native';
 
 import snapImage from '../assets/snappicture.png';
 import galleryImage from '../assets/gallery.png';
@@ -31,35 +32,19 @@ const TakePhotoScreen = ({navigation}) => {
 
   const { user } = useAuth();
 
-  // choosing the image
-  const pickImage = async () => {
+  const route = useRoute();
 
-    // selected image
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      quality: 1,
-    });
+  const { takePhoto } = route.params;
 
-    if (!result.cancelled && result.assets) {
-      setImageUrl(result.assets[0].uri);
+  useEffect(() => {
+    if (takePhoto) {
+      takeImage();
+    } else {
+      pickImage();
     }
-  };
+  }, []);
 
-  // taking the image
-  const takeImage = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      quality: 1,
-      flashMode: Camera.Constants.FlashMode.off,
-    });
-
-    if (!result.cancelled && result.assets) {
-      setImageUrl(result.assets[0].uri);
-      setTakenImage(true);
-    }
-  }; 
+  
 
   // upload the image
   const confirmImage = async () => {
@@ -69,46 +54,35 @@ const TakePhotoScreen = ({navigation}) => {
   const tryAgain = () => {
     setImageUrl(null);
     setTakenImage(false);
+    navigation.navigate("SnapProgress");
   };
 
   return (
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
-      <Text style={textStyles.header}></Text>
-      <Text style={textStyles.header}></Text>
         <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}> Snap your Progress! </Text>
+          <Text style={textStyles.header}>
+            Looking Good!
+          </Text>
         </View>
-      <TouchableOpacity onPress={takeImage}>
-        <View style={containerStyles.imageContainer}>
-        {takenImage ? (
-          <Image style={styles.image} source={{uri: imageUrl}} />
-        ) : (
-          <Image style={styles.image} source={defaultImage} />
+        <TouchableOpacity onPress={takeImage}>
+          <View style={containerStyles.imageContainer}>
+            {takenImage && (
+              <Image style={styles.image} source={{ uri: imageUrl }} />
+            )}
+          </View>
+        </TouchableOpacity>
+        {takenImage && (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={containerStyles.whiteButton} onPress={tryAgain}>
+              <Text>Try Again</Text>
+            </TouchableOpacity>
+            <Text>      </Text>    
+            <TouchableOpacity style={containerStyles.purpleButton} onPress={confirmImage}>
+              <Text>Confirm Image</Text>
+            </TouchableOpacity>
+          </View>
         )}
-        </View>
-      </TouchableOpacity>
-      <Text style={styles.buttonText}> Take Image </Text>
-      {takenImage ? (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={containerStyles.whiteButton} onPress={tryAgain}>
-            <Text>Try Again</Text>
-          </TouchableOpacity>
-          <Text>      </Text>    
-          <TouchableOpacity style={containerStyles.purpleButton} onPress={confirmImage}>
-          <Text>Confirm Image</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={pickImage}>
-            <Image source={galleryImage} style={{ width: 50, height: 50 }}/>
-          </TouchableOpacity>        
-          <TouchableOpacity style={styles.button} onPress={takeImage}>
-            <Image source={snapImage} style={{ width: 50, height: 50 }}/>
-          </TouchableOpacity>
-        </View>
-      )}
       </View>
     </View>
   );

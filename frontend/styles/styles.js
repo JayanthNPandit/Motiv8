@@ -340,6 +340,17 @@ export const containerStyles = StyleSheet.create({
         gap: 10,
         marginVertical: '5%'
     },
+    blueButton: {
+        display: 'flex',
+        justifyContent: 'center', 
+        alignItems: 'center',
+        paddingVertical: '4%',
+        paddingHorizontal: '15%',
+        backgroundColor: '#8098D5',
+        borderRadius: 31, 
+        gap: 10,
+        marginVertical: '5%'
+    },
     greenButton: {
         position: 'absolute',
         right:'-200%',
