@@ -26,7 +26,7 @@ import heart from "../assets/like.png";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 
 const GalleryScreen = ({ route, navigation }) => {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
   const getDate = (date, count) => {
     const newDate = date.setDate(date.getDate() + count);
