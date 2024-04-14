@@ -106,7 +106,7 @@ const AddRecurringGoalScreen = ({navigation}) => {
                     </View>
 
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
-                    <TextInput style={containerStyles.biggerInput} value={description} onChangeText={setDescription} placeholder='This is optional'/>
+                    <TextInput style={containerStyles.biggerInput} multiline={true} numberOfLines={4} value={description} onChangeText={setDescription} placeholder='This is optional'/>
 
                     <View style={containerStyles.buttonContainer}>
                         <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("AddGoal")}>

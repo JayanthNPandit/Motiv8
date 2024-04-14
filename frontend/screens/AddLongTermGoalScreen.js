@@ -47,38 +47,6 @@ const AddLongTermGoalScreen = ({navigation}) => {
         console.log("current date:" + date);
     }
 
-    // Way more definitions than i need, i just put it in so i can mess around with it
-    const customCalendarTheme = {
-        // Background color of the calendar container
-        calendarBackground: '#4C50BD',
-        // Background color of the arrow icons
-        arrowColor: 'white',
-        // Background color of the month text
-        monthTextColor: 'white',
-        // Background color of the day text
-        dayTextColor: 'white',
-        // Background color of the selected day text
-        selectedDayTextColor: 'black',
-        // Background color of the selected day background
-        selectedDayBackgroundColor: 'white',
-        // Background color of the today text
-        todayTextColor: 'white',
-        // Background color of the day text in the weekend
-        textDayStyle: { margin: 5 },
-        // Background color of the day text in the weekend
-        textDisabledColor: 'grey',
-        // Background color of the day text in the weekend
-        textSectionTitleColor: 'white',
-        // Background color of the day text in the weekend
-        todayBackgroundColor: 'white',
-        // Background color of the day text in the weekend
-        dayBackgroundColor: 'transparent',
-        // Background color of the day text in the weekend
-        textSectionTitleEnabled: true,
-        // Font
-        textFontFamily: 'Poppins-Regular',
-    };
-
     return (
         <View style={containerStyles.background}>
             <View style={containerStyles.container}>
@@ -121,14 +89,14 @@ const AddLongTermGoalScreen = ({navigation}) => {
                                     setDate(day.dateString); // Update selected date
                                     setShowCalendar(false); // Close the calendar
                                 }}
-                                theme={customCalendarTheme} // Apply the custom theme
+                                theme={containerStyles.customCalendarTheme} // Apply the custom theme
                             />
                             </View>
                         </View>
                     </Modal>
 
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
-                    <TextInput style={containerStyles.biggerInput} value={description} onChangeText={setDescription} placeholder='This is optional' />
+                    <TextInput style={containerStyles.biggerInput} multiline={true} numberOfLines={4} value={description} onChangeText={setDescription} placeholder='This is optional'/>
 
                     <View style={containerStyles.buttonContainer}>
                         <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("AddGoal")}>
