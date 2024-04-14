@@ -47,41 +47,103 @@ const SharePhotoScreen = ({navigation, imageUrl}) => {
     };
 
     return (
-        <View style={containerStyles.background}>
-            <View style={containerStyles.container}>
-                <View style={containerStyles.headerContainer}>
-                    <Text style={textStyles.header}> Share Progress </Text>
-                    <Text style={textStyles.textBodyGray}>Share your progress with your group! </Text>
-                </View>
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.header}>Share Progress</Text>
+            <Text style={styles.subheader}>Share your progress with your group!</Text>
+          </View>
     
-                <View style={containerStyles.buttonContainer}>
-                    <Image style={styles.image} source={{uri: imageUrl}}/>
-                    <TextInput style={containerStyles.input} value={caption} onChangeText={setCaption} defaultValue='Set a caption'/>
-                </View>
-                <View style={containerStyles.buttonContainer}>
-                    <Text style={textStyles.textBodyHeader}> Choose a goal: </Text>
-                    <FlatList
-                        data={goals}
-                        renderItem={({item}) => (
-                        <TouchableOpacity onPress={() => addToGoals(item)}>
-                            <Text style={textStyles.textBody}>{item}</Text>
-                        </TouchableOpacity>
-                        )}
-                        keyExtractor={(item) => item}
-                    />
-                </View>
+          <View style={styles.buttonContainer}>
+            <Image style={styles.image} source={{ uri: imageUrl }} />
+            <TextInput
+              style={styles.input}
+              value={caption}
+              onChangeText={setCaption}
+              placeholder='Set a caption'
+            />
+          </View>
+    
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              value={searchTerm}
+              onChangeText={setSearchTerm}
+              placeholder='Search goals...'
+            />
+          </View>
+    
+          {filteredGoals.length > 0 && (
+            <View style={styles.buttonContainer}>
+              <Text style={styles.goalHeader}>Choose a goal:</Text>
+              <FlatList
+                data={filteredGoals}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => addToGoals(item)}>
+                    <Text style={styles.goal}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item}
+              />
             </View>
+          )}
+    
+          {/* Add your upload button and any other UI elements here */}
         </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    image: {
+      );
+    };
+    
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        padding: 20,
+      },
+      headerContainer: {
+        marginBottom: 20,
+      },
+      header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 5,
+      },
+      subheader: {
+        fontSize: 16,
+        color: 'gray',
+      },
+      buttonContainer: {
+        marginBottom: 20,
+      },
+      image: {
         width: 200,
         height: 200,
         borderRadius: 10,
         marginBottom: 10,
-    },
-});
-
-export default SharePhotoScreen;
+      },
+      input: {
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+      },
+      searchContainer: {
+        marginBottom: 20,
+      },
+      searchInput: {
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 5,
+        padding: 10,
+      },
+      goalHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+      },
+      goal: {
+        fontSize: 16,
+        marginBottom: 5,
+      },
+    });
+    
+    export default SharePhotoScreen;
