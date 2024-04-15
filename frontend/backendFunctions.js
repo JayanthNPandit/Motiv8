@@ -56,6 +56,7 @@ export const addGoal = async (user, goalName, type, frequency, counter, date, de
       date: date,
       description: description,
       images: [],
+      completed: false,
     };
 
     // if user does not have a goals collection

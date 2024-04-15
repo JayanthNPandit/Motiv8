@@ -76,7 +76,7 @@ const FeedScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.header}> MOTI-V8 </Text>
+        <Text style={styles.header}> Your Feed </Text>
         <FlatList
             data={imageData}
             keyExtractor={(item, index) => index.toString()}
