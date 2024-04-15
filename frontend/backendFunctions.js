@@ -322,10 +322,15 @@ export const fetchUserImages = async (user) => {
 
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
+  console.log("adding to bucket");
   const response = await fetch(imageUrl);
+  console.log("fetched image")
   const blob = await response.blob();
+  console.log("blobbed image")
   const name = `${directory}/${new Date().toISOString()}`;
+  console.log("name: " + name);
   const imageRef = ref(storage, name);
+  console.log("image ref: " + imageRef);
 
   try {
     await uploadBytes(imageRef, blob);
@@ -339,39 +344,25 @@ export const addToBucket = async (user, directory, imageUrl) => {
 };
 
 // adding image to the database
-export const addImageToDatabase = async (user, goals, caption, name, url) => {
-  try {
-    const userID = user.uid;
-    // add image
-    const data = {
-      goals: goals,
-      caption: caption,
-      imageName: name,
-      imageUrl: url,
-      timestamp: new Date(),
-      // add list of people who liked the image
-    };
-    console.log(data);
-    const addedImage = await addDoc(
-      collection(db, "users", userID, "images"),
-      data
-    );
+export const addImageToDatabase = async (user, goals, caption, url) => {
+  const userID = user.uid;
+  // add image
+  const data = {
+    goals: goals,
+    caption: caption,
+    imageUrl: url,
+    timestamp: new Date(),
+    // add list of people who liked the image
+  };
+  console.log(data);
+  const addedImage = await addDoc(
+    collection(db, "users", userID, "images"),
+    data
+  );
 
-    console.log("added image");
+  console.log("added image");
 
-    // update goals
-    const goalDoc = await doc(db, "users", userID, "goals", goals);
-    const goalRef = await getDoc(goalDoc);
-    const images = goalRef.data().images;
-    await setDoc(
-      goalDoc,
-      { images: [...images, addedImage.id] },
-      { name: goalRef.data().name },
-      { type: goalRef.data().type }
-    );
+  return addedImage.id;
 
-    console.log("updated goals");
-  } catch (error) {
-    console.error("Error adding image to database:", error);
-  }
+  // fix the editing goals part later
 };
