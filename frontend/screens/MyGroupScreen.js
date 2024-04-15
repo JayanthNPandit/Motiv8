@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchGroupData, fetchUserData, joinGroup } from "../backendFunctions";
+import { fetchGroupData, fetchUserData, leaveGroup } from "../backendFunctions";
 import {
   View,
   Text,
@@ -9,44 +9,77 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  Alert
 } from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
 import image from "../assets/default-pfp.png";
+import leave from "../assets/leave_group.png";
 
 const ConfirmGroupScreen = ({ navigation }) => {
-  const [isClickable, setIsClickable] = useState(true);
   const [names, setNames] = useState(null);
   const [groupData, setGroupData] = useState(null);
+  const [groupID, setGroupID] = useState("");
   const { user } = useAuth();
 
   useEffect(() => {
     const loadInformation = async () => {
       const names = [];
       const data = await fetchUserData(user.uid);
-      const groupData = await fetchGroupData(data.groupID);
+      const id = data.groupID;
+      const groupData = await fetchGroupData(id);
       const users = groupData.users;
       await Promise.all(
         users.map(async (user) => {
           const data = await fetchUserData(user);
-          names.push({ name: data.name, pfp: data.profilePicture, });
+          names.push({ name: data.name, pfp: data.profilePicture });
         })
       );
       setNames(names);
-      return groupData;
+      setGroupData(data);
+      setGroupID(id);
     };
 
-    setIsClickable(false);
-    loadInformation().then((group) => {setGroupData(group)});
-    setIsClickable(true);
+    loadInformation();
   }, []);
+
+  useEffect(() => {
+    console.log(groupData);
+    console.log(groupID);
+    navigation.navigate("Groups")
+  }, [groupData, groupID])
+
+  const handleLeaveGroup = async () => {
+    await leaveGroup(user, groupID, groupData);
+    setGroupID("");
+    setGroupData({});
+  }
+
+  const confirmLeaveGroup = () =>
+    Alert.alert("Leave Group", "Are you sure you want to leave the group?", [
+      {
+        text: "No",
+        style: "cancel",
+      },
+      { text: "Yes", onPress: {handleLeaveGroup} },
+    ]);
 
   return (
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
         <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}>Your Group</Text>
-          <Text style={textStyles.textBodyGray}>Your friends in this group!</Text>
+          <Text style={textStyles.header}>{groupData.name}</Text>
+          <Text style={textStyles.textBodyGray}>
+            Your friends in this group!
+          </Text>
         </View>
+
+        <TouchableOpacity
+          style={containerStyles.forward}
+          onPress={confirmLeaveGroup}
+        >
+          <Image source={leave} />
+        </TouchableOpacity>
+
         <FlatList
           data={names}
           renderItem={({ item }) => (

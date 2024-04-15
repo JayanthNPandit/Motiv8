@@ -139,7 +139,7 @@ const ProfileScreen = ({ navigation }) => {
 
         {!edit && (
           <TouchableOpacity
-            style={styles.settings}
+            style={containerStyles.forward}
             onPress={() => navigation.navigate("Settings")}
           >
             <Image source={settings} />
@@ -264,11 +264,7 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     marginBottom: "7%",
   },
-  settings: {
-    position: "absolute",
-    top: "1%",
-    right: "5%",
-  }
+  
 });
 
 export default ProfileScreen;

@@ -70,13 +70,13 @@ const GalleryScreen = ({ route, navigation }) => {
   }, [date]);
 
   const [date, setDate] = useState(getDate(new Date(), 0));
-  const [username, setUsername] = useState(route.params);
+  const [username, setUsername] = useState(route.params.username);
   const [images, setImages] = useState([]);
   const [imagesForDay, setImagesForDay] = useState([]);
   const [marked, setMarked] = useState({});
 
   return (
-    <ScrollView style={containerStyles.background}>
+    <View style={containerStyles.background}>
       <View style={containerStyles.container}>
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}> Gallery </Text>
@@ -127,7 +127,7 @@ const GalleryScreen = ({ route, navigation }) => {
           )}
         />
       </View>
-    </ScrollView>
+    </View>
   );
 };
 

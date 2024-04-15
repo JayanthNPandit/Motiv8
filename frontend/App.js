@@ -164,7 +164,7 @@ function PhotoStack() {
 function GroupStack() {
 
   const { user } = useAuth();
-  const [initialRoute, setInitialRoute] = useState('MyGroup');
+  const [initialRoute, setInitialRoute] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,6 +176,10 @@ function GroupStack() {
     };
     fetchData().then((result) => setInitialRoute(result));
   }, [user]);
+
+  useEffect(() => {
+    console.log(initialRoute);
+  }, [initialRoute])
 
   return (
     <Stack.Navigator initialRouteName={initialRoute}>

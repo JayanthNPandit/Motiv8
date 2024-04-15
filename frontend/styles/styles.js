@@ -532,14 +532,19 @@ export const containerStyles = StyleSheet.create({
     top: "1%",
     left: "5%",
   },
+  forward: {
+    position: "absolute",
+    top: "1%",
+    right: "5%",
+  },
   // Way more definitions than i need, i just put it in so i can mess around with it
   customCalendarTheme: {
     calendarBackground: "#4C50BD",
     arrowColor: "white",
     monthTextColor: "white",
     dayTextColor: "white",
-    selectedTextColor: "white",
-    selectedBackgroundColor: "black",
+    selectedDayTextColor: "white",
+    selectedDayBackgroundColor: "black",
     todayTextColor: "white",
     textDayStyle: { margin: 5 },
     textDisabledColor: "grey",
@@ -547,7 +552,6 @@ export const containerStyles = StyleSheet.create({
     todayBackgroundColor: "black",
     textSectionTitleEnabled: true,
     textFontFamily: "Poppins-Regular",
-    indicatorColor: "black",
     selectedDotColor: "black",
   },
 });

@@ -25,6 +25,7 @@ import delIcon from "../assets/del.png";
 
 const SettingsScreen = ({ navigation }) => {
   const { user, logout, del } = useAuth();
+
   // logout function
   const handleLogout = async () => {
     await logout();
@@ -39,7 +40,7 @@ const SettingsScreen = ({ navigation }) => {
   // delete function
   const handleDelete = async () => {
     const data = await fetchUserData(user.uid);
-    if (data.groupID !== '') {
+    if (data.groupID !== "") {
       const groupData = await fetchGroupData(data.groupID);
       await leaveGroup(user, data.groupID, groupData);
     }
@@ -52,6 +53,24 @@ const SettingsScreen = ({ navigation }) => {
       })
     );
   };
+
+  const confirmLogout = () =>
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "No",
+        style: "cancel",
+      },
+      { text: "Yes", onPress: {handleLogout} },
+    ]);
+
+  const confirmDelete = () =>
+    Alert.alert("Permanent Action", "Are you sure you want to delete your account?", [
+      {
+        text: "No",
+        style: "cancel",
+      },
+      { text: "Yes", onPress: {handleDelete} },
+    ]);
 
   return (
     <View style={containerStyles.background}>
@@ -79,7 +98,7 @@ const SettingsScreen = ({ navigation }) => {
 
         <View style={styles.setting}>
           <View style={styles.line} />
-          <TouchableOpacity style={styles.option} onPress={handleLogout}>
+          <TouchableOpacity style={styles.option} onPress={confirmLogout}>
             <Image source={signout} />
             <Text style={textStyles.textBody}> Logout </Text>
           </TouchableOpacity>
@@ -87,7 +106,7 @@ const SettingsScreen = ({ navigation }) => {
 
         <View style={styles.setting}>
           <View style={styles.line} />
-          <TouchableOpacity style={styles.option} onPress={handleDelete}>
+          <TouchableOpacity style={styles.option} onPress={confirmDelete}>
             <Image source={delIcon} />
             <Text style={textStyles.textBody}> Delete Account </Text>
           </TouchableOpacity>
