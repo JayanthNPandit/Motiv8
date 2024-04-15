@@ -60,33 +60,45 @@ const GoalsScreen = ({navigation}) => {
     setRecurringGoals(recurring);
     setLongTermGoals(longTerm);
 
+    console.log("Long term goals before pinning: " + longTermGoals);
+
+    // remove the pinned goal from the long-term goals list if it is there
+    if (pinned) {
+      setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== pinnedGoal));
+    }
+
     console.log("Recurring goals: " + recurringGoals);
-    console.log("Long term goals: " + longTermGoals);
+    console.log("Long term goals after pinning: " + longTermGoals);
     console.log("Pinned goal: " + pinnedGoal);
     console.log("Pinned goal description: " + pinnedGoalDescription);
   }
 
   const setPin = (goal) => {
-    // Put the current pinned goal back into the long-term goals list
-    setLongTermGoals(prevPinnedGoals => [pinnedGoal, ...prevPinnedGoals]);
-    
+    // Put the current pinned goal back into the long-term goals list only if there is already something pinned
+    if (pinned) {
+      setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
+    }
+  
     // Set pinned goal to the new goal
     setPinnedGoal(goal);
-
+  
     // Set the description of the pinned goal
-    setPinnedGoalDescription(goals.find(item => item.name === goal).description);
+    const goalDescription = goals.find(item => item.name === goal)?.description || 'No Description...';
+    setPinnedGoalDescription(goalDescription);
 
+    // remove the pinned goal from the long-term goals list
+    setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== goal));
+  
     // Set the pinned status
     setPinned(true);
-  
-    // Remove the goal from the long-term goals list
-    setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== goal));
   }
-
+  
   const removePin = () => {
-    // Put the current pinned goal back into the long-term goals list
-    setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
-
+    // Put the current pinned goal back into the long-term goals list only if there is already something pinned
+    if (pinned) {
+      setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
+    }
+  
     // Set pinned status
     setPinned(false);
   }

@@ -7,14 +7,17 @@ import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, 
 import { useNavigation } from '@react-navigation/native';
 import { containerStyles, textStyles } from '../styles/styles.js';
 import { addProgress } from '../backendFunctions.js';
+import route from '../navigation/Route.js';
 
 const SharePhotoScreen = ({navigation, imageUrl}) => {
     const [caption, setCaption] = useState('');
     const [goals, setGoals] = useState([]);
     const [imageData, setImageData] = useState([]);
-    
-    const [selectedImage, setSelectedImage] = useState(null);
-            
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [filteredGoals, setFilteredGoals] = useState([]);
+              
     const { user } = useAuth();
     
     const [goalID, setGoalID] = useState(null);

@@ -18,7 +18,7 @@ import AddGoalScreen from "./screens/AddGoalScreen";
 import GoalsScreen from "./screens/GoalsScreen";
 import AddLongTermGoalScreen from "./screens/AddLongTermGoalScreen";
 import AddRecurringGoalScreen from "./screens/AddRecurringGoalScreen";
-import TakePhotoScreen from "./screens/TakePhotoScreen";
+import ConfirmPhotoScreen from "./screens/ConfirmPhotoScreen";
 import EditGoalScreen from "./screens/EditGoalScreen";
 import SharePhotoScreen from "./screens/SharePhotoScreen";
 import SnapProgressScreen from "./screens/SnapProgressScreen";
@@ -155,7 +155,7 @@ function PhotoStack() {
   return (
     <Stack.Navigator initialRouteName="SnapProgress">
       <Stack.Screen name="SnapProgress" component={SnapProgressScreen} options={{headerShown: false}} />
-      <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+      <Stack.Screen name="ConfirmPhoto" component={ConfirmPhotoScreen} options={{headerShown: false}} />
       <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
@@ -206,7 +206,7 @@ function GoalStack() {
       <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
-      <Stack.Screen name="TakePhoto" component={TakePhotoScreen} options={{headerShown: false}} />
+      <Stack.Screen name="ConfirmPhoto" component={ConfirmPhotoScreen} options={{headerShown: false}} />
       <Stack.Screen name="EditGoal" component={EditGoalScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
     </Stack.Navigator>

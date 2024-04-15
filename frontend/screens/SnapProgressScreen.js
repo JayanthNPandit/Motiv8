@@ -13,43 +13,46 @@ import { useNavigation } from '@react-navigation/native';
 import { containerStyles, textStyles } from '../styles/styles.js';
 import { useRoute } from '@react-navigation/native';
 
+
 import snapImage from '../assets/takepictureimage.png';
 import galleryImage from '../assets/uploadpictureimage.png';
 
 const SnapProgressScreen = () => {
     const navigation = useNavigation();
 
-    // choosing the image
-    const pickImage = async () => {
+    const [imageUrl, setImageUrl] = useState();
+    const [takenImage, setTakenImage] = useState(false);
 
-    // selected image
-    let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: false,
-        allowsMultipleSelection: false,
-        quality: 1,
-    });
-
-    if (!result.cancelled && result.assets) {
-        setImageUrl(result.assets[0].uri);
-        setTakenImage(true);
-    }
-    };
-
-    // taking the image
+    // Taking a photo
     const takeImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: false,
         quality: 1,
-        flashMode: Camera.Constants.FlashMode.off,
+        flashMode: Camera.Constants.FlashMode.off, // Change this line
     });
 
     if (!result.cancelled && result.assets) {
         setImageUrl(result.assets[0].uri);
         setTakenImage(true);
+        navigation.navigate('ConfirmPhoto', { imageUrl: result.assets[0].uri });
     }
-    }; 
+    };
+
+    // Selecting an image from gallery
+    const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: false,
+        quality: 1,
+    });
+
+    if (!result.cancelled && result.assets) {
+        setImageUrl(result.assets[0].uri);
+        setTakenImage(true);
+        navigation.navigate('ConfirmPhoto', { imageUrl: result.assets[0].uri });
+    }
+    };
     
     return (
     <View style={containerStyles.background}>

@@ -1,7 +1,7 @@
 // a screen that allows the user to take a picture, add a caption, and select goals to apply to the image
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext.js";
 import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
 import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -18,33 +18,13 @@ import galleryImage from '../assets/gallery.png';
 import defaultImage from '../assets/graybox.png';
 
 
-const TakePhotoScreen = ({navigation}) => {
-  const [imageUrl, setImageUrl] = useState(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [imageData, setImageData] = useState([]);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const [takenImage, setTakenImage] = useState(false);
-
-  const { user } = useAuth();
-
+const ConfirmPhotoScreen = ({navigation}) => {
   const route = useRoute();
 
-  const { takePhoto } = route.params;
-
-  useEffect(() => {
-    if (takePhoto) {
-      takeImage();
-    } else {
-      pickImage();
-    }
-  }, []);
-
-  
+  const { imageUrl } = route.params;
+  const [hasCameraPermission, setHasCameraPermission] = useState();
+  const [imageData, setImageData] = useState([]);
+  const { user } = useAuth();
 
   // upload the image
   const confirmImage = async () => {
@@ -52,8 +32,6 @@ const TakePhotoScreen = ({navigation}) => {
   };
 
   const tryAgain = () => {
-    setImageUrl(null);
-    setTakenImage(false);
     navigation.navigate("SnapProgress");
   };
 
@@ -65,14 +43,9 @@ const TakePhotoScreen = ({navigation}) => {
             Looking Good!
           </Text>
         </View>
-        <TouchableOpacity onPress={takeImage}>
-          <View style={containerStyles.imageContainer}>
-            {takenImage && (
-              <Image style={styles.image} source={{ uri: imageUrl }} />
-            )}
-          </View>
-        </TouchableOpacity>
-        {takenImage && (
+        <View style={containerStyles.imageContainer}>
+          <Image style={styles.image} source={{ uri: imageUrl }} />
+        </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={containerStyles.whiteButton} onPress={tryAgain}>
               <Text>Try Again</Text>
@@ -82,7 +55,6 @@ const TakePhotoScreen = ({navigation}) => {
               <Text>Confirm Image</Text>
             </TouchableOpacity>
           </View>
-        )}
       </View>
     </View>
   );
@@ -135,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TakePhotoScreen;
+export default ConfirmPhotoScreen;
