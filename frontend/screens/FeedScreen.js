@@ -103,7 +103,7 @@ const FeedScreen = ({navigation}) => {
         
         {!imageUrl && (
         <View style={styles.choosing}>
-            <TouchableOpacity style={styles.button} onPress={pickImage}>
+            <TouchableOpacity style={styles.button} onPress={null}>
                 <Text style={styles.text}>Choose picture</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={takeImage}>

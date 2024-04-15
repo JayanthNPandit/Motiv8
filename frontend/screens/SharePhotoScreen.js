@@ -25,7 +25,7 @@ const SharePhotoScreen = ({navigation}) => {
 
     const [filteredGoals, setFilteredGoals] = useState([]);
 
-    const [selectedGoals, setSelectedGoals] = useState(['']);
+    const [selectedGoals, setSelectedGoals] = useState([]);
 
     const { imageUrl } = route.params;
               
@@ -58,21 +58,20 @@ const SharePhotoScreen = ({navigation}) => {
     const uploadImage = async () => {
       console.log("imageurl: " + imageUrl);
       if (imageUrl) {
-        const image = await FileSystem.readAsStringAsync(imageUrl, { encoding: FileSystem.EncodingType.Base64 });
-        console.log("image: " + image);
-        const url = await addToBucket(image);
-        console.log("url: " + url);
+        console.log("image received");
+        // const url = await addToBucket(user, image);
+        // while its waiting, can we put a loading screen on the page
+        console.log("url: " + imageUrl);
         console.log("caption: " + caption);
-        console.log("goals: " + goals);
+        console.log("goals: " + selectedGoals);
         console.log("user: " + user);
-        console.log("groupID: " + groupID);
-        const id = await addImageToDatabase(user, groupID, caption, url, goals);
+        const id = await addImageToDatabase(user, selectedGoals, caption, imageUrl);
+        console.log("id: " + id);
         if (!id) {
           Alert.alert("Error uploading image. Try again");
         }
         else {
-          setCaption('');
-          setGoals([]);
+          console.log("success in uploading image" + id);
           navigation.navigate("Feed");
         }
       }
@@ -140,12 +139,12 @@ const SharePhotoScreen = ({navigation}) => {
                   {selectedGoals.includes(item) ? (
                     <Image
                       source={checkBoxImage} // Image for selected state
-                      style={{ width: 24, height: 24, backgroundColor: 'black', borderColor: 'gray', borderWidth: 1}}
+                      style={{ width: 24, height: 24, backgroundColor: 'black', borderColor: 'gray', borderWidth: 1, borderRadius: '5%'}}
                     />
                   ) : (
                     <Image
                       source={checkBoxImage} // Image for unselected state
-                      style={{ width: 24, height: 24, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1}}
+                      style={{ width: 24, height: 24, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, borderRadius: '5%'}}
                     />
                   )}
                   {console.log("selected goals: " + selectedGoals)}
