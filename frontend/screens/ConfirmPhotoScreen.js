@@ -45,14 +45,15 @@ const ConfirmPhotoScreen = ({navigation}) => {
         </View>
         <View style={containerStyles.imageContainer}>
           <Image style={styles.image} source={{ uri: imageUrl }} />
+          {console.log("imageurl" + imageUrl)}
         </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={containerStyles.whiteButton} onPress={tryAgain}>
-              <Text>Try Again</Text>
+              <Text>Back</Text>
             </TouchableOpacity>
             <Text>      </Text>    
             <TouchableOpacity style={containerStyles.purpleButton} onPress={confirmImage}>
-              <Text>Confirm Image</Text>
+              <Text style={textStyles.textBodySmallWhite}>Next</Text>
             </TouchableOpacity>
           </View>
       </View>

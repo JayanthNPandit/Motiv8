@@ -283,6 +283,18 @@ export const containerStyles = StyleSheet.create({
     height: '50%', 
     textAlignVertical: 'top'
   },
+  captionInput: {
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#939393",
+    backgroundColor: "#E3E3E3",
+    width: "55%",
+    paddingVertical: "5%",
+    height: '100%', 
+    textAlignVertical: 'top',
+    paddingHorizontal: "2%",
+    paddingTop: "5%",
+  },
   // BUTTONS
   buttonContainer: {
     alignItems: "flex-start",
@@ -468,6 +480,8 @@ export const containerStyles = StyleSheet.create({
   },
   imageContainer: {
     alignItems: "center",
+    flexDirection: "row",
+    gap: "5%",
   },
   dropdownContainer: {
     display: "flex",
