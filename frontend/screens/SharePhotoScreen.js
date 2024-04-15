@@ -10,6 +10,9 @@ import { containerStyles, textStyles } from '../styles/styles.js';
 import { addProgress } from '../backendFunctions.js';
 import { useRoute } from '@react-navigation/native';
 import { fetchUserGoals } from '../backendFunctions';
+import * as FileSystem from 'expo-file-system';
+
+import checkBoxImage from '../assets/check.png';
 
 const SharePhotoScreen = ({navigation}) => {
     const route = useRoute();
@@ -31,6 +34,8 @@ const SharePhotoScreen = ({navigation}) => {
     const [goalID, setGoalID] = useState(null);
     const [groupID, setGroupID] = useState(null);
 
+    const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
     useEffect(() => {
       fetchGoals(); // Fetch goals when the component is mounted
     }, []);
@@ -51,9 +56,16 @@ const SharePhotoScreen = ({navigation}) => {
     
     // upload the image
     const uploadImage = async () => {
+      console.log("imageurl: " + imageUrl);
       if (imageUrl) {
         const image = await FileSystem.readAsStringAsync(imageUrl, { encoding: FileSystem.EncodingType.Base64 });
+        console.log("image: " + image);
         const url = await addToBucket(image);
+        console.log("url: " + url);
+        console.log("caption: " + caption);
+        console.log("goals: " + goals);
+        console.log("user: " + user);
+        console.log("groupID: " + groupID);
         const id = await addImageToDatabase(user, groupID, caption, url, goals);
         if (!id) {
           Alert.alert("Error uploading image. Try again");
@@ -85,12 +97,11 @@ const SharePhotoScreen = ({navigation}) => {
     };
 
     const toggleGoalSelection = (goal) => {
-      const selectedIndex = selectedGoals.indexOf(goal);
-      if (selectedIndex === -1) {
-        setSelectedGoals([...selectedGoals, goal]);
+      console.log(" top of toggling" + selectedGoals);
+      if (selectedGoals.includes(goal)) {
+        setSelectedGoals((prevSelectedGoals) => prevSelectedGoals.filter((item) => item !== goal));
       } else {
-        const updatedSelection = selectedGoals.filter((item) => item !== goal);
-        setSelectedGoals(updatedSelection);
+        setSelectedGoals((prevSelectedGoals) => [...prevSelectedGoals, goal]);
       }
     };
 
@@ -124,23 +135,32 @@ const SharePhotoScreen = ({navigation}) => {
             data={filteredGoals}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => toggleGoalSelection(item)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
                   <Text>{item}</Text>
-                  {console.log("seleectedgoals " + selectedGoals)}
-                  <CheckBox
-                    
-                  />
+                  {selectedGoals.includes(item) ? (
+                    <Image
+                      source={checkBoxImage} // Image for selected state
+                      style={{ width: 24, height: 24, backgroundColor: 'black', borderColor: 'gray', borderWidth: 1}}
+                    />
+                  ) : (
+                    <Image
+                      source={checkBoxImage} // Image for unselected state
+                      style={{ width: 24, height: 24, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1}}
+                    />
+                  )}
+                  {console.log("selected goals: " + selectedGoals)}
                 </View>
+                <View style={containerStyles.goalDivider}></View>
               </TouchableOpacity>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
-          <View style={containerStyles.divider}></View>
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("ConfirmPhoto", {imageUrl: imageUrl})}>
               <Text>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={containerStyles.purpleButton}>
+            <TouchableOpacity style={containerStyles.purpleButton} onPress={uploadImage}>
               <Text style={textStyles.textBodySmallWhite}>Share!</Text>
             </TouchableOpacity>
           </View>

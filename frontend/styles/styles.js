@@ -462,6 +462,11 @@ export const containerStyles = StyleSheet.create({
     backgroundColor: "#939393",
     marginVertical: "5%",
   },
+  goalDivider: {
+    width: "100%",
+    height: 1,
+    backgroundColor: "#939393",
+  },
   frequencyInputContainer: {
     flexWrap: "wrap",
     flexDirection: "row",
