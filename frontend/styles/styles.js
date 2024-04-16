@@ -539,12 +539,12 @@ export const containerStyles = StyleSheet.create({
   },
   back: {
     position: "absolute",
-    top: "5%",
+    top: "0%",
     left: "1%",
   },
   forward: {
     position: "absolute",
-    top: "5%",
+    top: "0%",
     right: "1%",
   },
   skipForward: {

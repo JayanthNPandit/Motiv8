@@ -7,26 +7,26 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { ImageManipulator, manipulateAsync } from "expo-image-manipulator";
 import { Camera } from "expo-camera";
-import {
-  fetchGroupImages,
-  fetchRecentGroupImages,
-  addImageToDatabase,
-  addToBucket,
-  fetchUserImages,
-} from "../backendFunctions.js";
+import { fetchUserImages } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
 import back from "../assets/back_arrow.png";
 import heart from "../assets/like.png";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 
 const GalleryScreen = ({ route, navigation }) => {
-  const { user } = useAuth()
+  const { user } = useAuth();
+  const [date, setDate] = useState(null);
+  const [username, setUsername] = useState(route.params.username);
+  const [images, setImages] = useState(null);
+  const [imagesForDay, setImagesForDay] = useState(null);
+  //const [marked, setMarked] = useState({});
 
   const getDate = (date, count) => {
     const newDate = date.setDate(date.getDate() + count);
@@ -35,24 +35,27 @@ const GalleryScreen = ({ route, navigation }) => {
 
   const getImages = async () => {
     const images = await fetchUserImages(user);
-    const dates = await Promise.all(
-      images.map((image) => getDate(image.timestamp, 0))
-    );
-    const uniqueDates = [...new Set(dates)];
-    const markedDates = await Promise.all(
-      uniqueDates.map((date) => {
-        markedDates[date] = true;
-      })
-    );
-    console.log(markedDates);
-    setMarked(markedDates);
+    // const dates = await Promise.all(
+    //   images.map((image) => getDate(image.timestamp, 0))
+    // );
+    // const uniqueDates = [...new Set(dates)];
+    // const markedDates = await Promise.all(
+    //   uniqueDates.map((date) => {
+    //     markedDates[date] = true;
+    //   })
+    // );
+    // console.log(markedDates);
+    // setMarked(markedDates);
     setImages(images);
+    setDate(getDate(new Date(), 0));
   };
 
   const updateImages = async () => {
+    if (date == null || images == null) return;
     const newImages = [];
     await Promise.all(
       images.forEach((image) => {
+        console.log("Here is my timestamp" + image.timestamp);
         if (getDate(image.timestamp, 0) === date) {
           newImages.push(image);
         }
@@ -67,13 +70,15 @@ const GalleryScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     updateImages();
-  }, [date]);
+  }, [date, images]);
 
-  const [date, setDate] = useState(getDate(new Date(), 0));
-  const [username, setUsername] = useState(route.params.username);
-  const [images, setImages] = useState([]);
-  const [imagesForDay, setImagesForDay] = useState([]);
-  const [marked, setMarked] = useState({});
+  if (imagesForDay == null) {
+    return (
+      <View style={{flex: 1, backgroundColor: 'white', alignItems:'center', justifyContent: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <View style={containerStyles.background}>
@@ -109,20 +114,20 @@ const GalleryScreen = ({ route, navigation }) => {
                 setModalVisible(true);
               }}
             >
-            <View>
-              <View>
-                <Text>{username}</Text>
-                <Text>{getDate(item.timestamp, 0)}</Text>
-              </View>
-              <Image source={{ url: item.url }} style={styles.image} />
               <View>
                 <View>
-                  <Image source={heart} />
-                  <Text> {item.likes.length} </Text>
+                  <Text>{username}</Text>
+                  <Text>{getDate(item.timestamp, 0)}</Text>
                 </View>
-                <Text>{item.caption}</Text>
+                <Image source={{ url: item.url }} style={styles.image} />
+                <View>
+                  <View>
+                    <Image source={heart} />
+                    <Text> {item.likes.length} </Text>
+                  </View>
+                  <Text>{item.caption}</Text>
+                </View>
               </View>
-            </View>
             </TouchableOpacity>
           )}
         />

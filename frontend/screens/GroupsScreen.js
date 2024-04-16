@@ -18,7 +18,7 @@ const GroupsScreen = ({ route, navigation }) => {
 
         {!disableNav &&
         <TouchableOpacity
-          style={containerStyles.back}
+          style={{...containerStyles.back, top:'5%'}}
           onPress={() => navigation.navigate("Onboarding")}
         >
           <Image source={back} />
