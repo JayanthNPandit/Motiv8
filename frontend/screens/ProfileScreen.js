@@ -252,8 +252,8 @@ const styles = StyleSheet.create({
     marginVertical: "5%",
   },
   groupTag: {
-    width: "40%",
-    height: "5.5%",
+    width: "60%",
+    height: "6.5%",
     backgroundColor: "#9FA1D1",
     borderRadius: 10,
     justifyContent: "center",

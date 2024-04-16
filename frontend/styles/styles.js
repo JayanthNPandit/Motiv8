@@ -45,6 +45,13 @@ export const textStyles = StyleSheet.create({
     fontWeight: "400",
     lineHeight: 24,
   },
+  textBodyHeaderPurple: {
+    color: '#686CCF',
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+    fontWeight: "400",
+    lineHeight: 24,
+  },
   textBodyHeaderWhiteBold: {
     color: "white",
     fontSize: 16,
@@ -302,7 +309,7 @@ export const containerStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: "10%",
-    marginVertical: "5%",
+    marginVertical: "1%",
   },
   goalsHeaderButtonContainer: {
     alignItems: "flex-start",
@@ -331,6 +338,7 @@ export const containerStyles = StyleSheet.create({
     gap: 10,
     marginVertical: "5%",
     borderWidth: 1,
+    borderColor: '#686CCF'
   },
   purpleButton: {
     display: "flex",
@@ -338,7 +346,7 @@ export const containerStyles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: "4%",
     paddingHorizontal: "15%",
-    backgroundColor: "#4044AB",
+    backgroundColor: "#4C50BD",
     borderRadius: 31,
     gap: 10,
     marginVertical: "5%",
@@ -386,6 +394,7 @@ export const containerStyles = StyleSheet.create({
     borderWidth: 1,
     gap: 10,
     marginVertical: "4%",
+    borderColor: '#686CCF'
   },
   longPurpleButton: {
     display: "flex",
@@ -393,7 +402,7 @@ export const containerStyles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: "4%",
     paddingHorizontal: "35%",
-    backgroundColor: "#4044AB",
+    backgroundColor: "#4C50BD",
     borderRadius: 29,
     gap: 10,
     marginVertical: "4%",
@@ -529,13 +538,18 @@ export const containerStyles = StyleSheet.create({
   },
   back: {
     position: "absolute",
-    top: "1%",
-    left: "5%",
+    top: "5%",
+    left: "1%",
   },
   forward: {
     position: "absolute",
-    top: "1%",
-    right: "5%",
+    top: "5%",
+    right: "1%",
+  },
+  skipForward: {
+    position: "absolute",
+    top: "5%",
+    right: "1%",
   },
   // Way more definitions than i need, i just put it in so i can mess around with it
   customCalendarTheme: {

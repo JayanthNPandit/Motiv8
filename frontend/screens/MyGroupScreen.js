@@ -9,11 +9,13 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
 } from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
+import * as Clipboard from "expo-clipboard";
 import image from "../assets/default-pfp.png";
 import leave from "../assets/leave_group.png";
+import copy from "../assets/copy.png";
 
 const ConfirmGroupScreen = ({ navigation }) => {
   const [names, setNames] = useState(null);
@@ -35,7 +37,7 @@ const ConfirmGroupScreen = ({ navigation }) => {
         })
       );
       setNames(names);
-      setGroupData(data);
+      setGroupData(groupData);
       setGroupID(id);
     };
 
@@ -43,16 +45,20 @@ const ConfirmGroupScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log(groupData);
     console.log(groupID);
-    navigation.navigate("Groups")
-  }, [groupData, groupID])
+  }, [groupData, groupID]);
 
   const handleLeaveGroup = async () => {
+    console.log(groupData);
     await leaveGroup(user, groupID, groupData);
     setGroupID("");
     setGroupData({});
-  }
+    navigation.navigate("Groups");
+  };
+
+  const copyCode = async () => {
+    await Clipboard.setStringAsync(groupID);
+  };
 
   const confirmLeaveGroup = () =>
     Alert.alert("Leave Group", "Are you sure you want to leave the group?", [
@@ -60,14 +66,14 @@ const ConfirmGroupScreen = ({ navigation }) => {
         text: "No",
         style: "cancel",
       },
-      { text: "Yes", onPress: {handleLeaveGroup} },
+      { text: "Yes", onPress: handleLeaveGroup },
     ]);
 
   return (
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
         <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}>{groupData.name}</Text>
+          <Text style={textStyles.header}>Your group</Text>
           <Text style={textStyles.textBodyGray}>
             Your friends in this group!
           </Text>
@@ -79,6 +85,16 @@ const ConfirmGroupScreen = ({ navigation }) => {
         >
           <Image source={leave} />
         </TouchableOpacity>
+
+        <View style={containerStyles.inputContainer}>
+          <Text style={textStyles.textBodyHeader}> Code: </Text>
+          <View style={styles.copyContainer}>
+            <Text> {groupID} </Text>
+            <TouchableOpacity onPress={copyCode}>
+              <Image style={styles.copyImage} source={copy} />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <FlatList
           data={names}
@@ -105,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     marginVertical: "3%",
-    paddingRight: "30%",
+    paddingRight: "40%",
     gap: 10,
   },
   image: {
@@ -113,6 +129,22 @@ const styles = StyleSheet.create({
     height: "40%",
     padding: "15%",
     borderRadius: 1000,
+  },
+  copyImage: {
+    width: 20,
+    height: 20,
+  },
+  copyContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#939393",
+    borderRadius: 16,
+    width: "100%",
+    paddingHorizontal: "2%",
+    paddingVertical: "4.5%",
   },
 });
 

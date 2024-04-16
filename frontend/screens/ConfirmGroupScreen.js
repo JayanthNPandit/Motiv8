@@ -13,6 +13,7 @@ import {
 import { textStyles, containerStyles } from "../styles/styles";
 import { CommonActions } from '@react-navigation/native';
 import image from "../assets/default-pfp.png";
+import back from "../assets/back_arrow.png";
 
 const ConfirmGroupScreen = ({ route, navigation }) => {
   const [isClickable, setIsClickable] = useState(true);

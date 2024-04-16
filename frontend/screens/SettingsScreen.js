@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Switch,
 } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import back from "../assets/back_arrow.png";
@@ -25,6 +26,8 @@ import delIcon from "../assets/del.png";
 
 const SettingsScreen = ({ navigation }) => {
   const { user, logout, del } = useAuth();
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   // logout function
   const handleLogout = async () => {
@@ -60,17 +63,21 @@ const SettingsScreen = ({ navigation }) => {
         text: "No",
         style: "cancel",
       },
-      { text: "Yes", onPress: {handleLogout} },
+      { text: "Yes", onPress: handleLogout },
     ]);
 
   const confirmDelete = () =>
-    Alert.alert("Permanent Action", "Are you sure you want to delete your account?", [
-      {
-        text: "No",
-        style: "cancel",
-      },
-      { text: "Yes", onPress: {handleDelete} },
-    ]);
+    Alert.alert(
+      "Permanent Action",
+      "Are you sure you want to delete your account?",
+      [
+        {
+          text: "No",
+          style: "cancel",
+        },
+        { text: "Yes", onPress: handleDelete },
+      ]
+    );
 
   return (
     <View style={containerStyles.background}>
@@ -90,10 +97,19 @@ const SettingsScreen = ({ navigation }) => {
 
         <View style={styles.setting}>
           <View style={styles.line} />
-          <TouchableOpacity style={styles.option}>
-            <Image source={bell} />
-            <Text style={textStyles.textBody}> Notifications </Text>
-          </TouchableOpacity>
+          <View style={styles.notificationContainer}>
+            <View style={styles.option}>
+              <Image source={bell} />
+              <Text style={textStyles.textBody}> Notifications </Text>
+            </View>
+            <Switch
+              trackColor={{ false: "#767577", true: "#8098D5" }}
+              thumbColor={isEnabled ? "#ffffff" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+          </View>
         </View>
 
         <View style={styles.setting}>
@@ -137,6 +153,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: "5%",
     gap: "15%",
+    width: "80%",
+  },
+  notificationContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
 

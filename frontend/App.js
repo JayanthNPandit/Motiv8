@@ -42,6 +42,7 @@ import purpleProfile from "./assets/purple_profile.png";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ActivityIndicator } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
@@ -101,7 +102,7 @@ export default function App() {
   }, [appIsReady]);
 
   if (!appIsReady) {
-    return null; // what is displayed while the app is loading. could be a loading symbol or a screen, up to y'all
+    return <ActivityIndicator/>; // what is displayed while the app is loading. could be a loading symbol or a screen, up to y'all
   }
 
   return (
@@ -164,33 +165,33 @@ function PhotoStack() {
 function GroupStack() {
 
   const { user } = useAuth();
-  const [initialRoute, setInitialRoute] = useState('');
+  const [initialRoute, setInitialRoute] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         const data = await fetchUserData(user.uid);
         const result = data.groupID ? 'MyGroup' : 'Groups';
-        return result;
+        setInitialRoute(result);
       }
     };
-    fetchData().then((result) => setInitialRoute(result));
-  }, [user]);
+    fetchData();
+  }, []);
 
-  useEffect(() => {
-    console.log(initialRoute);
-  }, [initialRoute])
-
-  return (
-    <Stack.Navigator initialRouteName={initialRoute}>
-      <Stack.Screen name="Groups" component={GroupsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="MyGroup" component={MyGroupScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
-  )
+  if (initialRoute == null) {
+    return <ActivityIndicator />
+  } else {
+    return (
+      <Stack.Navigator initialRouteName={initialRoute}>
+        <Stack.Screen name="Groups" component={GroupsScreen} initialParams={{disableNav: true}} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MyGroup" component={MyGroupScreen} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    )
+  }
 }
 
 function ProfileStack() {
@@ -227,7 +228,7 @@ function AppContent() {
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Groups" component={GroupsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Groups" component={GroupsScreen} initialParams={{disableNav: true}} options={{ headerShown: false }} />
         <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{ headerShown: false }} />
