@@ -133,9 +133,9 @@ const GoalsScreen = ({navigation}) => {
           <View style={containerStyles.goalsHeaderButtonContainer}>
             <View style={containerStyles.goalsHeaderContainer}>
               <Text style={textStyles.header}>Goals</Text>
-                <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
-                    <Image source={addButton} style={{width: 35, height: 35}}/>
-                </TouchableOpacity>
+              <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
+                  <Image source={addButton} style={{width: 35, height: 35}}/>
+              </TouchableOpacity>
             </View> 
           </View>
           <View style={containerStyles.pinnedGoalsContainer}>
@@ -150,7 +150,7 @@ const GoalsScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <Text style={textStyles.textBodyHeaderWhite}>No pinned goals</Text>
+              <Text style={textStyles.textBodyHeaderWhiteBold}>No pinned goals</Text>
             )}
           </View>
           <View style={containerStyles.goalsButtonContainer}>
@@ -168,7 +168,7 @@ const GoalsScreen = ({navigation}) => {
               scrollEventThrottle={16}
             >
               {recurringGoals.length === 0 ? (
-                <View style={styles.emptyContainer}>
+                <View style={containerStyles.recurringGoalContainer}>
                   <Text style={styles.emptyText}>No goals yet!</Text>
                   <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
                     <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
@@ -187,7 +187,7 @@ const GoalsScreen = ({navigation}) => {
                     {recurringGoals.map((item, index) => (
                     <View key={index} style={[containerStyles.recurringGoalContainer, { width: screenWidth - 50 }]}>
                       <View style={styles.progressBarContainer}>
-                        <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1]-2, item[2]))}%` }]} />
+                        <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1]*.75, item[2]))}%` }]} />
                       </View>
                       <View style={styles.goalContentContainer}>
                         <Text style={textStyles.goalText}>{item[0]}</Text>
@@ -212,9 +212,7 @@ const GoalsScreen = ({navigation}) => {
               ))}
             </View>
           </View>
-
           <View style={containerStyles.divider}></View>
-
           <View style={containerStyles.listContainer}>
             <View style={containerStyles.menuContainer}>
               <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
@@ -335,9 +333,10 @@ const styles = StyleSheet.create({
   // New styles for progress bar
   progressBarContainer: {
     width: '100%',
-    height: 5,
+    height: 10,
     backgroundColor: 'lightgray',
     borderRadius: 5,
+    borderWidth: 1,
   },
   progressBar: {
     height: '100%',
@@ -349,6 +348,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%', // Ensure full width to avoid stretching
+    borderWidth: 1,
+    height: 50,
   },
 });
 

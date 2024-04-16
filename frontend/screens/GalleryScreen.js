@@ -109,20 +109,20 @@ const GalleryScreen = ({ route, navigation }) => {
                 setModalVisible(true);
               }}
             >
+            <View>
+              <View>
+                <Text>{username}</Text>
+                <Text>{getDate(item.timestamp, 0)}</Text>
+              </View>
+              <Image source={{ url: item.url }} style={styles.image} />
               <View>
                 <View>
-                  <Text>{username}</Text>
-                  <Text>{getDate(item.timestamp, 0)}</Text>
+                  <Image source={heart} />
+                  <Text> {item.likes.length} </Text>
                 </View>
-                <Image source={{ url: item.url }} style={styles.image} />
-                <View>
-                  <View>
-                    <Image source={heart} />
-                    <Text> {item.likes.length} </Text>
-                  </View>
-                  <Text>{item.caption}</Text>
-                </View>
+                <Text>{item.caption}</Text>
               </View>
+            </View>
             </TouchableOpacity>
           )}
         />

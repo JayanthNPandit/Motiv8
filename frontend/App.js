@@ -23,6 +23,7 @@ import EditGoalScreen from "./screens/EditGoalScreen";
 import SharePhotoScreen from "./screens/SharePhotoScreen";
 import SnapProgressScreen from "./screens/SnapProgressScreen";
 import GalleryScreen from "./screens/GalleryScreen";
+import FeedScreen from "./screens/FeedScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -143,7 +144,7 @@ function TabContent() {
         }
       })}
     >
-      <Tab.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
+      <Tab.Screen name="Feed" component={FeedScreen} options={{headerShown: false}}/>
       <Tab.Screen name="GoalStack" component={GoalStack} options={{headerShown: false}}/>
       <Tab.Screen name="PhotoStack" component={PhotoStack} options={{headerShown: false}}/>
       <Tab.Screen name="GroupStack" component={GroupStack} options={{headerShown: false}}/>

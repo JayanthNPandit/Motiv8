@@ -27,6 +27,11 @@ const AddLongTermGoalScreen = ({navigation}) => {
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
         setIsClickable(false);
+        // check if date, name are filled out and throw alert if not
+        if (!goalName || !date) {
+            Alert.alert("Please fill out all fields");
+            setIsClickable(true);
+        }
         const id = await addGoal(user, goalName, type, frequency, counter, date, description);
         if (!id) {
             setIsClickable(true);
@@ -64,7 +69,7 @@ const AddLongTermGoalScreen = ({navigation}) => {
 
                     <TextInput style={containerStyles.dateInput} value={date} onChangeText={setDate} editable={false} defaultValue='Set a target date'/>
                     
-                    <TouchableOpacity style={{ position: 'absolute', top: '41.5%', left: '85%' }} onPress={() => toggleShowCalendar()}>
+                    <TouchableOpacity style={{ position: 'absolute', top: '36.2%', left: '85%' }} onPress={() => toggleShowCalendar()}>
                     <View style={styles.imageContainer}>
                         <Image source={calendarIcon} style={styles.image} />
                     </View>
@@ -96,7 +101,7 @@ const AddLongTermGoalScreen = ({navigation}) => {
                     </Modal>
 
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
-                    <TextInput style={containerStyles.biggerInput} multiline={true} numberOfLines={4} value={description} onChangeText={setDescription} placeholder='This is optional'/>
+                    <TextInput style={containerStyles.biggerInput} multiline={false} numberOfLines={4} value={description} onChangeText={setDescription} placeholder='This is optional'/>
 
                     <View style={containerStyles.buttonContainer}>
                         <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("AddGoal")}>

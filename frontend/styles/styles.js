@@ -203,8 +203,8 @@ export const containerStyles = StyleSheet.create({
     alignItems: "flex-start",
   },
   pinnedGoalsContainer: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: '10%',
+    marginBottom: '10%',
     backgroundColor: "#4044AB",
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -287,7 +287,7 @@ export const containerStyles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: "2%",
     paddingVertical: "5%",
-    height: '50%', 
+    height: '20%', 
     textAlignVertical: 'top'
   },
   captionInput: {
@@ -325,7 +325,9 @@ export const containerStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: "10%",
-    marginVertical: "1%",
+    marginTop: "8%",
+    marginBottom: "-5%",
+    borderWidth: 10,
   },
   whiteButton: {
     display: "flex",
@@ -435,12 +437,10 @@ export const containerStyles = StyleSheet.create({
     borderRadius: "15%",
     borderColor: "#FFFFFF",
     borderWidth: "5%",
-    gap: "20%",
-    marginTop: "1%",
-    marginBottom: "5%",
-    height: 110,
+    height: '10%',
     fontFamily: "Poppins-Regular",
     fontSize: 20,
+    width: "400%",
   },
   longTermGoalContainer: {
     alignItems: "flex-start",
@@ -469,7 +469,8 @@ export const containerStyles = StyleSheet.create({
     width: "100%",
     height: 1,
     backgroundColor: "#939393",
-    marginVertical: "5%",
+    marginVertical: "15%",
+    borderWidth: 0,
   },
   goalDivider: {
     width: "100%",
