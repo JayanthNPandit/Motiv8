@@ -23,6 +23,7 @@ import EditGoalScreen from "./screens/EditGoalScreen";
 import SharePhotoScreen from "./screens/SharePhotoScreen";
 import SnapProgressScreen from "./screens/SnapProgressScreen";
 import GalleryScreen from "./screens/GalleryScreen";
+import FeedScreen from "./screens/FeedScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -142,7 +143,7 @@ function TabContent() {
         }
       })}
     >
-      <Tab.Screen name="Feed" component={UploadPhotoScreen} options={{headerShown: false}}/>
+      <Tab.Screen name="Feed" component={FeedScreen} options={{headerShown: false}}/>
       <Tab.Screen name="GoalStack" component={GoalStack} options={{headerShown: false}}/>
       <Tab.Screen name="PhotoStack" component={PhotoStack} options={{headerShown: false}}/>
       <Tab.Screen name="GroupStack" component={GroupStack} options={{headerShown: false}}/>
@@ -178,17 +179,17 @@ function GroupStack() {
   }, [user]);
 
   useEffect(() => {
-    console.log(initialRoute);
+    console.log("." + initialRoute + ".");
   }, [initialRoute])
 
   return (
     <Stack.Navigator initialRouteName={initialRoute}>
+      <Stack.Screen name="MyGroup" component={MyGroupScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Groups" component={GroupsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ headerShown: false }} />
       <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ConfirmGroup" component={ConfirmGroupScreen} options={{ headerShown: false }} />
       <Stack.Screen name="GroupCode" component={GroupCodeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="MyGroup" component={MyGroupScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

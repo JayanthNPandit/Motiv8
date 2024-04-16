@@ -15,7 +15,7 @@ import { textStyles, containerStyles } from "../styles/styles";
 import image from "../assets/default-pfp.png";
 import leave from "../assets/leave_group.png";
 
-const ConfirmGroupScreen = ({ navigation }) => {
+const MyGroupScreen = ({ navigation }) => {
   const [names, setNames] = useState(null);
   const [groupData, setGroupData] = useState(null);
   const [groupID, setGroupID] = useState("");
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfirmGroupScreen;
+export default MyGroupScreen;
