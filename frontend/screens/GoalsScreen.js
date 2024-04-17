@@ -68,28 +68,35 @@ const GoalsScreen = ({navigation}) => {
 
   const setPin = (goal) => {
     // Put the current pinned goal back into the long-term goals list
-    setLongTermGoals(prevPinnedGoals => [pinnedGoal, ...prevPinnedGoals]);
-    
+    setLongTermGoals((prevLongTermGoals) => [...prevLongTermGoals, pinnedGoal]);
+  
     // Set pinned goal to the new goal
     setPinnedGoal(goal);
-
+  
     // Set the description of the pinned goal
-    setPinnedGoalDescription(goals.find(item => item.name === goal).description);
-
+    const pinnedGoalDescription = goals.find(item => item.name === goal)?.description || 'No Description...';
+    setPinnedGoalDescription(pinnedGoalDescription);
+  
     // Set the pinned status
     setPinned(true);
   
     // Remove the goal from the long-term goals list
-    setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== goal));
-  }
-
+    setLongTermGoals((prevPinnedGoals) => prevPinnedGoals.filter((item) => item !== goal));
+  };
+  
   const removePin = () => {
-    // Put the current pinned goal back into the long-term goals list
-    setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
-
+    // Put the current pinned goal back into the long-term goals list only if there is already something pinned
+    if (pinned) {
+      setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
+    }
+  
+    // Reset pinned goal and description
+    setPinnedGoal(null);
+    setPinnedGoalDescription(null);
+  
     // Set pinned status
     setPinned(false);
-  }
+  };  
 
   const onRefresh = () => {
     setRefreshing(true); // Start refreshing
@@ -131,7 +138,7 @@ const GoalsScreen = ({navigation}) => {
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
                   <Text style={textStyles.textBodyHeaderWhiteBold}>{pinnedGoal}</Text>
-                  {pinnedGoalDescription && <Text style={textStyles.goalText}>{pinnedGoalDescription}</Text>}
+                  <Text style={textStyles.goalText}>{pinnedGoalDescription}</Text>
                 </View>
                 <TouchableOpacity onPress={removePin}>
                   <Image source={pinButton} style={{ width: 20, height: 20 }} />
@@ -145,7 +152,7 @@ const GoalsScreen = ({navigation}) => {
             <View style={containerStyles.headerContainer}>
               <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
             </View> 
-              <Image source={dropDownImage} style={{width: 20, height: 20, position: 'absolute', left: 225, bottom: 20}}/>
+            <Image source={dropDownImage} style={{width: 20, height: 20, position: 'absolute', left: 225, bottom: 20}}/>
           </View>
           <View style={containerStyles.goalsButtonContainer}>
             <View>
@@ -156,7 +163,7 @@ const GoalsScreen = ({navigation}) => {
               showsHorizontalScrollIndicator={false}
               onScroll={handleScroll}
               scrollEventThrottle={16}
-              marginBottom={"-40%"}
+              marginBottom={"-42%"}
             >
               {recurringGoals.length == 0 ? (
                 <View style={styles.container}>
@@ -167,7 +174,7 @@ const GoalsScreen = ({navigation}) => {
                 </View>
               ) : (
                 recurringGoals.map((item, index) => (
-                  <View key={index} style={[containerStyles.recurringGoalContainer, { width: screenWidth - 50 }]}>
+                  <View key={index} style={[containerStyles.recurringGoalContainer, { width: 0.9*screenWidth }]}>
                     <View style={styles.progressBarContainer}>
                       <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1] - 2, item[2]))}%` }]} />
                     </View>
@@ -315,7 +322,7 @@ const styles = StyleSheet.create({
   // New styles for progress bar
   progressBarContainer: {
     width: '100%',
-    height: 5,
+    height: '20%',
     backgroundColor: 'lightgray',
     borderRadius: 5,
   },
@@ -329,6 +336,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%', // Ensure full width to avoid stretching
+    marginTop: 5,
   },
 });
 
