@@ -215,8 +215,8 @@ const GoalsScreen = ({navigation}) => {
               <View>
                 <Image source={backgroundImage} style={styles.backgroundImage} />
                 <TouchableOpacity onPress={() => navigation.navigate("AddGoal")}>
-                  <View style={containerStyles.whiteButton}>
-                    <Text style={textStyles.blackGoalText}>Add your first goal!</Text>
+                  <View style={{...containerStyles.whiteButton, borderColor: '#8098D5', borderWidth: 2}}>
+                    <Text style={textStyles.textBodyHeaderBlue}>Add your first goal!</Text>
                   </View>
                 </TouchableOpacity>
               </View>

@@ -59,6 +59,13 @@ export const textStyles = StyleSheet.create({
     fontWeight: "400",
     lineHeight: 24,
   },
+  textBodyHeaderBlue: {
+    color: '#8098D5',
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+    fontWeight: "400",
+    lineHeight: 24,
+  },
   textBodyHeaderWhiteBold: {
     color: "white",
     fontSize: 16,

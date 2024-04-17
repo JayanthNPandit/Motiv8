@@ -128,15 +128,6 @@ const ProfileScreen = ({ navigation }) => {
           </Text>
         </View>
 
-        {edit && (
-          <TouchableOpacity
-            style={containerStyles.back}
-            onPress={handleCancel}
-          >
-            <Image source={back} />
-          </TouchableOpacity>
-        )}
-
         {!edit && (
           <TouchableOpacity
             style={containerStyles.forward}
@@ -157,11 +148,10 @@ const ProfileScreen = ({ navigation }) => {
               source={imageUrl === "" ? image : { url: origImageUrl }}
             />
           )}
-          {edit && <Image style={styles.image} source={{ url: imageUrl }} />}
+          {edit && <Image style={styles.image} source={imageUrl === "" ? image : { url: imageUrl }} />}
         </TouchableOpacity>
 
         {groupData !== "" && group !== "" && (
-          
           <View style={styles.groupTag}>
             <Text style={textStyles.textBodySmallWhite}>{groupData.name}</Text>
             {edit && (
@@ -194,35 +184,48 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.editContainer}>
             <TouchableOpacity
               style={{
-                ...containerStyles.longWhiteButton,
-                paddingHorizontal: "35%",
-                marginBottom: "1%",
+                ...containerStyles.purpleButton,
+                marginBottom: "0%",
               }}
-              onPress={() => setEdit(true)}
+              onPress={() =>
+                navigation.navigate("Gallery", { username: origUsername })
+              }
             >
-              <Text style={textStyles.textBodySmall}>Edit Profile</Text>
+              <Text style={textStyles.textBodyHeaderWhite}>
+                View all your photos
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                ...containerStyles.longPurpleButton,
+                ...containerStyles.whiteButton,
                 paddingHorizontal: "25%",
               }}
-              onPress={() => navigation.navigate("Gallery", {username: origUsername})}
+              onPress={() => setEdit(true)}
             >
-              <Text style={{ ...textStyles.textBodySmall, color: "white" }}>
-                View all your photos
-              </Text>
+              <Text style={textStyles.textBodyHeaderPurple}>Edit Profile</Text>
             </TouchableOpacity>
           </View>
         )}
         {edit && (
-          <View style={containerStyles.buttonContainer}>
+          <View style={styles.editContainer}>
             <TouchableOpacity
-              style={containerStyles.purpleButton}
+              style={{
+                ...containerStyles.purpleButton,
+                marginBottom: "0%",
+              }}
               disabled={!isClickable}
               onPress={handleChange}
             >
-              <Text style={textStyles.textBodyHeaderWhite}>Save</Text>
+              <Text style={textStyles.textBodyHeaderWhite}>Save Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                ...containerStyles.whiteButton,
+                paddingHorizontal: "20%",
+              }}
+              onPress={handleCancel}
+            >
+              <Text style={textStyles.textBodyHeaderPurple}>Cancel</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -265,7 +268,6 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     marginBottom: "7%",
   },
-  
 });
 
 export default ProfileScreen;

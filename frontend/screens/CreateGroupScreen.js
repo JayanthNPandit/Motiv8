@@ -54,7 +54,7 @@ const CreateGroupScreen = ({ navigation }) => {
             onPress={() => navigation.navigate("Groups")}
             disabled={!isClickable}
           >
-            <Text style={textStyles.textBodyHeader}> Back </Text>
+            <Text style={textStyles.textBodyHeaderPurple}> Back </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={containerStyles.purpleButton}

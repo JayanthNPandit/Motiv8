@@ -77,7 +77,7 @@ const ConfirmGroupScreen = ({ route, navigation }) => {
             onPress={() => navigation.navigate("JoinGroup")}
             disabled={!isClickable}
           >
-            <Text style={textStyles.textBodyHeader}> Back </Text>
+            <Text style={textStyles.textBodyHeaderPurple}> Back </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={containerStyles.purpleButton}
