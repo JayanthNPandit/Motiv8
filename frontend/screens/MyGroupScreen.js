@@ -74,7 +74,7 @@ const MyGroupScreen = ({ navigation }) => {
     <View style={containerStyles.background}>
       <View style={{...containerStyles.container, marginHorizontal: 22}}>
         <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}>Your group</Text>
+          <Text style={textStyles.header}>Your Group</Text>
           <Text style={textStyles.textBodyGray}>
             Your friends in this group!
           </Text>

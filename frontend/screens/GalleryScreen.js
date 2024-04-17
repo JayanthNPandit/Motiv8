@@ -24,10 +24,9 @@ import download from "../assets/download.png";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 import * as MediaLibrary from "expo-media-library";
 
-const GalleryScreen = ({ route, navigation }) => {
+const GalleryScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [date, setDate] = useState("");
-  const [username, setUsername] = useState(route.params.username);
   const [ready, setReady] = useState(false);
   const [allImages, setAllImages] = useState(null);
   const [markedImages, setMarkedImages] = useState(null);
@@ -152,7 +151,7 @@ const GalleryScreen = ({ route, navigation }) => {
             renderItem={({ item }) => (
               <View style={styles.imageContainer}>
                 <View style={styles.title}>
-                  <Text style={textStyles.textBodyHeader}>{username}</Text>
+                  <Text style={textStyles.textBodyHeader}>{item.username}</Text>
                   <View style={styles.downloadContainer}>
                     <Text style={textStyles.textBodySmall}>
                       {item.timestampString}

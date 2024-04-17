@@ -342,6 +342,7 @@ export const addToBucket = async (user, directory, imageUrl) => {
 // adding image to the database
 export const addImageToDatabase = async (user, goals, caption, url, name) => {
   const userID = user.uid;
+  const userData = await fetchUserData(userID);
   // add image
   const data = {
     goals: goals,
@@ -350,7 +351,8 @@ export const addImageToDatabase = async (user, goals, caption, url, name) => {
     imagePath: name,
     timestamp: new Date(),
     timestampString: new Date().toISOString().split('T')[0],
-    likes: []
+    likes: [],
+    username: userData.username
   };
   console.log(data);
   const addedImage = await addDoc(
