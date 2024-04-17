@@ -80,7 +80,7 @@ const MyGroupScreen = ({ navigation }) => {
         </View>
 
         <TouchableOpacity
-          style={containerStyles.forward}
+          style={{...containerStyles.forward, right: '5%'}}
           onPress={confirmLeaveGroup}
         >
           <Image source={leave} />

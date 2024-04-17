@@ -46,7 +46,7 @@ export const textStyles = StyleSheet.create({
     lineHeight: 24,
   },
   textBodyHeaderPurple: {
-    color: '#686CCF',
+    color: '#4044AB',
     fontSize: 16,
     fontFamily: "Poppins-Regular",
     fontWeight: "400",
