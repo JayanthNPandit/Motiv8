@@ -353,6 +353,7 @@ export const addImageToDatabase = async (user, goals, caption, url) => {
     caption: caption,
     imageUrl: url,
     timestamp: new Date(),
+    timestampString: new Date().toISOString().split('T')[0],
     likes: []
     // add list of people who liked the image
   };

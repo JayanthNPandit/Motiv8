@@ -71,7 +71,7 @@ const MyGroupScreen = ({ navigation }) => {
 
   return (
     <View style={containerStyles.background}>
-      <View style={containerStyles.container}>
+      <View style={{...containerStyles.container, marginHorizontal: 22}}>
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}>Your group</Text>
           <Text style={textStyles.textBodyGray}>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     marginVertical: "3%",
-    paddingRight: "40%",
+    paddingRight: "45%",
     gap: 10,
   },
   image: {

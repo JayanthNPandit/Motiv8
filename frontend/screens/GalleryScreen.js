@@ -22,66 +22,57 @@ import { Calendar, CalendarUtils } from "react-native-calendars";
 
 const GalleryScreen = ({ route, navigation }) => {
   const { user } = useAuth();
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState("");
   const [username, setUsername] = useState(route.params.username);
-  const [images, setImages] = useState(null);
-  const [imagesForDay, setImagesForDay] = useState(null);
-  //const [marked, setMarked] = useState({});
+  const [ready, setReady] = useState(false);
+  const [allImages, setAllImages] = useState(null);
+  const [dayImages, setDayImages] = useState([]);
 
-  const getDate = (date, count) => {
-    const newDate = date.setDate(date.getDate() + count);
-    return CalendarUtils.getCalendarDateString(newDate);
-  };
-
-  const getImages = async () => {
+  const getUserImages = async () => {
     const images = await fetchUserImages(user);
-    // const dates = await Promise.all(
-    //   images.map((image) => getDate(image.timestamp, 0))
-    // );
-    // const uniqueDates = [...new Set(dates)];
-    // const markedDates = await Promise.all(
-    //   uniqueDates.map((date) => {
-    //     markedDates[date] = true;
-    //   })
-    // );
-    // console.log(markedDates);
-    // setMarked(markedDates);
-    setImages(images);
-    setDate(getDate(new Date(), 0));
+    setAllImages(images);
   };
 
-  const updateImages = async () => {
-    if (date == null || images == null) return;
-    const newImages = [];
-    await Promise.all(
-      images.forEach((image) => {
-        console.log("Here is my timestamp" + image.timestamp);
-        if (getDate(image.timestamp, 0) === date) {
-          newImages.push(image);
-        }
-      })
-    );
-    setImagesForDay(newImages);
+  const getDayImages = async () => {
+    const tempImages = [];
+    for (const image of allImages) {
+      console.log(image.timestampString);
+      if (image.timestampString === date) {
+        tempImages.push(image);
+      }
+    }
+    console.log(tempImages);
+    setDayImages(tempImages);
   };
 
   useEffect(() => {
-    getImages();
+    //console.log(new Date().toISOString().split('T')[0]);
+    setDate(new Date().toISOString().split("T")[0]);
+    getUserImages();
   }, []);
 
   useEffect(() => {
-    updateImages();
-  }, [date, images]);
+    if (allImages !== null) {
+      setReady(true);
+    }
+  }, [allImages]);
 
-  if (imagesForDay == null) {
+  useEffect(() => {
+    if (ready && date !== "") {
+      getDayImages();
+    }
+  }, [ready, date]);
+
+  if (!ready) {
     return (
-      <View style={{flex: 1, backgroundColor: 'white', alignItems:'center', justifyContent: 'center'}}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator />
       </View>
     );
   }
 
   return (
-    <View style={containerStyles.background}>
+    <ScrollView style={containerStyles.background}>
       <View style={containerStyles.container}>
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}> Gallery </Text>
@@ -105,40 +96,55 @@ const GalleryScreen = ({ route, navigation }) => {
         </View>
 
         <FlatList
-          data={imagesForDay}
+          data={dayImages}
           keyExtractor={(item, index) => index.toString()}
+          style={styles.container}
+          scrollEnabled={false}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedImage(item.url);
-                setModalVisible(true);
-              }}
-            >
+            <View style={styles.imageContainer}>
+              <View style={styles.title}>
+                <Text style={textStyles.textBodyHeader}>{username}</Text>
+                <Text style={textStyles.textBodySmall}>
+                  {item.timestampString}
+                </Text>
+              </View>
+              <Image source={{ url: item.imageUrl }} style={styles.image} />
               <View>
                 <View>
-                  <Text>{username}</Text>
-                  <Text>{getDate(item.timestamp, 0)}</Text>
+                  <Image source={heart} />
+                  <Text> {item.likes.length} </Text>
                 </View>
-                <Image source={{ url: item.url }} style={styles.image} />
-                <View>
-                  <View>
-                    <Image source={heart} />
-                    <Text> {item.likes.length} </Text>
-                  </View>
-                  <Text>{item.caption}</Text>
-                </View>
+                <Text>{item.caption}</Text>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   calendar: {
     borderRadius: 10,
+    marginBottom: "7%",
+  },
+  container: {
+    width: "100%",
+    height: '1000%'
+  },
+  imageContainer: {
+    padding: 10,
+  },
+  title: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  image: {
+    width: "100%",
+    height: '100%'
   },
 });
 

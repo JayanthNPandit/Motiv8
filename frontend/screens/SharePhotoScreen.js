@@ -65,7 +65,8 @@ const SharePhotoScreen = ({navigation}) => {
         console.log("caption: " + caption);
         console.log("goals: " + selectedGoals);
         console.log("user: " + user);
-        const id = await addImageToDatabase(user, selectedGoals, caption, imageUrl);
+        const {downloadUrl, name} = await addToBucket(user, 'images', imageUrl);
+        const id = await addImageToDatabase(user, selectedGoals, caption, downloadUrl);
         console.log("id: " + id);
         if (!id) {
           Alert.alert("Error uploading image. Try again");
