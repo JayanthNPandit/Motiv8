@@ -27,6 +27,7 @@ const GalleryScreen = ({ route, navigation }) => {
   const [ready, setReady] = useState(false);
   const [allImages, setAllImages] = useState(null);
   const [dayImages, setDayImages] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
 
   const getUserImages = async () => {
     const images = await fetchUserImages(user);
@@ -35,17 +36,25 @@ const GalleryScreen = ({ route, navigation }) => {
 
   const getDayImages = async () => {
     const tempImages = [];
+    const isClickedArray = [];
     for (const image of allImages) {
       if (image.timestampString === date) {
         tempImages.push(image);
+        isClickedArray.push(false);
       }
     }
+    console.log(tempImages);
+    setIsClicked(isClickedArray);
     setDayImages(tempImages);
   };
 
   const handleSwap = async (day) => {
     setDate(day.dateString);
-  }
+  };
+
+  const handleClick = () => {
+    setIsClicked(!isClicked);
+  };
 
   useEffect(() => {
     //console.log(new Date().toISOString().split('T')[0]);
@@ -99,32 +108,57 @@ const GalleryScreen = ({ route, navigation }) => {
             />
           </View>
         </View>
-        <FlatList
-          data={dayImages}
-          keyExtractor={(item, index) => index.toString()}
-          scrollEnabled={false}
-          style={{ width: "100%", height: 500 * allImages.length, borderWidth: 1, borderColor: '#8E99AB' }}
-          renderItem={({ item }) => (
-            <View style={styles.imageContainer}>
-              <View style={styles.title}>
-                <Text style={textStyles.textBodyHeader}>{username}</Text>
-                <Text style={textStyles.textBodySmall}>
-                  {item.timestampString}
-                </Text>
-              </View>
-              <Image source={{ url: item.imageUrl }} style={styles.image} />
-              <View style={styles.bottomHalf}>
-                <View style={styles.likes}>
-                  <Image source={heart} />
-                  <Text style={textStyles.textBodyHeaderPurple}>
-                    {item.likes.length}
+
+        {dayImages.length > 0 && (
+          <FlatList
+            data={dayImages}
+            keyExtractor={(item, index) => index.toString()}
+            scrollEnabled={false}
+            style={{ width: "100%", height: 500 * dayImages.length }}
+            renderItem={({ item }) => (
+              <View style={styles.imageContainer}>
+                <View style={styles.title}>
+                  <Text style={textStyles.textBodyHeader}>{username}</Text>
+                  <Text style={textStyles.textBodySmall}>
+                    {item.timestampString}
                   </Text>
                 </View>
-                <Text style={textStyles.textBodySmall}>{item.caption}</Text>
+                <TouchableOpacity onPress={handleClick} activeOpacity={0.9}>
+                  <Image source={{ url: item.imageUrl }} style={styles.image} />
+                  {isClicked && <View style={styles.clickedImage} />}
+                </TouchableOpacity>
+                {isClicked && (
+                  <View style={styles.overlay}>
+                    <Text style={textStyles.subheaderWhite}>
+                      Tagged Goals
+                    </Text>
+                    {item.goals.map((item, index) => (
+                      <View style={styles.goal}>
+                        <Text style={{...textStyles.textBodyHeaderWhite, textAlign: 'left'}}> {item} </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+                <View style={styles.bottomHalf}>
+                  <View style={styles.likes}>
+                    <Image source={heart} />
+                    <Text style={textStyles.textBodyHeaderPurpleBold}>
+                      {item.likes.length}
+                    </Text>
+                  </View>
+                  <View style={styles.caption}>
+                    <Text style={textStyles.textBodySmall}>{item.caption}</Text>
+                    <Text
+                      style={{ ...textStyles.textBodySmall, color: "#8E99AB" }}
+                    >
+                      Tap photo to view associated goals
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          )}
-        />
+            )}
+          />
+        )}
         <View style={{ marginBottom: "10%" }} />
       </View>
     </ScrollView>
@@ -136,31 +170,73 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: "15%",
   },
+  imageContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    marginVertical: "2%",
+  },
   title: {
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
     padding: 5,
+    borderWidth: 1,
+    borderColor: "#8E99AB",
   },
   image: {
     width: "100%",
-    height: "100%",
-    marginVertical: "1%",
+    height: 300,
   },
-  likes: {
-    display: "flex",
-    flexDirection: 'column',
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
+  clickedImage: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   bottomHalf: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-around",
+    paddingVertical: "2%",
+    paddingHorizontal: '2%',
+    borderWidth: 1,
+    borderColor: "#8E99AB",
   },
+  likes: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  caption: {
+    paddingRight: "15%",
+  },
+  overlay: {
+    position: "absolute",
+    top: "15%", // Adjust position as needed
+    left: "10%", // Adjust position as needed
+    color: "white",
+    padding: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "white",
+    zIndex: 10, // Ensure text appears above the image,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 10,
+    width: '80%',
+    height: '50%'
+  },
+  goal: {
+    width: '90%',
+    paddingHorizontal: '1%',
+    paddingVertical: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "white",
+  }
 });
 
 export default GalleryScreen;
