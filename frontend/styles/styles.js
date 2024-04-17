@@ -21,6 +21,13 @@ export const textStyles = StyleSheet.create({
     fontWeight: "500",
     lineHeight: 32,
   },
+  subheaderWhite: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "Poppins-Regular",
+    fontWeight: "500",
+    lineHeight: 32,
+  },
   sectionHeader: {
     color: "black",
     fontSize: 20,
@@ -56,6 +63,13 @@ export const textStyles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontFamily: "Poppins-Bold",
+    fontWeight: "400",
+    lineHeight: 24,
+  },
+  textBodyHeaderPurpleBold: {
+    color: '#4044AB',
+    fontSize: 16,
+    fontFamily: "Poppins-SemiBold",
     fontWeight: "400",
     lineHeight: 24,
   },
