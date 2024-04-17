@@ -327,7 +327,6 @@ export const containerStyles = StyleSheet.create({
     gap: "10%",
     marginTop: "8%",
     marginBottom: "-5%",
-    borderWidth: 10,
   },
   whiteButton: {
     display: "flex",
@@ -437,10 +436,12 @@ export const containerStyles = StyleSheet.create({
     borderRadius: "15%",
     borderColor: "#FFFFFF",
     borderWidth: "5%",
-    height: '10%',
+    height: '35%',
     fontFamily: "Poppins-Regular",
     fontSize: 20,
     width: "400%",
+    gap: "15%",
+    marginBottom: "2%",
   },
   longTermGoalContainer: {
     alignItems: "flex-start",

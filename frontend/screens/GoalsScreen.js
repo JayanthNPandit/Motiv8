@@ -60,45 +60,33 @@ const GoalsScreen = ({navigation}) => {
     setRecurringGoals(recurring);
     setLongTermGoals(longTerm);
 
-    console.log("Long term goals before pinning: " + longTermGoals);
-
-    // remove the pinned goal from the long-term goals list if it is there
-    if (pinned) {
-      setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== pinnedGoal));
-    }
-
     console.log("Recurring goals: " + recurringGoals);
-    console.log("Long term goals after pinning: " + longTermGoals);
+    console.log("Long term goals: " + longTermGoals);
     console.log("Pinned goal: " + pinnedGoal);
     console.log("Pinned goal description: " + pinnedGoalDescription);
   }
 
   const setPin = (goal) => {
-    // Put the current pinned goal back into the long-term goals list only if there is already something pinned
-    if (pinned) {
-      setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
-    }
-  
+    // Put the current pinned goal back into the long-term goals list
+    setLongTermGoals(prevPinnedGoals => [pinnedGoal, ...prevPinnedGoals]);
+    
     // Set pinned goal to the new goal
     setPinnedGoal(goal);
-  
-    // Set the description of the pinned goal
-    const goalDescription = goals.find(item => item.name === goal)?.description || 'No Description...';
-    setPinnedGoalDescription(goalDescription);
 
-    // remove the pinned goal from the long-term goals list
-    setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== goal));
-  
+    // Set the description of the pinned goal
+    setPinnedGoalDescription(goals.find(item => item.name === goal).description);
+
     // Set the pinned status
     setPinned(true);
+  
+    // Remove the goal from the long-term goals list
+    setLongTermGoals(prevLongTermGoals => prevLongTermGoals.filter(item => item !== goal));
   }
-  
+
   const removePin = () => {
-    // Put the current pinned goal back into the long-term goals list only if there is already something pinned
-    if (pinned) {
-      setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
-    }
-  
+    // Put the current pinned goal back into the long-term goals list
+    setLongTermGoals(prevLongTermGoals => [...prevLongTermGoals, pinnedGoal]);
+
     // Set pinned status
     setPinned(false);
   }
@@ -133,9 +121,9 @@ const GoalsScreen = ({navigation}) => {
           <View style={containerStyles.goalsHeaderButtonContainer}>
             <View style={containerStyles.goalsHeaderContainer}>
               <Text style={textStyles.header}>Goals</Text>
-              <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
-                  <Image source={addButton} style={{width: 35, height: 35}}/>
-              </TouchableOpacity>
+                <TouchableOpacity style={containerStyles.greenButton} onPress={() => navigation.navigate("AddGoal")}>
+                    <Image source={addButton} style={{width: 35, height: 35}}/>
+                </TouchableOpacity>
             </View> 
           </View>
           <View style={containerStyles.pinnedGoalsContainer}>
@@ -150,7 +138,7 @@ const GoalsScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <Text style={textStyles.textBodyHeaderWhiteBold}>No pinned goals</Text>
+              <Text style={textStyles.textBodyHeaderWhite}>No pinned goals</Text>
             )}
           </View>
           <View style={containerStyles.goalsButtonContainer}>
@@ -162,43 +150,35 @@ const GoalsScreen = ({navigation}) => {
           <View style={containerStyles.goalsButtonContainer}>
             <View>
             <ScrollView
+              ref={scrollViewRef}
               horizontal
+              pagingEnabled
               showsHorizontalScrollIndicator={false}
               onScroll={handleScroll}
               scrollEventThrottle={16}
+              marginBottom={"-40%"}
             >
-              {recurringGoals.length === 0 ? (
-                <View style={containerStyles.recurringGoalContainer}>
+              {recurringGoals.length == 0 ? (
+                <View style={styles.container}>
                   <Text style={styles.emptyText}>No goals yet!</Text>
                   <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
                     <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                   </TouchableOpacity>
                 </View>
               ) : (
-                <View>
-                  <ScrollView
-                    ref={scrollViewRef}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={handleScroll}
-                    scrollEventThrottle={16}
-                  >
-                    {recurringGoals.map((item, index) => (
-                    <View key={index} style={[containerStyles.recurringGoalContainer, { width: screenWidth - 50 }]}>
-                      <View style={styles.progressBarContainer}>
-                        <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1]*.75, item[2]))}%` }]} />
-                      </View>
-                      <View style={styles.goalContentContainer}>
-                        <Text style={textStyles.goalText}>{item[0]}</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("EditGoal")}>
-                          <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                      </View>
+                recurringGoals.map((item, index) => (
+                  <View key={index} style={[containerStyles.recurringGoalContainer, { width: screenWidth - 50 }]}>
+                    <View style={styles.progressBarContainer}>
+                      <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1] - 2, item[2]))}%` }]} />
                     </View>
-                    ))}
-                  </ScrollView>
-                </View>
+                    <View style={styles.goalContentContainer}>
+                      <Text style={textStyles.goalText}>{item[0]}</Text>
+                      <TouchableOpacity onPress={() => navigation.navigate("EditGoal")}>
+                        <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))
               )}
             </ScrollView>
             </View>
@@ -212,7 +192,9 @@ const GoalsScreen = ({navigation}) => {
               ))}
             </View>
           </View>
+
           <View style={containerStyles.divider}></View>
+
           <View style={containerStyles.listContainer}>
             <View style={containerStyles.menuContainer}>
               <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
@@ -333,10 +315,9 @@ const styles = StyleSheet.create({
   // New styles for progress bar
   progressBarContainer: {
     width: '100%',
-    height: 10,
+    height: 5,
     backgroundColor: 'lightgray',
     borderRadius: 5,
-    borderWidth: 1,
   },
   progressBar: {
     height: '100%',
@@ -348,8 +329,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%', // Ensure full width to avoid stretching
-    borderWidth: 1,
-    height: 50,
   },
 });
 
