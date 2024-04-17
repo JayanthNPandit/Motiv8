@@ -324,18 +324,11 @@ export const fetchUserImages = async (user) => {
 
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
-  console.log("adding to bucket");
   const response = await fetch(imageUrl);
-  console.log("fetched image")
   const blob = await response.blob();
-  console.log("blobbed image")
   const name = `${directory}/${new Date().toISOString()}`;
-  console.log("name: " + name);
   const imageRef = ref(storage, name);
-  console.log("image ref: " + imageRef);
-
   try {
-    console.log("uploading image");
     await uploadBytes(imageRef, blob);
   } catch (e) {
     console.log(e);
@@ -347,17 +340,17 @@ export const addToBucket = async (user, directory, imageUrl) => {
 };
 
 // adding image to the database
-export const addImageToDatabase = async (user, goals, caption, url) => {
+export const addImageToDatabase = async (user, goals, caption, url, name) => {
   const userID = user.uid;
   // add image
   const data = {
     goals: goals,
     caption: caption,
     imageUrl: url,
+    imagePath: name,
     timestamp: new Date(),
     timestampString: new Date().toISOString().split('T')[0],
     likes: []
-    // add list of people who liked the image
   };
   console.log(data);
   const addedImage = await addDoc(

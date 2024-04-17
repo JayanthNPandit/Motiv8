@@ -66,7 +66,7 @@ const SharePhotoScreen = ({navigation}) => {
         console.log("goals: " + selectedGoals);
         console.log("user: " + user);
         const {downloadUrl, name} = await addToBucket(user, 'images', imageUrl);
-        const id = await addImageToDatabase(user, selectedGoals, caption, downloadUrl);
+        const id = await addImageToDatabase(user, selectedGoals, caption, downloadUrl, name);
         console.log("name: " + name);
         console.log("id: " + id);
         if (!id) {

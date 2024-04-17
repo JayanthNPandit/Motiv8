@@ -8,6 +8,8 @@ import {
   ScrollView,
   FlatList,
   ActivityIndicator,
+  Touchable,
+  Alert,
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import * as ImagePicker from "expo-image-picker";
@@ -18,7 +20,9 @@ import { fetchUserImages } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
 import back from "../assets/back_arrow.png";
 import heart from "../assets/like.png";
+import download from "../assets/download.png";
 import { Calendar, CalendarUtils } from "react-native-calendars";
+import * as MediaLibrary from "expo-media-library";
 
 const GalleryScreen = ({ route, navigation }) => {
   const { user } = useAuth();
@@ -26,25 +30,27 @@ const GalleryScreen = ({ route, navigation }) => {
   const [username, setUsername] = useState(route.params.username);
   const [ready, setReady] = useState(false);
   const [allImages, setAllImages] = useState(null);
+  const [markedImages, setMarkedImages] = useState(null);
   const [dayImages, setDayImages] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
 
   const getUserImages = async () => {
     const images = await fetchUserImages(user);
+    const markedTemp = {};
+    for (const image of images) {
+      markedTemp[image.timestampString] = {marked: true};
+    }
     setAllImages(images);
+    setMarkedImages(markedTemp);
   };
 
   const getDayImages = async () => {
     const tempImages = [];
-    const isClickedArray = [];
     for (const image of allImages) {
       if (image.timestampString === date) {
         tempImages.push(image);
-        isClickedArray.push(false);
       }
     }
-    console.log(tempImages);
-    setIsClicked(isClickedArray);
     setDayImages(tempImages);
   };
 
@@ -56,17 +62,45 @@ const GalleryScreen = ({ route, navigation }) => {
     setIsClicked(!isClicked);
   };
 
+  const handleSaveImage = async (imageUrl, imagePath) => {
+    try {
+      imagePath = imagePath + ".jpeg";
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status === "granted") {
+        const fileUrl = FileSystem.documentDirectory + imagePath;
+        const downloadResumable = FileSystem.createDownloadResumable(
+          imageUrl,
+          fileUrl,
+          {},
+          false
+        );
+        const response = await downloadResumable.downloadAsync();
+        console.log(response.uri);
+        const asset = await MediaLibrary.createAssetAsync(response.uri);
+        Alert.alert("Success!", "Image saved to camera roll");
+      } else {
+        Alert.alert(
+          "Permission denied",
+          "Unable to save image. Please grant permission to access the media library."
+        );
+      }
+    } catch (error) {
+      console.error("Error saving image:", error);
+      Alert.alert("Error", "Failed to save image to camera roll");
+    }
+  };
+
   useEffect(() => {
-    //console.log(new Date().toISOString().split('T')[0]);
     setDate(new Date().toISOString().split("T")[0]);
     getUserImages();
   }, []);
 
   useEffect(() => {
-    if (allImages !== null) {
+    if (allImages !== null && markedImages !== null) {
       setReady(true);
+      console.log(markedImages)
     }
-  }, [allImages]);
+  }, [allImages, markedImages]);
 
   useEffect(() => {
     if (ready && date !== "") {
@@ -104,7 +138,7 @@ const GalleryScreen = ({ route, navigation }) => {
               onDayPress={(day) => handleSwap(day)}
               theme={containerStyles.customCalendarTheme}
               style={styles.calendar}
-              // markedDates={marked}
+              markedDates={markedImages}
             />
           </View>
         </View>
@@ -119,9 +153,18 @@ const GalleryScreen = ({ route, navigation }) => {
               <View style={styles.imageContainer}>
                 <View style={styles.title}>
                   <Text style={textStyles.textBodyHeader}>{username}</Text>
-                  <Text style={textStyles.textBodySmall}>
-                    {item.timestampString}
-                  </Text>
+                  <View style={styles.downloadContainer}>
+                    <Text style={textStyles.textBodySmall}>
+                      {item.timestampString}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleSaveImage(item.imageUrl, item.imagePath);
+                      }}
+                    >
+                      <Image source={download} style={styles.download} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <TouchableOpacity onPress={handleClick} activeOpacity={0.9}>
                   <Image source={{ url: item.imageUrl }} style={styles.image} />
@@ -129,12 +172,18 @@ const GalleryScreen = ({ route, navigation }) => {
                 </TouchableOpacity>
                 {isClicked && (
                   <View style={styles.overlay}>
-                    <Text style={textStyles.subheaderWhite}>
-                      Tagged Goals
-                    </Text>
+                    <Text style={textStyles.subheaderWhite}>Tagged Goals</Text>
                     {item.goals.map((item, index) => (
-                      <View style={styles.goal}>
-                        <Text style={{...textStyles.textBodyHeaderWhite, textAlign: 'left'}}> {item} </Text>
+                      <View key={item} style={styles.goal}>
+                        <Text
+                          style={{
+                            ...textStyles.textBodyHeaderWhite,
+                            textAlign: "left",
+                          }}
+                        >
+                          {" "}
+                          {item}{" "}
+                        </Text>
                       </View>
                     ))}
                   </View>
@@ -189,6 +238,15 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
+  downloadContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+  },
+  download: {
+    width: 25,
+    height: 25,
+  },
   clickedImage: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -199,7 +257,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-around",
     paddingVertical: "2%",
-    paddingHorizontal: '2%',
+    paddingHorizontal: "2%",
     borderWidth: 1,
     borderColor: "#8E99AB",
   },
@@ -222,21 +280,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "white",
     zIndex: 10, // Ensure text appears above the image,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
     gap: 10,
-    width: '80%',
-    height: '50%'
+    width: "80%",
+    height: "50%",
   },
   goal: {
-    width: '90%',
-    paddingHorizontal: '1%',
+    width: "90%",
+    paddingHorizontal: "1%",
     paddingVertical: 5,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "white",
-  }
+  },
 });
 
 export default GalleryScreen;

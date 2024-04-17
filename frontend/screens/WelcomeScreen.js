@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
 import image from "../assets/working-out.png";
 
@@ -12,7 +12,7 @@ const WelcomeScreen = ({ navigation }) => {
       setHasCameraPermission(status === "granted");
       // reprompt for camera permissions if they deny
       if (status !== "granted") {
-        alert("We need camera permissions for this app to work");
+        Alert.alert("We need camera permissions for this app to work");
         // reprompt
       }
     })();
