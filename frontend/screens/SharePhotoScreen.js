@@ -67,6 +67,7 @@ const SharePhotoScreen = ({navigation}) => {
         console.log("user: " + user);
         const {downloadUrl, name} = await addToBucket(user, 'images', imageUrl);
         const id = await addImageToDatabase(user, selectedGoals, caption, downloadUrl);
+        console.log("name: " + name);
         console.log("id: " + id);
         if (!id) {
           Alert.alert("Error uploading image. Try again");
@@ -117,7 +118,7 @@ const SharePhotoScreen = ({navigation}) => {
             <Image style={styles.image} source={{ uri: imageUrl }} />
             <TextInput 
                 style={containerStyles.captionInput} 
-                multiline // Add this prop to make it multiline
+                //multiline // Add this prop to make it multiline
                 value={caption} 
                 onChangeText={setCaption} 
                 placeholder="Add a caption..." 

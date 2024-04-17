@@ -334,6 +334,7 @@ export const addToBucket = async (user, directory, imageUrl) => {
   console.log("image ref: " + imageRef);
 
   try {
+    console.log("uploading image");
     await uploadBytes(imageRef, blob);
   } catch (e) {
     console.log(e);

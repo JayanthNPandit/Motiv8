@@ -80,6 +80,7 @@ const SnapProgressScreen = () => {
                     <Text style={textStyles.textBodyHeaderWhite}> Upload picture </Text>
                 </TouchableOpacity>                  
             </View>
+            <Text></Text>
         </View>
     </View>
     );
