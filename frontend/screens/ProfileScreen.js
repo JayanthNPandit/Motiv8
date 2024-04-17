@@ -161,6 +161,7 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         {groupData !== "" && group !== "" && (
+          
           <View style={styles.groupTag}>
             <Text style={textStyles.textBodySmallWhite}>{groupData.name}</Text>
             {edit && (

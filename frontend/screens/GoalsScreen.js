@@ -10,7 +10,7 @@ import menuButton from '../assets/f7_menu.png';
 import pinButton from '../assets/pin.png';
 import removeButton from '../assets/pin.png';
 
-import { fetchUserGoals } from '../backendFunctions';
+import { fetchUserCompletedGoals } from '../backendFunctions';
 import { useAuth } from '../contexts/AuthContext';
 
 
@@ -35,7 +35,7 @@ const GoalsScreen = ({navigation}) => {
   }, []);
 
   const fetchGoals = async () => {
-    const goals = await fetchUserGoals(user); // Fetch the goals from the backend
+    const goals = await fetchUserCompletedGoals(user); // Fetch the goals from the backend
     console.log("in fetch goals");
     console.log(goals);
     setGoals(goals); // Set the goals to the state
@@ -148,12 +148,7 @@ const GoalsScreen = ({navigation}) => {
               <Text style={textStyles.textBodyHeaderWhite}>No pinned goals</Text>
             )}
           </View>
-          <View style={containerStyles.goalsButtonContainer}>
-            <View style={containerStyles.headerContainer}>
-              <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
-            </View> 
-            <Image source={dropDownImage} style={{width: 20, height: 20, position: 'absolute', left: 225, bottom: 20}}/>
-          </View>
+          <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
           <View style={containerStyles.goalsButtonContainer}>
             <View>
             <ScrollView
@@ -163,10 +158,11 @@ const GoalsScreen = ({navigation}) => {
               showsHorizontalScrollIndicator={false}
               onScroll={handleScroll}
               scrollEventThrottle={16}
-              marginBottom={"-42%"}
+              //marginBottom={"-42%"}
             >
               {recurringGoals.length == 0 ? (
-                <View style={styles.container}>
+                <View style={containerStyles.recurringGoalContainer}>
+                  <View style={[styles.progressBar, { width: 100 }]} />
                   <Text style={styles.emptyText}>No goals yet!</Text>
                   <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
                     <Image source={editGoalButton} style={{ width: 20, height: 20 }} />

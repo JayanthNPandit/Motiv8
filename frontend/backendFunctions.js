@@ -11,6 +11,7 @@ import {
   collection,
 } from "firebase/firestore";
 import { verifyIdToken } from "firebase/auth";
+import { writeBatch } from "firebase/firestore";
 
 // authorize user
 const validateUser = (token) => {
@@ -101,6 +102,20 @@ export const fetchUserGoals = async (user) => {
     }
   } catch (error) {
     console.error("Error fetching goals:", error);
+  }
+};
+
+// return the completed goals for a specific user
+export const fetchUserCompletedGoals = async (user) => {
+  try {
+    const userID = user.uid;
+    const goalsCollection = await collection(db, "users", userID, "goals");
+    const goalsSnapshot = await getDocs(goalsCollection);
+    const goals = goalsSnapshot.docs.map((doc) => doc.data());
+    const completedGoals = goals.filter((goal) => goal.completed === false);
+    return completedGoals;
+  } catch (error) {
+    console.error("Error fetching completed goals:", error);
   }
 };
 
@@ -364,9 +379,53 @@ export const addImageToDatabase = async (user, goals, caption, url) => {
     data
   );
 
-  console.log("added image");
+  console.log("added image to database" + addedImage.id);
+
+  editGoals(user, goals);
+
+  console.log("updated goals");
 
   return addedImage.id;
 
   // fix the editing goals part later
+};
+
+// now we need to call a function that takes in the selected goals and edits the goals collection for that user and decrements each seleected goal counter by 1
+// for each selected goal
+export const editGoals = async (user, selectedGoals) => {
+  try {
+    const userID = user.uid;
+    const goalsCollection = collection(db, "users", userID, "goals");
+    const goalsSnapshot = await getDocs(goalsCollection);
+    const goals = goalsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    console.log("selected goals: " + selectedGoals);
+    console.log("all goals: " + goals.map((goal) => goal.name));
+    
+    const batch = writeBatch(db);
+    selectedGoals.forEach((selectedGoal) => {
+      const goal = goals.find((goal) => goal.name === selectedGoal);
+      if (goal && goal.currentCounter > 0) {
+        goal.currentCounter -= 1;
+        console.log("decremented goal: " + goal.name);
+        console.log("before updating goal: " + goal.name + " counter: " + goal.currentCounter);
+        if (goal.currentCounter === 0) {
+          goal.completed = true;
+          console.log("goal completed: " + goal.name);
+        }
+        const goalRef = doc(goalsCollection, goal.id);
+        batch.update(goalRef, { 
+          currentCounter: goal.currentCounter,
+          completed: goal.completed
+        });
+      }
+    });
+
+    await batch.commit();
+    console.log("All goals updated successfully!");
+  } catch (error) {
+    console.error("Error editing goals:", error);
+  }
 };

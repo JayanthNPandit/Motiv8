@@ -27,7 +27,7 @@ const SnapProgressScreen = () => {
     const takeImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: false,
+        allowsEditing: true,
         quality: 1,
         flashMode: Camera.Constants.FlashMode.off, // Change this line
     });
