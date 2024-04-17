@@ -25,6 +25,7 @@ import SnapProgressScreen from "./screens/SnapProgressScreen";
 import GalleryScreen from "./screens/GalleryScreen";
 import FeedScreen from "./screens/FeedScreen";
 import AllGoalsScreen from "./screens/AllGoalsScreen";
+import NoGroupFeedScreen from "./screens/NoGroupFeedScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -119,7 +120,7 @@ function TabContent() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          if (route.name === 'Feed') {
+          if (route.name === 'FeedStack') {
             return focused ? <Image source={purpleHome}/> : <Image source={home}/>
           } else if (route.name === 'GoalStack') {
             return focused ? <Image source={purpleGoal}/> : <Image source={goal}/>
@@ -145,13 +146,39 @@ function TabContent() {
         }
       })}
     >
-      <Tab.Screen name="Feed" component={FeedScreen} options={{headerShown: false}}/>
+      <Tab.Screen name="FeedStack" component={FeedStack} options={{headerShown: false}}/>
       <Tab.Screen name="GoalStack" component={GoalStack} options={{headerShown: false}}/>
       <Tab.Screen name="PhotoStack" component={PhotoStack} options={{headerShown: false}}/>
       <Tab.Screen name="GroupStack" component={GroupStack} options={{headerShown: false}}/>
       <Tab.Screen name="ProfileStack" component={ProfileStack} options={{headerShown: false}}/>
     </Tab.Navigator>
   );
+}
+
+function FeedStack() {
+  const { user } = useAuth();
+  const [initialRoute, setInitialRoute] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const data = await fetchUserData(user.uid);
+        const result = data.groupID ? 'Feed' : 'NoGroupFeed';
+        setInitialRoute(result);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (initialRoute == null) {
+    return <ActivityIndicator />
+  }
+  return (
+    <Stack.Navigator initialRouteName={initialRoute}>
+      <Stack.Screen name="NoGroupFeed" component={NoGroupFeedScreen} options={{headerShown: false}} />
+      <Stack.Screen name="Feed" component={FeedScreen} options={{headerShown: false}} />
+    </Stack.Navigator>
+  )
 }
 
 function PhotoStack() {

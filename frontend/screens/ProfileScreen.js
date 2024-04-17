@@ -188,7 +188,7 @@ const ProfileScreen = ({ navigation }) => {
                 marginBottom: "0%",
               }}
               onPress={() =>
-                navigation.navigate("Gallery", { username: origUsername })
+                navigation.navigate("Gallery")
               }
             >
               <Text style={textStyles.textBodyHeaderWhite}>

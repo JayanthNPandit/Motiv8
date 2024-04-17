@@ -7,7 +7,7 @@ import back from "../assets/back_arrow.png";
 import { useAuth } from "../contexts/AuthContext";
 
 const GroupsScreen = ({ route, navigation }) => {
-  const {disableNav} = route.params;
+  const { disableNav } = route.params;
   return (
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
@@ -16,39 +16,41 @@ const GroupsScreen = ({ route, navigation }) => {
           <Text style={textStyles.textBodyGray}>Motiv8 Group Options</Text>
         </View>
 
-        {!disableNav &&
-        <TouchableOpacity
-          style={{...containerStyles.back, top:'5%'}}
-          onPress={() => navigation.navigate("Onboarding")}
-        >
-          <Image source={back} />
-        </TouchableOpacity> }
-        
-        {!disableNav &&
-        <TouchableOpacity
-          style={containerStyles.skipForward}
-          onPress={() =>
-            navigation.dispatch(
-              CommonActions.reset({ index: 0, routes: [{ name: "Tab" }] })
-            )
-          }
-        >
-          <Text
-            style={{ ...textStyles.textBodySmallUnderline, color: "#8E99AB" }}
+        {!disableNav && (
+          <TouchableOpacity
+            style={{ ...containerStyles.back, top: "5%" }}
+            onPress={() => navigation.navigate("Onboarding")}
           >
-            Skip
-          </Text>
-        </TouchableOpacity>}
+            <Image source={back} />
+          </TouchableOpacity>
+        )}
+
+        {!disableNav && (
+          <TouchableOpacity
+            style={containerStyles.skipForward}
+            onPress={() =>
+              navigation.dispatch(
+                CommonActions.reset({ index: 0, routes: [{ name: "Tab" }] })
+              )
+            }
+          >
+            <Text
+              style={{ ...textStyles.textBodySmallUnderline, color: "#8E99AB" }}
+            >
+              Skip
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <Image style={styles.image} source={image} />
         <TouchableOpacity
-          style={{ ...containerStyles.purpleButton, marginBottom: "0%" }}
+          style={{ ...containerStyles.purpleButton, marginBottom: "-3%" }}
           onPress={() => navigation.navigate("CreateGroup")}
         >
           <Text style={textStyles.textBodyHeaderWhite}> Create a group </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ ...containerStyles.whiteButton }}
+          style={{ ...containerStyles.whiteButton, paddingHorizontal: "17%" }}
           onPress={() => navigation.navigate("JoinGroup")}
         >
           <Text style={textStyles.textBodyHeaderPurple}> Join a group </Text>
