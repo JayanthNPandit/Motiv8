@@ -74,6 +74,9 @@ const SharePhotoScreen = ({navigation}) => {
         }
         else {
           console.log("success in uploading image" + id);
+          // clear out the image url and caption and all that after it is uploaded so that it is ready for the next image and also make it so that it goes back to the add goal screen
+          setCaption('');
+          setSelectedGoals([]);
           navigation.navigate("Feed");
         }
       }

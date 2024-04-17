@@ -24,6 +24,7 @@ import SharePhotoScreen from "./screens/SharePhotoScreen";
 import SnapProgressScreen from "./screens/SnapProgressScreen";
 import GalleryScreen from "./screens/GalleryScreen";
 import FeedScreen from "./screens/FeedScreen";
+import AllGoalsScreen from "./screens/AllGoalsScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -215,6 +216,7 @@ function GoalStack() {
       <Stack.Screen name="ConfirmPhoto" component={ConfirmPhotoScreen} options={{headerShown: false}} />
       <Stack.Screen name="EditGoal" component={EditGoalScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="AllGoals" component={AllGoalsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

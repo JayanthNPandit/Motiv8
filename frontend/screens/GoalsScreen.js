@@ -66,6 +66,7 @@ const GoalsScreen = ({navigation}) => {
     console.log("Long term goals: " + longTermGoals);
     console.log("Pinned goal: " + pinnedGoal);
     console.log("Pinned goal description: " + pinnedGoalDescription);
+    console.log("screen width: " + screenWidth);  
   }
 
   const setPin = (goal) => {
@@ -155,9 +156,11 @@ const GoalsScreen = ({navigation}) => {
           <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
 
           <View style={containerStyles.background}>
-          {recurringGoals.length === 0 ? (
+          {recurringGoals.length == 0 ? (
             <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
-              <View style={[styles.progressBar, { width: '100%' }]} />
+              <View style={styles.progressBarContainer}>
+                <View style={[styles.progressBar, { width: '100%' }]} />
+              </View>
               <View style={containerStyles.goalContentContainer}>
                 <Text style={textStyles.goalText}>No goals yet!</Text>
                 <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
@@ -175,9 +178,12 @@ const GoalsScreen = ({navigation}) => {
               scrollEventThrottle={16}
               //marginBottom={"-42%"}
             >
-              {recurringGoals.map((item, index) => (
+              {/* figure out wtf is wrong with this container sizing thing at EM*/ }
+              {recurringGoals.map((item) => (
                 <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
-                  <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[1], item[2]))}%` }]} />
+                  <View style={styles.progressBarContainer}>
+                    <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[2] - item[1], item[2]))}%` }]} />
+                  </View>
                   <View style={containerStyles.goalContentContainer}>
                     <Text style={textStyles.goalText}>{item[0]}</Text>
                     <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
@@ -205,7 +211,7 @@ const GoalsScreen = ({navigation}) => {
           <View style={containerStyles.menuContainer}>
             <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
 
-            <TouchableOpacity onPress={() => setShowList(!showList)}>
+            <TouchableOpacity onPress={() => navigation.navigate("AllGoals")}>
               <Text style={{ textDecorationLine: 'underline', color: 'lightgray', position: 'absolute', left: 30, bottom: 5 }}> View All </Text>
             </TouchableOpacity>
           </View>
@@ -221,35 +227,18 @@ const GoalsScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <>
-                {showList ? (
-                  <FlatList
-                    data={longTermGoals}
-                    renderItem={({ item }) => (
-                      <View style={containerStyles.longTermGoalContainer}>
-                        <Text style={textStyles.grayGoalText}>{item}</Text>
-                        <TouchableOpacity onPress={() => setPin(item)}>
-                          <Image source={pinButton} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                    //keyExtractor={(item) => item.id}
-                  />
-                ) : (
-                  <FlatList
-                    data={longTermGoals.slice(0, 3)} // Show only the first 3 goals
-                    renderItem={({ item }) => (
-                      <View style={containerStyles.longTermGoalContainer}>
-                        <Text style={textStyles.grayGoalText}>{item}</Text>
-                        <TouchableOpacity onPress={() => setPin(item)}>
-                          <Image source={pinButton} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                    //keyExtractor={(item) => item.id}
-                  />
-                )}
-              </>
+              <FlatList
+                  data={longTermGoals}
+                  renderItem={({ item }) => (
+                    <View style={containerStyles.longTermGoalContainer}>
+                      <Text style={textStyles.grayGoalText}>{item}</Text>
+                      <TouchableOpacity onPress={() => setPin(item)}>
+                        <Image source={pinButton} style={{ width: 20, height: 20 }} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  //keyExtractor={(item) => item.id}
+                />
             )}
           </View>
 
@@ -322,12 +311,12 @@ const styles = StyleSheet.create({
   // New styles for progress bar
   progressBarContainer: {
     width: '100%',
-    height: '20%',
+    height: 10,
     backgroundColor: 'lightgray',
     borderRadius: 5,
   },
   progressBar: {
-    height: '20%',
+    height: '100%',
     backgroundColor: 'white',
     borderRadius: 5,
   },
