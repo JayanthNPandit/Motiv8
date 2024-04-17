@@ -203,7 +203,7 @@ export const containerStyles = StyleSheet.create({
     alignItems: "flex-start",
   },
   pinnedGoalsContainer: {
-    marginTop: '10%',
+    marginTop: '5%',
     marginBottom: '7%',
     backgroundColor: "#4044AB",
     paddingVertical: 10,
@@ -374,15 +374,10 @@ export const containerStyles = StyleSheet.create({
     gap: 10,
     marginVertical: "5%",
   },
-  greenButton: {
-    position: "absolute",
-    right: "-200%",
-    paddingVertical: "0%",
-    paddingHorizontal: "0%",
-    borderColor: "#000000",
-    borderWidth: 1,
-    borderRadius: 31,
-    backgroundColor: "#000000",
+  addButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   longWhiteButton: {
     display: "flex",
@@ -436,12 +431,13 @@ export const containerStyles = StyleSheet.create({
     borderRadius: "15%",
     borderColor: "#FFFFFF",
     borderWidth: "5%",
-    height: '35%',
+    height: '100%',
     fontFamily: "Poppins-Regular",
     fontSize: 20,
     width: "400%",
     gap: "10%",
     marginBottom: "2%",
+    paddingTop: "2%",
   },
   longTermGoalContainer: {
     alignItems: "flex-start",
@@ -466,11 +462,18 @@ export const containerStyles = StyleSheet.create({
     gap: "1%",
     marginBottom: "5%",
   },
+  goalContentContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: "200%",
+    marginBottom: "5%",
+  },
   divider: {
     width: "100%",
     height: 1,
     backgroundColor: "#939393",
-    marginVertical: "15%",
+    marginVertical: "5%",
     borderWidth: 0,
   },
   goalDivider: {

@@ -105,20 +105,6 @@ export const fetchUserGoals = async (user) => {
   }
 };
 
-// return the completed goals for a specific user
-export const fetchUserCompletedGoals = async (user) => {
-  try {
-    const userID = user.uid;
-    const goalsCollection = await collection(db, "users", userID, "goals");
-    const goalsSnapshot = await getDocs(goalsCollection);
-    const goals = goalsSnapshot.docs.map((doc) => doc.data());
-    const completedGoals = goals.filter((goal) => goal.completed === false);
-    return completedGoals;
-  } catch (error) {
-    console.error("Error fetching completed goals:", error);
-  }
-};
-
 export const createUser = async (user, username, name, pfp) => {
   try {
     // const decodedUser = await validateUser(user.accessToken);

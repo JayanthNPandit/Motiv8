@@ -1,7 +1,7 @@
 // add recurring goal screen
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ImageComponent } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ImageComponent, Alert } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
 import { addGoal } from '../backendFunctions';
@@ -29,8 +29,9 @@ const AddLongTermGoalScreen = ({navigation}) => {
         setIsClickable(false);
         // check if date, name are filled out and throw alert if not
         if (!goalName || !date) {
-            Alert.alert("Please fill out all fields");
+            Alert.alert("Name and date are required fields.");
             setIsClickable(true);
+            return;
         }
         const id = await addGoal(user, goalName, type, frequency, counter, date, description);
         if (!id) {
@@ -69,7 +70,7 @@ const AddLongTermGoalScreen = ({navigation}) => {
 
                     <TextInput style={containerStyles.dateInput} value={date} onChangeText={setDate} editable={false} defaultValue='Set a target date'/>
                     
-                    <TouchableOpacity style={{ position: 'absolute', top: '36.2%', left: '85%' }} onPress={() => toggleShowCalendar()}>
+                    <TouchableOpacity style={{ position: 'absolute', top: '38.5%', left: '85%' }} onPress={() => toggleShowCalendar()}>
                     <View style={styles.imageContainer}>
                         <Image source={calendarIcon} style={styles.image} />
                     </View>

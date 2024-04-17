@@ -1,7 +1,7 @@
 // add recurring goal screen
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Alert } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
 import { addGoal, getUser } from '../backendFunctions';
@@ -24,24 +24,28 @@ const AddRecurringGoalScreen = ({navigation}) => {
 
     // function to add the entered goal to the backend
     const handleNewGoal = async () => {
-
+        if (!goalName || !frequency || !counter) {
+            Alert.alert("Name, frequency, and counter are required fields.");
+            setIsClickable(true);
+            return;
+        }
+    
         setIsClickable(false);
         const id = await addGoal(user, goalName, type, frequency, counter, date, description);
-
+    
         console.log(id);
-
-
+    
         if (!id) {
             setIsClickable(true);
             console.log("Error adding goal. Try again");
-        }
-        else {
+        } else {
             setGoalName('');
             setFrequency('');
+            setCounter(''); // Assuming you have a function like setCounter to clear the counter value
             setDescription('');
             setIsClickable(true);
         }
-
+    
         navigation.navigate("Goals");
     }
 
