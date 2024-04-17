@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  Alert
 } from "react-native";
 import { CommonActions } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
@@ -31,6 +32,7 @@ const GroupCodeScreen = ({ route, navigation }) => {
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(groupID);
+    Alert.alert("Copied group code");
   };
 
   return (
@@ -55,7 +57,7 @@ const GroupCodeScreen = ({ route, navigation }) => {
             onPress={handleGroupDelete}
             disabled={!isClickable}
           >
-            <Text style={textStyles.textBodyHeader}> Back </Text>
+            <Text style={textStyles.textBodyHeaderPurple}> Back </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={containerStyles.purpleButton}

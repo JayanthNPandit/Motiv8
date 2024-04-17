@@ -58,6 +58,7 @@ const MyGroupScreen = ({ navigation }) => {
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(groupID);
+    Alert.alert("Success!", "Copied group code");
   };
 
   const confirmLeaveGroup = () =>

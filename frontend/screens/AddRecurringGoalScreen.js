@@ -114,7 +114,7 @@ const AddRecurringGoalScreen = ({navigation}) => {
 
                     <View style={containerStyles.buttonContainer}>
                         <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("AddGoal")}>
-                            <Text style={textStyles.textBodyHeader}> Back </Text>
+                            <Text style={textStyles.textBodyHeaderPurple}> Back </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={containerStyles.purpleButton} onPress={handleNewGoal} disabled={!isClickable}>
                             <Text style={textStyles.textBodyHeaderWhite}> Submit </Text>

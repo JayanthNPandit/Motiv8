@@ -19,7 +19,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
   const handleReset = async () => {
     if (email === "") {
       Alert.alert(
-        'Please type in your email so that we can send a password reset email. Then click "Forgot password?"'
+        'Empty field', 'Please type in your email so that we can send a password reset email. Then click "Forgot password?"'
       );
       return;
     }
@@ -30,7 +30,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
       setIsClickable(false);
     } else {
       Alert.alert(
-        "Sent a password reset email. It may take a few minutes to send."
+        "Sent!", "Check your inbox for a password reset email. It may take a few minutes to send."
       );
       setEmail("");
       setIsClickable(false);
@@ -57,7 +57,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             onPress={() => navigation.navigate("Login")}
             disabled={!isClickable}
           >
-            <Text style={textStyles.textBodyHeader}> Back </Text>
+            <Text style={textStyles.textBodyHeaderPurple}> Back </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={containerStyles.purpleButton}
