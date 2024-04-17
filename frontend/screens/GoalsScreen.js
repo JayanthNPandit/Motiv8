@@ -179,6 +179,7 @@ const GoalsScreen = ({navigation}) => {
               //marginBottom={"-42%"}
             >
               {/* figure out wtf is wrong with this container sizing thing at EM*/ }
+              {/* also figure out pinned goals backend stuff*/ }
               {recurringGoals.map((item) => (
                 <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
                   <View style={styles.progressBarContainer}>

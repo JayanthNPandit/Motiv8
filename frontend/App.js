@@ -210,13 +210,13 @@ function GoalStack() {
   return (
     <Stack.Navigator initialRouteName="Goals">
       <Stack.Screen name="Goals" component={GoalsScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AllGoals" component={AllGoalsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AddGoal" component={AddGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddRecurringGoal" component={AddRecurringGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="AddLongTermGoal" component={AddLongTermGoalScreen} options={{headerShown: false}} />
       <Stack.Screen name="ConfirmPhoto" component={ConfirmPhotoScreen} options={{headerShown: false}} />
       <Stack.Screen name="EditGoal" component={EditGoalScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SharePhoto" component={SharePhotoScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="AllGoals" component={AllGoalsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }
