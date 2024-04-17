@@ -36,14 +36,16 @@ const GalleryScreen = ({ route, navigation }) => {
   const getDayImages = async () => {
     const tempImages = [];
     for (const image of allImages) {
-      console.log(image.timestampString);
       if (image.timestampString === date) {
         tempImages.push(image);
       }
     }
-    console.log(tempImages);
     setDayImages(tempImages);
   };
+
+  const handleSwap = async (day) => {
+    setDate(day.dateString);
+  }
 
   useEffect(() => {
     //console.log(new Date().toISOString().split('T')[0]);
@@ -72,34 +74,36 @@ const GalleryScreen = ({ route, navigation }) => {
   }
 
   return (
-    <ScrollView style={containerStyles.background}>
-      <View style={containerStyles.container}>
-        <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}> Gallery </Text>
-          <Text style={textStyles.textBodyGray}>View all your photos</Text>
-        </View>
-        <TouchableOpacity
-          style={containerStyles.back}
-          onPress={() => navigation.navigate("Profile")}
-        >
-          <Image source={back} />
-        </TouchableOpacity>
+    <ScrollView style={{ ...containerStyles.background, height: "500%" }}>
+      <View style={{ ...containerStyles.container, marginHorizontal: 0 }}>
+        <View style={{ width: "90%" }}>
+          <View style={containerStyles.headerContainer}>
+            <Text style={textStyles.header}> Your Gallery </Text>
+            <Text style={textStyles.textBodyGray}>View all your photos</Text>
+          </View>
+          <TouchableOpacity
+            style={containerStyles.back}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <Image source={back} />
+          </TouchableOpacity>
 
-        <View style={{ width: "100%" }}>
-          <Calendar
-            current={date}
-            onDayPress={(day) => setDate(day.dateString)}
-            theme={containerStyles.customCalendarTheme}
-            style={styles.calendar}
-            // markedDates={marked}
-          />
+          <View style={{ width: "100%" }}>
+            <Calendar
+              initialDate={new Date().toISOString().split("T")[0]}
+              current={date}
+              onDayPress={(day) => handleSwap(day)}
+              theme={containerStyles.customCalendarTheme}
+              style={styles.calendar}
+              // markedDates={marked}
+            />
+          </View>
         </View>
-
         <FlatList
           data={dayImages}
           keyExtractor={(item, index) => index.toString()}
-          style={styles.container}
           scrollEnabled={false}
+          style={{ width: "100%", height: 500 * allImages.length, borderWidth: 1, borderColor: '#8E99AB' }}
           renderItem={({ item }) => (
             <View style={styles.imageContainer}>
               <View style={styles.title}>
@@ -109,16 +113,19 @@ const GalleryScreen = ({ route, navigation }) => {
                 </Text>
               </View>
               <Image source={{ url: item.imageUrl }} style={styles.image} />
-              <View>
-                <View>
+              <View style={styles.bottomHalf}>
+                <View style={styles.likes}>
                   <Image source={heart} />
-                  <Text> {item.likes.length} </Text>
+                  <Text style={textStyles.textBodyHeaderPurple}>
+                    {item.likes.length}
+                  </Text>
                 </View>
-                <Text>{item.caption}</Text>
+                <Text style={textStyles.textBodySmall}>{item.caption}</Text>
               </View>
             </View>
           )}
         />
+        <View style={{ marginBottom: "10%" }} />
       </View>
     </ScrollView>
   );
@@ -127,24 +134,32 @@ const GalleryScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   calendar: {
     borderRadius: 10,
-    marginBottom: "7%",
-  },
-  container: {
-    width: "100%",
-    height: '1000%'
-  },
-  imageContainer: {
-    padding: 10,
+    marginBottom: "15%",
   },
   title: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "space-between",
+    padding: 5,
   },
   image: {
     width: "100%",
-    height: '100%'
+    height: "100%",
+    marginVertical: "1%",
+  },
+  likes: {
+    display: "flex",
+    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+  },
+  bottomHalf: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
   },
 });
 
