@@ -43,7 +43,7 @@ const SnapProgressScreen = () => {
     const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: false,
+        allowsEditing: true,
         quality: 1,
     });
 

@@ -29,6 +29,9 @@ import {
 } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
 
+import download from "../assets/download.png";
+import heart from "../assets/like.png";
+
 const FeedScreen = ({ navigation }) => {
   const [allImages, setAllImages] = useState(null);
 
@@ -36,6 +39,8 @@ const FeedScreen = ({ navigation }) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const [isClicked, setIsClicked] = useState(false);
 
   const { user } = useAuth();
 
@@ -45,126 +50,100 @@ const FeedScreen = ({ navigation }) => {
     const images = await fetchGroupImages(user, userData.groupID);
     setAllImages(images);
     setRefreshing(false);
-  };
 
-  useEffect(() => {
-    fetchImages();
-  }, [])
+    console.log("images: " + allImages);
+    console.log("length: " + allImages.length);
+  };
 
   useEffect(() => {
     if (allImages !== null) {
       console.log('.');
     }
+    else
+    {
+      console.log('allImages is null');
+    }
+    fetchImages();
   }, [allImages])
+
+  const handleClick = () => {
+    setIsClicked(!isClicked);
+  };
 
   return (
     <View style={containerStyles.background}>
       <View style={containerStyles.container}>
+        <ScrollView>
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}>Your Feed</Text>
-          <Text style={textStyles.textBodyGray}>See what everyone’s up to!</Text>
+          <Text style={textStyles.textBodyGray}>See what everyone's up to!</Text>
         </View>
-
-        <FlatList
-          data={allImages}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedImage(item.url);
-                setModalVisible(true);
-              }}
-            >
-              <View style={styles.message}>
-                <Image source={{ url: item.url }} style={styles.image} />
-                <Text>{item.caption}</Text>
+        {allImages.length > 0 && (
+          <FlatList
+            data={allImages}
+            keyExtractor={(item, index) => index.toString()}
+            scrollEnabled={false}
+            style={{ width: "100%", height: 1 * allImages.length }}
+            renderItem={({ item }) => (
+              <View style={styles.imageContainer}>
+                <View style={styles.title}>
+                  <Text style={textStyles.textBodyHeader}>{item.username}</Text>
+                  <View style={styles.downloadContainer}>
+                    <Text style={textStyles.textBodySmall}>
+                      {item.timestampString}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleSaveImage(item.imageUrl, item.imagePath);
+                      }}
+                    >
+                      <Image source={download} style={styles.download} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <TouchableOpacity onPress={handleClick} activeOpacity={0.9}>
+                  <Image source={{ url: item.imageUrl }} style={styles.image} />
+                  {isClicked && <View style={styles.clickedImage} />}
+                </TouchableOpacity>
+                {isClicked && (
+                  <View style={styles.overlay}>
+                    <Text style={textStyles.subheaderWhite}>Tagged Goals</Text>
+                    {item.goals.map((item, index) => (
+                      <View key={item} style={styles.goal}>
+                        <Text
+                          style={{
+                            ...textStyles.textBodyHeaderWhite,
+                            textAlign: "left",
+                          }}
+                        >
+                          {" "}
+                          {item}{" "}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+                <View style={styles.bottomHalf}>
+                  <View style={styles.likes}>
+                    <Image source={heart} />
+                    <Text style={textStyles.textBodyHeaderPurpleBold}>
+                      5
+                    </Text>
+                  </View>
+                  <View style={styles.caption}>
+                    <Text style={textStyles.textBodySmall}>{item.caption}</Text>
+                    <Text
+                      style={{ ...textStyles.textBodySmall, color: "#8E99AB" }}
+                    >
+                      Tap photo to view associated goals
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </TouchableOpacity>
-          )}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={fetchImages} />
-          }
-        />
-
-        {/* {!imageUrl && (
-          <View style={styles.choosing}>
-            <TouchableOpacity style={styles.button} onPress={null}>
-              <Text style={styles.text}>Choose picture</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={takeImage}>
-              <Text style={styles.text}>Take picture</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {imageUrl && (
-          <KeyboardAvoidingView
-            style={styles.miniContainer}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={75}
-          >
-            <View style={styles.halfContainer}>
-              <TextInput
-                placeholder="add a caption"
-                placeholderTextColor="#88898a"
-                onChangeText={setCaption}
-                style={{ padding: 3, fontSize: 18 }}
-              />
-              <Dropdown
-                placeholder="Select goals"
-                data={goals}
-                onChangeText={(selectedGoals) => setGoals(selectedGoals)}
-                containerStyle={{ width: "100%", marginTop: 10 }}
-                dropdownOffset={{ top: 10 }}
-                dropdownPosition={-4}
-                itemStyle={{ justifyContent: "flex-start" }}
-                multiple={true}
-                searchInputPlaceholderText="Search goals..."
-                searchInputStyle={{ fontSize: 16 }}
-                searchContainerStyle={{ padding: 5 }}
-                chip={true}
-                chipType="outlined"
-                chipStyle={{ backgroundColor: "#e0e0e0" }}
-                chipTextStyle={{ color: "#333" }}
-                selectedItemColor="#333"
-                textColor="#333"
-              />
-            </View>
-
-            <View style={styles.halfContainer}>
-              <TouchableOpacity style={styles.button} onPress={addImage}>
-                <Text style={styles.text}>Send</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={cancelImage}>
-                <Text style={styles.text}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-        )} */}
-
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.modalView}>
-            <Image
-              source={{ url: selectedImage }}
-              style={styles.fullscreenImage}
-            />
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+            )}
+          />
+        )} 
+        </ScrollView>
       </View>
     </View>
   );
@@ -235,6 +214,86 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     color: "black",
+  },
+  calendar: {
+    borderRadius: 10,
+    marginBottom: "15%",
+  },
+  imageContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    marginVertical: "2%",
+  },
+  title: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#8E99AB",
+  },
+  image: {
+    width: "100%",
+    height: 300,
+  },
+  downloadContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+  },
+  download: {
+    width: 25,
+    height: 25,
+  },
+  clickedImage: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  bottomHalf: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-around",
+    paddingVertical: "2%",
+    paddingHorizontal: "2%",
+    borderWidth: 1,
+    borderColor: "#8E99AB",
+  },
+  likes: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  caption: {
+    paddingRight: "15%",
+  },
+  overlay: {
+    position: "absolute",
+    top: "15%", // Adjust position as needed
+    left: "10%", // Adjust position as needed
+    color: "white",
+    padding: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "white",
+    zIndex: 10, // Ensure text appears above the image,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 10,
+    width: "80%",
+    height: "50%",
+  },
+  goal: {
+    width: "90%",
+    paddingHorizontal: "1%",
+    paddingVertical: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "white",
   },
 });
 
