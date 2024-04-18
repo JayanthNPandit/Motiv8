@@ -16,7 +16,7 @@ import {
   Modal,
   ActivityIndicator,
   Alert,
-  Touchable
+  Touchable,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -62,8 +62,7 @@ const FeedScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (allImages !== null) {
-      console.log('.');
-      console.log(allImages)
+      console.log(".");
     }
   }, [allImages]);
 
@@ -79,112 +78,91 @@ const FeedScreen = ({ navigation }) => {
     );
   }
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchImages();
-  };
-
-  const handleSaveImage = async (imageUrl, imagePath) => {
-    try {
-      imagePath = imagePath + ".jpeg";
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status === "granted") {
-        const fileUrl = FileSystem.documentDirectory + imagePath;
-        const downloadResumable = FileSystem.createDownloadResumable(
-          imageUrl,
-          fileUrl,
-          {},
-          false
-        );
-        const response = await downloadResumable.downloadAsync();
-        console.log(response.uri);
-        const asset = await MediaLibrary.createAssetAsync(response.uri);
-        Alert.alert("Success!", "Image saved to camera roll");
-      } else {
-        Alert.alert(
-          "Permission denied",
-          "Unable to save image. Please grant permission to access the media library."
-        );
-      }
-    } catch (error) {
-      console.error("Error saving image:", error);
-      Alert.alert("Error", "Failed to save image to camera roll");
-    }
-  };
-
   return (
-    <View style={containerStyles.background}>
+    <ScrollView
+      style={containerStyles.background}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchImages} />
+      }
+    >
       <View style={{ ...containerStyles.container, marginHorizontal: 0 }}>
-        <ScrollView style={{width: '100%'}} refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <View style={containerStyles.headerContainer}>
-          <Text style={textStyles.header}>Your Feed</Text>
-          <Text style={textStyles.textBodyGray}>
-            See what everyone's up to!
-          </Text>
+        <View style={{ width: "100%" }}>
+          <View style={containerStyles.headerContainer}>
+            <Text style={textStyles.header}>Your Feed</Text>
+            <Text style={textStyles.textBodyGray}>
+              See what everyone's up to!
+            </Text>
+          </View>
+          {allImages.length > 0 && (
+            <FlatList
+              data={allImages}
+              keyExtractor={(item, index) => index.toString()}
+              scrollEnabled={false}
+              style={{ width: "100%", height: 500 * allImages.length }}
+              renderItem={({ item }) => (
+                <View style={styles.imageContainer}>
+                  <View style={styles.title}>
+                    <Text style={textStyles.textBodyHeader}>
+                      {item.username}
+                    </Text>
+                    <Text style={textStyles.textBodySmall}>
+                      {item.timestampString}
+                    </Text>
+                  </View>
+                  <TouchableOpacity onPress={handleClick} activeOpacity={0.9}>
+                    <Image
+                      source={{ url: item.imageUrl }}
+                      style={styles.image}
+                    />
+                    {isClicked && <View style={styles.clickedImage} />}
+                  </TouchableOpacity>
+                  {isClicked && (
+                    <View style={styles.overlay}>
+                      <Text style={textStyles.subheaderWhite}>
+                        Tagged Goals
+                      </Text>
+                      {item.goals.map((item, index) => (
+                        <View key={item} style={styles.goal}>
+                          <Text
+                            style={{
+                              ...textStyles.textBodyHeaderWhite,
+                              textAlign: "left",
+                            }}
+                          >
+                            {item}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                  <View style={styles.bottomHalf}>
+                    <View style={styles.likes}>
+                      <Image source={heart} />
+                      <Text style={textStyles.textBodyHeaderPurpleBold}>
+                        {item.likes}
+                      </Text>
+                    </View>
+                    <View style={styles.caption}>
+                      <Text style={textStyles.textBodySmall}>
+                        {item.caption}
+                      </Text>
+                      <Text
+                        style={{
+                          ...textStyles.textBodySmall,
+                          color: "#8E99AB",
+                        }}
+                      >
+                        Tap photo to view associated goals
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+            />
+          )}
         </View>
-        {allImages.length > 0 && (
-          <FlatList
-            data={allImages}
-            keyExtractor={(item, index) => index.toString()}
-            scrollEnabled={false}
-            style={{ width: "100%", height: 500 * allImages.length }}
-            renderItem={({ item }) => (
-              <View style={styles.imageContainer}>
-                <View style={styles.title}>
-                  <Text style={textStyles.textBodyHeader}>{item.username}</Text>
-                  <Text style={textStyles.textBodySmall}>
-                    {item.timestampString}
-                  </Text>
-                </View>
-                <TouchableOpacity onPress={handleClick} activeOpacity={0.9}>
-                  <Image source={{ url: item.imageUrl }} style={styles.image} />
-                  {isClicked && <View style={styles.clickedImage} />}
-                </TouchableOpacity>
-                {isClicked && (
-                  <View style={styles.overlay}>
-                    <Text style={textStyles.subheaderWhite}>Tagged Goals</Text>
-                    {item.goals.map((item, index) => (
-                      <View key={item} style={styles.goal}>
-                        <Text
-                          style={{
-                            ...textStyles.textBodyHeaderWhite,
-                            textAlign: "left",
-                          }}
-                        >
-                          {item}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-                <View style={styles.bottomHalf}>
-                  <View style={styles.likes}>
-                    <Image source={heart} />
-                    <Text style={textStyles.textBodyHeaderPurpleBold}>
-                      {item.likes}
-                    </Text>
-                  </View>
-                  <View style={styles.caption}>
-                    <Text style={textStyles.textBodySmall}>{item.caption}</Text>
-                    <Text
-                      style={{
-                        ...textStyles.textBodySmall,
-                        color: "#8E99AB",
-                      }}
-                    >
-                      Tap photo to view associated goals
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            )}
-          />
-        )}
-      </ScrollView>
-    </View>
-  </View>
+      </View>
+    </ScrollView>
   );
 };
 

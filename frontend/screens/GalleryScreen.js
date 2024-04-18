@@ -90,7 +90,17 @@ const GalleryScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setDate(new Date().toISOString().split("T")[0]);
+    const now = new Date()
+    let timestampString = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'America/New_York'  // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
+    }).format(now).split('/').reverse().join('-');
+    const day = timestampString.substring(5,7);
+    const month = timestampString.substring(8,10);
+    timestampString = timestampString.substring(0,5) + month + '-' + day;
+    setDate(timestampString);
     getUserImages();
   }, []);
 

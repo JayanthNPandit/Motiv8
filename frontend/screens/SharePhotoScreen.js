@@ -78,7 +78,7 @@ const SharePhotoScreen = ({navigation}) => {
           setCaption('');
           setSelectedGoals([]);
           setImageData(null);
-          navigation.navigate("Feed");
+          navigation.navigate("SnapProgress");
         }
       }
     };

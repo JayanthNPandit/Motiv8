@@ -255,10 +255,6 @@ export const fetchGroupImages = async (user, groupID) => {
     );
 
     userImages.sort((a, b) => b.timestamp - a.timestamp);
-<<<<<<< HEAD
-
-=======
->>>>>>> 7456ecaa01438af9ebb484562e2f1768aa98a04c
     return userImages;
   } catch (error) {
     console.error("Error fetching images:", error);
@@ -324,17 +320,10 @@ export const fetchUserImages = async (user) => {
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
 
-  console.log("uploading image to bucket");
-
   const response = await fetch(imageUrl);
   const blob = await response.blob();
   const name = `${directory}/${new Date().toISOString()}`;
   const imageRef = ref(storage, name);
-
-  console.log("image ref: " + imageRef);
-  console.log("blob: " + blob);
-  console.log("name: " + name);
-  console.log("directory: " + directory);
 
   try {
     await uploadBytes(imageRef, blob);
@@ -354,12 +343,15 @@ export const addImageToDatabase = async (user, goals, caption, url, name) => {
   // Create a new date object for the current time
   const now = new Date();
   // Format the date as a string in the timezone UTC-5
-  const timestampString = new Intl.DateTimeFormat('en-US', {
+  let timestampString = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
     timeZone: 'America/New_York'  // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
   }).format(now).split('/').reverse().join('-');
+  const day = timestampString.substring(5,7);
+  const month = timestampString.substring(8,10);
+  timestampString = timestampString.substring(0,5) + month + '-' + day;
   // add image
   const data = {
     goals: goals,
@@ -378,14 +370,9 @@ export const addImageToDatabase = async (user, goals, caption, url, name) => {
   );
 
   console.log("added image to database" + addedImage.id);
-
   editGoals(user, goals);
-
   console.log("updated goals");
-
   return addedImage.id;
-
-  // fix the editing goals part later
 };
 
 // now we need to call a function that takes in the selected goals and edits the goals collection for that user and decrements each seleected goal counter by 1

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import UploadPhotoScreen from "./screens/UploadPhotoScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import SignUpScreen from "./screens/SignUpScreen";
