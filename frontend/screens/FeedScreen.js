@@ -48,29 +48,28 @@ const FeedScreen = ({ navigation }) => {
   // fetch some recent images from storage
   const fetchImages = async () => {
     const userData = await fetchUserData(user.uid);
+    console.log(userData);
     const images = await fetchGroupImages(user, userData.groupID);
     setAllImages(images);
     setRefreshing(false);
   };
 
   useEffect(() => {
+    fetchImages();
+  }, [])
+
+  useEffect(() => {
     if (allImages !== null) {
       console.log('.');
     }
-    else
-    {
-      console.log('allImages is null');
-    }
-    fetchImages();
   }, [allImages])
 
   const handleClick = () => {
     setIsClicked(!isClicked);
   };
 
-  if (allImages != null)
-  {
-    <ActivityIndicator  size="large" color="#0000ff" />
+  if (allImages === null) {
+    return <ActivityIndicator/>
   }
 
   return (
