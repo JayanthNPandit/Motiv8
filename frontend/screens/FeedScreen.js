@@ -162,7 +162,7 @@ const FeedScreen = ({ navigation }) => {
                       </TouchableOpacity>
                     ) : (
                       <TouchableOpacity style={styles.likes} onPress={() => {handleLike(item)}} activeOpacity={0.5}>
-                        <Image source={heart} />
+                        <Image source={heart} style={{width: 41, height: 41}}/>
                       </TouchableOpacity>
                     )}
                   </View>

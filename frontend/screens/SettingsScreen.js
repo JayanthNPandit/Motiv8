@@ -103,8 +103,8 @@ const SettingsScreen = ({ navigation }) => {
               <Text style={textStyles.textBody}> Notifications </Text>
             </View>
             <Switch
-              trackColor={{ false: "#767577", true: "#8098D5" }}
-              thumbColor={isEnabled ? "#ffffff" : "#f4f3f4"}
+              trackColor={{ false: "#767577", true: "#4C50BD" }}
+              thumbColor={isEnabled ? "#ffffff" : "#f4f3f4"} 
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
               value={isEnabled}

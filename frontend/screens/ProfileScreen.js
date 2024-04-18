@@ -32,9 +32,6 @@ const ProfileScreen = ({ navigation }) => {
   const [origUsername, setOrigUsername] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [origImageUrl, setOrigImageUrl] = useState("");
-  const [group, setGroup] = useState("");
-  const [origGroup, setOrigGroup] = useState("");
-  const [groupData, setGroupData] = useState("");
   const [edit, setEdit] = useState(false);
   const [isClickable, setIsClickable] = useState(false);
 
@@ -48,15 +45,7 @@ const ProfileScreen = ({ navigation }) => {
       setOrigUsername(data.username);
       setImageUrl(data.profilePicture);
       setOrigImageUrl(data.profilePicture);
-      setGroup(data.groupID);
-      setOrigGroup(data.groupID);
       setEdit(false);
-
-      if (data.groupID !== "") {
-        fetchGroupData(data.groupID).then((groupData) => {
-          setGroupData(groupData);
-        });
-      }
     });
   }, []);
 
@@ -98,7 +87,6 @@ const ProfileScreen = ({ navigation }) => {
     setName(origName);
     setUsername(origUsername);
     setImageUrl(origImageUrl);
-    setGroup(origGroup);
   };
 
   // change data
@@ -108,8 +96,6 @@ const ProfileScreen = ({ navigation }) => {
       return;
     }
     setIsClickable(false);
-    if (group === "" && origGroup !== "")
-      await leaveGroup(user, origGroup, groupData);
     await changeUserData(user, name, username, imageUrl);
     setOrigName(name);
     setOrigUsername(username);
@@ -150,17 +136,6 @@ const ProfileScreen = ({ navigation }) => {
           )}
           {edit && <Image style={styles.image} source={imageUrl === "" ? image : { url: imageUrl }} />}
         </TouchableOpacity>
-
-        {groupData !== "" && group !== "" && (
-          <View style={styles.groupTag}>
-            <Text style={textStyles.textBodySmallWhite}>{groupData.name}</Text>
-            {edit && (
-              <TouchableOpacity onPress={() => setGroup("")}>
-                <Image source={remove} />
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
 
         <View style={containerStyles.inputContainer}>
           <Text style={textStyles.textBodyHeader}> Username: </Text>
