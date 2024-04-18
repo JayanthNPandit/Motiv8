@@ -14,6 +14,7 @@ import {
   RefreshControl,
   Platform,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -47,28 +48,29 @@ const FeedScreen = ({ navigation }) => {
   // fetch some recent images from storage
   const fetchImages = async () => {
     const userData = await fetchUserData(user.uid);
+    console.log(userData);
     const images = await fetchGroupImages(user, userData.groupID);
     setAllImages(images);
     setRefreshing(false);
-
-    console.log("images: " + allImages);
-    console.log("length: " + allImages.length);
   };
+
+  useEffect(() => {
+    fetchImages();
+  }, [])
 
   useEffect(() => {
     if (allImages !== null) {
       console.log('.');
     }
-    else
-    {
-      console.log('allImages is null');
-    }
-    fetchImages();
   }, [allImages])
 
   const handleClick = () => {
     setIsClicked(!isClicked);
   };
+
+  if (allImages === null) {
+    return <ActivityIndicator/>
+  }
 
   return (
     <View style={containerStyles.background}>
