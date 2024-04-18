@@ -10,6 +10,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
 import * as Clipboard from "expo-clipboard";
@@ -21,26 +23,28 @@ const MyGroupScreen = ({ navigation }) => {
   const [names, setNames] = useState(null);
   const [groupData, setGroupData] = useState(null);
   const [groupID, setGroupID] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const loadInformation = async () => {
-      const names = [];
-      const data = await fetchUserData(user.uid);
-      const id = data.groupID;
-      const groupData = await fetchGroupData(id);
-      const users = groupData.users;
-      await Promise.all(
-        users.map(async (user) => {
-          const data = await fetchUserData(user);
-          names.push({ name: data.name, pfp: data.profilePicture });
-        })
-      );
-      setNames(names);
-      setGroupData(groupData);
-      setGroupID(id);
-    };
+  const loadInformation = async () => {
+    const names = [];
+    const data = await fetchUserData(user.uid);
+    const id = data.groupID;
+    const groupData = await fetchGroupData(id);
+    const users = groupData.users;
+    await Promise.all(
+      users.map(async (user) => {
+        const data = await fetchUserData(user);
+        names.push({ name: data.name, pfp: data.profilePicture });
+      })
+    );
+    setNames(names);
+    setGroupData(groupData);
+    setGroupID(id);
+    setRefreshing(false);
+  };
 
+  useEffect(() => {
     loadInformation();
   }, []);
 
@@ -72,7 +76,7 @@ const MyGroupScreen = ({ navigation }) => {
 
   return (
     <View style={containerStyles.background}>
-      <View style={{...containerStyles.container, marginHorizontal: 22}}>
+      <View style={{ ...containerStyles.container, marginHorizontal: 22 }}>
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}>Your Group</Text>
           <Text style={textStyles.textBodyGray}>
@@ -99,6 +103,12 @@ const MyGroupScreen = ({ navigation }) => {
 
         <FlatList
           data={names}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={loadInformation}
+            />
+          }
           renderItem={({ item }) => (
             <View style={styles.users}>
               <Image

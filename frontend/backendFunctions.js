@@ -255,7 +255,10 @@ export const fetchGroupImages = async (user, groupID) => {
     );
 
     userImages.sort((a, b) => b.timestamp - a.timestamp);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7456ecaa01438af9ebb484562e2f1768aa98a04c
     return userImages;
   } catch (error) {
     console.error("Error fetching images:", error);
@@ -348,14 +351,23 @@ export const addToBucket = async (user, directory, imageUrl) => {
 export const addImageToDatabase = async (user, goals, caption, url, name) => {
   const userID = user.uid;
   const userData = await fetchUserData(userID);
+  // Create a new date object for the current time
+  const now = new Date();
+  // Format the date as a string in the timezone UTC-5
+  const timestampString = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'America/New_York'  // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
+  }).format(now).split('/').reverse().join('-');
   // add image
   const data = {
     goals: goals,
     caption: caption,
     imageUrl: url,
     imagePath: name,
-    timestamp: new Date(),
-    timestampString: new Date().toISOString().split('T')[0],
+    timestamp: now,
+    timestampString: timestampString,
     likes: [],
     username: userData.username
   };

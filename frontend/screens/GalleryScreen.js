@@ -116,7 +116,7 @@ const GalleryScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={{ ...containerStyles.background, height: "500%" }}>
+    <ScrollView style={containerStyles.background}>
       <View style={{ ...containerStyles.container, marginHorizontal: 0 }}>
         <View style={{ width: "90%" }}>
           <View style={containerStyles.headerContainer}>
