@@ -255,10 +255,6 @@ export const fetchGroupImages = async (user, groupID) => {
     );
 
     userImages.sort((a, b) => b.timestamp - a.timestamp);
-<<<<<<< HEAD
-
-=======
->>>>>>> 7456ecaa01438af9ebb484562e2f1768aa98a04c
     return userImages;
   } catch (error) {
     console.error("Error fetching images:", error);
