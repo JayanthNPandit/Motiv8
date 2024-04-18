@@ -133,7 +133,7 @@ const ProfileScreen = ({ navigation }) => {
             style={containerStyles.forward}
             onPress={() => navigation.navigate("Settings")}
           >
-            <Image source={settings} />
+            <Image source={settings} style={{width: 32, height: 32}}/>
           </TouchableOpacity>
         )}
 

@@ -132,10 +132,14 @@ const GoalsScreen = ({navigation}) => {
         <View style={containerStyles.container}>
           <View style={containerStyles.goalsHeaderContainer}>
             <Text style={textStyles.header}>Goals</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("AddGoal")} style={{ position: 'absolute', left: '40%', top: '-30%' }}>
-              <Image source={addButton} style={containerStyles.addButton} />
-            </TouchableOpacity>
           </View>
+
+          <TouchableOpacity
+            style={{...containerStyles.forward, top: '-2%'}}
+            onPress={() => navigation.navigate("AddGoal")}
+          >
+            <Image source={addButton} style={{width: 45, height: 45}}/>
+          </TouchableOpacity>
 
           <View style={containerStyles.pinnedGoalsContainer}>
             {pinned ? (

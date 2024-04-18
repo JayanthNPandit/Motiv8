@@ -38,7 +38,7 @@ import post from "./assets/post.png";
 import purplePost from "./assets/purple_post.png";
 import group from "./assets/group.png";
 import purpleGroup from "./assets/purple_group.png";
-import profile from "./assets/user.png";
+import profile from "./assets/profile.png";
 import purpleProfile from "./assets/purple_profile.png";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -119,33 +119,33 @@ function TabContent() {
         tabBarIcon: ({ focused, color, size }) => {
           if (route.name === "FeedStack") {
             return focused ? (
-              <Image source={purpleHome} />
+              <Image source={purpleHome} style={{width: 38, height: 38}}/>
             ) : (
-              <Image source={home} />
+              <Image source={home} style={{width: 38, height: 38}}/>
             );
           } else if (route.name === "GoalStack") {
             return focused ? (
-              <Image source={purpleGoal} />
+              <Image source={purpleGoal} style={{width: 38, height: 38}}/>
             ) : (
-              <Image source={goal} />
+              <Image source={goal} style={{width: 38, height: 38}}/>
             );
           } else if (route.name === "PhotoStack") {
             return focused ? (
-              <Image source={purplePost} />
+              <Image source={purplePost} style={{width: 50, height: 50}}/>
             ) : (
-              <Image source={post} />
+              <Image source={post} style={{width: 50, height: 50}}/>
             );
           } else if (route.name === "GroupStack") {
             return focused ? (
-              <Image source={purpleGroup} />
+              <Image source={purpleGroup} style={{width: 38, height: 38}}/>
             ) : (
-              <Image source={group} />
+              <Image source={group} style={{width: 38, height: 38}}/>
             );
           } else {
             return focused ? (
-              <Image source={purpleProfile} />
+              <Image source={purpleProfile} style={{width: 38, height: 38}}/>
             ) : (
-              <Image source={profile} />
+              <Image source={profile} style={{width: 38, height: 38}}/>
             );
           }
         },

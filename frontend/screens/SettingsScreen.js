@@ -99,7 +99,7 @@ const SettingsScreen = ({ navigation }) => {
           <View style={styles.line} />
           <View style={styles.notificationContainer}>
             <View style={styles.option}>
-              <Image source={bell} />
+              <Image source={bell} style={{width: 40, height: 40}}/>
               <Text style={textStyles.textBody}> Notifications </Text>
             </View>
             <Switch
@@ -115,7 +115,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.setting}>
           <View style={styles.line} />
           <TouchableOpacity style={styles.option} onPress={confirmLogout}>
-            <Image source={signout} />
+            <Image source={signout} style={{width: 40, height: 40}}/>
             <Text style={textStyles.textBody}> Logout </Text>
           </TouchableOpacity>
         </View>
@@ -123,7 +123,7 @@ const SettingsScreen = ({ navigation }) => {
         <View style={styles.setting}>
           <View style={styles.line} />
           <TouchableOpacity style={styles.option} onPress={confirmDelete}>
-            <Image source={delIcon} />
+            <Image source={delIcon} style={{width: 40, height: 40}}/>
             <Text style={textStyles.textBody}> Delete Account </Text>
           </TouchableOpacity>
         </View>

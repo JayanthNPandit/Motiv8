@@ -190,8 +190,7 @@ const GalleryScreen = ({ navigation }) => {
                             textAlign: "left",
                           }}
                         >
-                          {" "}
-                          {item}{" "}
+                          {item}
                         </Text>
                       </View>
                     ))}
@@ -199,7 +198,7 @@ const GalleryScreen = ({ navigation }) => {
                 )}
                 <View style={styles.bottomHalf}>
                   <View style={styles.likes}>
-                    <Image source={heart} />
+                    <Image source={heart}/>
                     <Text style={textStyles.textBodyHeaderPurpleBold}>
                       {item.likes.length}
                     </Text>
@@ -232,7 +231,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    marginVertical: "2%",
   },
   title: {
     display: "flex",

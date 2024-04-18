@@ -41,10 +41,18 @@ export const getUser = async (userID) => {
   } catch (error) {
     console.error("Error getting user:", error);
   }
-}
+};
 
 // add a goal to the user and checks if the user does not have a goals collection and calls createGoalsCollection if so
-export const addGoal = async (user, goalName, type, frequency, counter, date, description) => {
+export const addGoal = async (
+  user,
+  goalName,
+  type,
+  frequency,
+  counter,
+  date,
+  description
+) => {
   try {
     const userID = user.uid;
     console.log(userID);
@@ -247,6 +255,7 @@ export const fetchGroupImages = async (user, groupID) => {
         const imagesCollection = await collection(db, "users", user, "images");
         const imagesSnapshot = await getDocs(imagesCollection);
         const images = imagesSnapshot.docs.map((doc) => ({
+          userID: user,
           id: doc.id,
           ...doc.data(),
         }));
@@ -256,45 +265,6 @@ export const fetchGroupImages = async (user, groupID) => {
 
     userImages.sort((a, b) => b.timestamp - a.timestamp);
     return userImages;
-  } catch (error) {
-    console.error("Error fetching images:", error);
-  }
-};
-
-// getting the 'limit' number of recent images
-export const fetchRecentGroupImages = async (user, groupID, limit) => {
-  try {
-    const groupDoc = await doc(db, "groups", groupID);
-    const groupDocRef = await getDoc(groupDoc);
-    const userIDs = await groupDocRef.data().users;
-
-    const userImages = [];
-    await Promise.all(
-      userIDs.map(async (user) => {
-        const imagesCollection = await collection(db, "users", user, "images");
-        const query = await getDocs(
-          query(
-            imagesCollection,
-            (query) => orderBy(query, "timestamp", "desc"),
-            limit(limit)
-          )
-        );
-        const imagesSnapshot = await getDocs(query);
-        const images = imagesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        userImages.push(...images);
-      })
-    );
-
-    userImages.sort((a, b) => b.timestamp - a.timestamp);
-
-    const images = userImages.map((image) => ({
-      url: image.imageUrl,
-      caption: image.caption,
-    }));
-    return images.slice(0, limit);
   } catch (error) {
     console.error("Error fetching images:", error);
   }
@@ -319,7 +289,6 @@ export const fetchUserImages = async (user) => {
 
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
-
   const response = await fetch(imageUrl);
   const blob = await response.blob();
   const name = `${directory}/${new Date().toISOString()}`;
@@ -343,15 +312,19 @@ export const addImageToDatabase = async (user, goals, caption, url, name) => {
   // Create a new date object for the current time
   const now = new Date();
   // Format the date as a string in the timezone UTC-5
-  let timestampString = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    timeZone: 'America/New_York'  // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
-  }).format(now).split('/').reverse().join('-');
-  const day = timestampString.substring(5,7);
-  const month = timestampString.substring(8,10);
-  timestampString = timestampString.substring(0,5) + month + '-' + day;
+  let timestampString = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "America/New_York", // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
+  })
+    .format(now)
+    .split("/")
+    .reverse()
+    .join("-");
+  const day = timestampString.substring(5, 7);
+  const month = timestampString.substring(8, 10);
+  timestampString = timestampString.substring(0, 5) + month + "-" + day;
   // add image
   const data = {
     goals: goals,
@@ -361,7 +334,7 @@ export const addImageToDatabase = async (user, goals, caption, url, name) => {
     timestamp: now,
     timestampString: timestampString,
     likes: [],
-    username: userData.username
+    username: userData.username,
   };
   console.log(data);
   const addedImage = await addDoc(
@@ -384,26 +357,31 @@ export const editGoals = async (user, selectedGoals) => {
     const goalsSnapshot = await getDocs(goalsCollection);
     const goals = goalsSnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
     console.log("selected goals: " + selectedGoals);
     console.log("all goals: " + goals.map((goal) => goal.name));
-    
+
     const batch = writeBatch(db);
     selectedGoals.forEach((selectedGoal) => {
       const goal = goals.find((goal) => goal.name === selectedGoal);
       if (goal && goal.currentCounter > 0) {
         goal.currentCounter -= 1;
         console.log("decremented goal: " + goal.name);
-        console.log("before updating goal: " + goal.name + " counter: " + goal.currentCounter);
+        console.log(
+          "before updating goal: " +
+            goal.name +
+            " counter: " +
+            goal.currentCounter
+        );
         if (goal.currentCounter === 0) {
           goal.completed = true;
           console.log("goal completed: " + goal.name);
         }
         const goalRef = doc(goalsCollection, goal.id);
-        batch.update(goalRef, { 
+        batch.update(goalRef, {
           currentCounter: goal.currentCounter,
-          completed: goal.completed
+          completed: goal.completed,
         });
       }
     });
@@ -414,3 +392,30 @@ export const editGoals = async (user, selectedGoals) => {
     console.error("Error editing goals:", error);
   }
 };
+
+export const likeImage = async (user, photo) => {
+  try {
+    const imageDocRef = doc(db, 'users', photo.userID, 'images', photo.id);
+    const imageDocSnapshot = await getDoc(imageDocRef);
+    const imageData = imageDocSnapshot.data();
+    let likes = imageData.likes;
+    likes.push(user.uid);
+    const updatedData = { likes: likes };
+    await updateDoc(imageDocRef, updatedData);
+  } catch (error) {
+    console.log("Error liking image", error);
+  }
+};
+
+export const unlikeImage = async (user, photo) => {
+  try {
+    const imageDocRef = doc(db, 'users', photo.userID, 'images', photo.id);
+    const imageDocSnapshot = await getDoc(imageDocRef);
+    const imageData = imageDocSnapshot.data();
+    const newLikes = imageData.likes.filter(userID => userID !== user.uid);
+    const updatedData = { likes: newLikes };
+    await updateDoc(imageDocRef, updatedData);
+  } catch (error) {
+    console.log("Error liking image", error);
+  }
+}

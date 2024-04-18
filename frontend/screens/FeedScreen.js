@@ -25,25 +25,22 @@ import { Camera } from "expo-camera";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchGroupImages,
-  fetchRecentGroupImages,
   addImageToDatabase,
   addToBucket,
   fetchUserData,
+  likeImage,
+  unlikeImage
 } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
 import * as MediaLibrary from "expo-media-library";
 
 import download from "../assets/download.png";
 import heart from "../assets/like.png";
+import liked_heart from "../assets/liked_heart.png";
 
 const FeedScreen = ({ navigation }) => {
   const [allImages, setAllImages] = useState(null);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const [refreshing, setRefreshing] = useState(false);
-
   const [isClicked, setIsClicked] = useState(false);
 
   const { user } = useAuth();
@@ -56,13 +53,23 @@ const FeedScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
+  const handleLike = async (photo) => {
+    await likeImage(user, photo);
+    await fetchImages();
+  }
+
+  const handleUnlike = async (photo) => {
+    await unlikeImage(user, photo);
+    await fetchImages();
+  }
+
   useEffect(() => {
     fetchImages();
   }, []);
 
   useEffect(() => {
     if (allImages !== null) {
-      console.log(".");
+      console.log('loading images');
     }
   }, [allImages]);
 
@@ -136,12 +143,6 @@ const FeedScreen = ({ navigation }) => {
                     </View>
                   )}
                   <View style={styles.bottomHalf}>
-                    <View style={styles.likes}>
-                      <Image source={heart} />
-                      <Text style={textStyles.textBodyHeaderPurpleBold}>
-                        {item.likes}
-                      </Text>
-                    </View>
                     <View style={styles.caption}>
                       <Text style={textStyles.textBodySmall}>
                         {item.caption}
@@ -155,6 +156,15 @@ const FeedScreen = ({ navigation }) => {
                         Tap photo to view associated goals
                       </Text>
                     </View>
+                    {item.likes.includes(user.uid) ? (
+                      <TouchableOpacity style={styles.likes} onPress={() => {handleUnlike(item)}} activeOpacity={0.5}>
+                        <Image source={liked_heart} style={{width: 41, height: 41}}/>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity style={styles.likes} onPress={() => {handleLike(item)}} activeOpacity={0.5}>
+                        <Image source={heart} />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               )}
@@ -167,15 +177,10 @@ const FeedScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  calendar: {
-    borderRadius: 10,
-    marginBottom: "15%",
-  },
   imageContainer: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    marginVertical: "2%",
   },
   title: {
     display: "flex",
@@ -189,15 +194,6 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 300,
-  },
-  downloadContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 10,
-  },
-  download: {
-    width: 25,
-    height: 25,
   },
   clickedImage: {
     ...StyleSheet.absoluteFillObject,
@@ -218,6 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    bottom: "7%",
   },
   caption: {
     paddingRight: "15%",

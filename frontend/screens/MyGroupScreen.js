@@ -88,7 +88,7 @@ const MyGroupScreen = ({ navigation }) => {
           style={containerStyles.forward}
           onPress={confirmLeaveGroup}
         >
-          <Image source={leave} />
+          <Image source={leave} style={{width: 32, height: 32}} />
         </TouchableOpacity>
 
         <View style={containerStyles.inputContainer}>
