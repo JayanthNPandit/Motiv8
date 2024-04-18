@@ -256,11 +256,7 @@ export const fetchGroupImages = async (user, groupID) => {
 
     userImages.sort((a, b) => b.timestamp - a.timestamp);
 
-    const images = userImages.map((image) => ({
-      url: image.imageUrl,
-      caption: image.caption,
-    }));
-    return images;
+    return userImages;
   } catch (error) {
     console.error("Error fetching images:", error);
   }
@@ -324,10 +320,19 @@ export const fetchUserImages = async (user) => {
 
 // adding the image to the bucket
 export const addToBucket = async (user, directory, imageUrl) => {
+
+  console.log("uploading image to bucket");
+
   const response = await fetch(imageUrl);
   const blob = await response.blob();
   const name = `${directory}/${new Date().toISOString()}`;
   const imageRef = ref(storage, name);
+
+  console.log("image ref: " + imageRef);
+  console.log("blob: " + blob);
+  console.log("name: " + name);
+  console.log("directory: " + directory);
+
   try {
     await uploadBytes(imageRef, blob);
   } catch (e) {

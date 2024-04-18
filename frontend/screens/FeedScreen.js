@@ -15,6 +15,8 @@ import {
   Platform,
   Modal,
   ActivityIndicator,
+  Alert,
+  Touchable
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -29,6 +31,7 @@ import {
   fetchUserData
 } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
+import * as MediaLibrary from "expo-media-library";
 
 import download from "../assets/download.png";
 import heart from "../assets/like.png";
@@ -48,7 +51,6 @@ const FeedScreen = ({ navigation }) => {
   // fetch some recent images from storage
   const fetchImages = async () => {
     const userData = await fetchUserData(user.uid);
-    console.log(userData);
     const images = await fetchGroupImages(user, userData.groupID);
     setAllImages(images);
     setRefreshing(false);
@@ -61,6 +63,7 @@ const FeedScreen = ({ navigation }) => {
   useEffect(() => {
     if (allImages !== null) {
       console.log('.');
+      console.log(allImages)
     }
   }, [allImages])
 
@@ -72,10 +75,45 @@ const FeedScreen = ({ navigation }) => {
     return <ActivityIndicator/>
   }
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchImages();
+  };
+
+  const handleSaveImage = async (imageUrl, imagePath) => {
+    try {
+      imagePath = imagePath + ".jpeg";
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status === "granted") {
+        const fileUrl = FileSystem.documentDirectory + imagePath;
+        const downloadResumable = FileSystem.createDownloadResumable(
+          imageUrl,
+          fileUrl,
+          {},
+          false
+        );
+        const response = await downloadResumable.downloadAsync();
+        console.log(response.uri);
+        const asset = await MediaLibrary.createAssetAsync(response.uri);
+        Alert.alert("Success!", "Image saved to camera roll");
+      } else {
+        Alert.alert(
+          "Permission denied",
+          "Unable to save image. Please grant permission to access the media library."
+        );
+      }
+    } catch (error) {
+      console.error("Error saving image:", error);
+      Alert.alert("Error", "Failed to save image to camera roll");
+    }
+  };
+
   return (
     <View style={containerStyles.background}>
-      <View style={containerStyles.container}>
-        <ScrollView>
+      <View style={{ ...containerStyles.container, marginHorizontal: 0 }}>
+        <ScrollView style={{width: '100%'}} refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}>Your Feed</Text>
           <Text style={textStyles.textBodyGray}>See what everyone's up to!</Text>
@@ -85,7 +123,7 @@ const FeedScreen = ({ navigation }) => {
             data={allImages}
             keyExtractor={(item, index) => index.toString()}
             scrollEnabled={false}
-            style={{ width: "100%", height: 1 * allImages.length }}
+            style={{ width: "100%", height: 500 * allImages.length }}
             renderItem={({ item }) => (
               <View style={styles.imageContainer}>
                 <View style={styles.title}>
@@ -129,7 +167,7 @@ const FeedScreen = ({ navigation }) => {
                   <View style={styles.likes}>
                     <Image source={heart} />
                     <Text style={textStyles.textBodyHeaderPurpleBold}>
-                      5
+                      {item.likes}
                     </Text>
                   </View>
                   <View style={styles.caption}>
