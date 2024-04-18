@@ -77,7 +77,7 @@ const FeedScreen = ({ navigation }) => {
     setIsClicked(!isClicked);
   };
 
-  if (allImages === null) {
+  if (allImages === null || user === null) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator />
