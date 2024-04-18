@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { textStyles, containerStyles } from "../styles/styles";
 import image from "../assets/working-out.png";
 
 const WelcomeScreen = ({ navigation }) => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   useEffect(() => {
-    (async () => {
+    const checkCameraPermission = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(status === "granted");
-      // reprompt for camera permissions if they deny
       if (status !== "granted") {
-        Alert.alert("We need camera permissions for this app to work");
-        // reprompt
+        Alert.alert("We need camera permissions for this app to work", "", [
+          {
+            text: "Ok",
+            onPress: {checkCameraPermission}, // Prompt again if denied
+          },
+        ]);
       }
-    })();
+    };
+    checkCameraPermission();
   }, []);
 
   return (
@@ -29,7 +40,7 @@ const WelcomeScreen = ({ navigation }) => {
         </View>
         <Image style={styles.image} source={image} />
         <TouchableOpacity
-          style={{...containerStyles.purpleButton, marginBottom: '0%'}}
+          style={{ ...containerStyles.purpleButton, marginBottom: "0%" }}
           onPress={() => navigation.navigate("SignUp")}
         >
           <Text style={textStyles.textBodyHeaderWhite}> Signup </Text>

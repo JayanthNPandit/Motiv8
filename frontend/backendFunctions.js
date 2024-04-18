@@ -9,6 +9,7 @@ import {
   updateDoc,
   deleteDoc,
   collection,
+  query
 } from "firebase/firestore";
 import { verifyIdToken } from "firebase/auth";
 import { writeBatch } from "firebase/firestore";
@@ -151,6 +152,18 @@ export const changeUserData = async (user, name, username, imageUrl) => {
       profilePicture: url,
     };
     await updateDoc(doc(db, "users", user.uid), updatedFields);
+    const imagesCollectionRef = collection(db, "users", user.uid, "images");
+    const q = query(imagesCollectionRef);
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (docSnapshot) => {
+      try {
+        const imageDocRef = doc(db, "users", user.uid, "images", docSnapshot.id);
+        const updatedData = { username: username };
+        await updateDoc(imageDocRef, updatedData);
+      } catch (error) {
+        console.error(`Error updating image document`, error);
+      }
+    });
   } catch (error) {
     console.log("Error changing user data:", error);
   }
@@ -395,7 +408,7 @@ export const editGoals = async (user, selectedGoals) => {
 
 export const likeImage = async (user, photo) => {
   try {
-    const imageDocRef = doc(db, 'users', photo.userID, 'images', photo.id);
+    const imageDocRef = doc(db, "users", photo.userID, "images", photo.id);
     const imageDocSnapshot = await getDoc(imageDocRef);
     const imageData = imageDocSnapshot.data();
     let likes = imageData.likes;
@@ -409,13 +422,13 @@ export const likeImage = async (user, photo) => {
 
 export const unlikeImage = async (user, photo) => {
   try {
-    const imageDocRef = doc(db, 'users', photo.userID, 'images', photo.id);
+    const imageDocRef = doc(db, "users", photo.userID, "images", photo.id);
     const imageDocSnapshot = await getDoc(imageDocRef);
     const imageData = imageDocSnapshot.data();
-    const newLikes = imageData.likes.filter(userID => userID !== user.uid);
+    const newLikes = imageData.likes.filter((userID) => userID !== user.uid);
     const updatedData = { likes: newLikes };
     await updateDoc(imageDocRef, updatedData);
   } catch (error) {
     console.log("Error liking image", error);
   }
-}
+};
