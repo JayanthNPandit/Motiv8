@@ -20,6 +20,7 @@ import { fetchUserImages } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
 import back from "../assets/back_arrow.png";
 import heart from "../assets/like.png";
+import liked_heart from "../assets/liked_heart.png";
 import download from "../assets/download.png";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 import * as MediaLibrary from "expo-media-library";
@@ -37,7 +38,7 @@ const GalleryScreen = ({ navigation }) => {
     const images = await fetchUserImages(user);
     const markedTemp = {};
     for (const image of images) {
-      markedTemp[image.timestampString] = {marked: true};
+      markedTemp[image.timestampString] = { marked: true };
     }
     setAllImages(images);
     setMarkedImages(markedTemp);
@@ -90,16 +91,20 @@ const GalleryScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const now = new Date()
-    let timestampString = new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      timeZone: 'America/New_York'  // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
-    }).format(now).split('/').reverse().join('-');
-    const day = timestampString.substring(5,7);
-    const month = timestampString.substring(8,10);
-    timestampString = timestampString.substring(0,5) + month + '-' + day;
+    const now = new Date();
+    let timestampString = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      timeZone: "America/New_York", // Assuming UTC-5 corresponds to Eastern Time (adjust if necessary)
+    })
+      .format(now)
+      .split("/")
+      .reverse()
+      .join("-");
+    const day = timestampString.substring(5, 7);
+    const month = timestampString.substring(8, 10);
+    timestampString = timestampString.substring(0, 5) + month + "-" + day;
     setDate(timestampString);
     getUserImages();
   }, []);
@@ -107,7 +112,7 @@ const GalleryScreen = ({ navigation }) => {
   useEffect(() => {
     if (allImages !== null && markedImages !== null) {
       setReady(true);
-      console.log(markedImages)
+      console.log(markedImages);
     }
   }, [allImages, markedImages]);
 
@@ -198,7 +203,14 @@ const GalleryScreen = ({ navigation }) => {
                 )}
                 <View style={styles.bottomHalf}>
                   <View style={styles.likes}>
-                    <Image source={heart}/>
+                    {item.likes.includes(user.uid) ? (
+                      <Image
+                        source={liked_heart}
+                        style={{ width: 41, height: 41 }}
+                      />
+                    ) : (
+                      <Image source={heart} style={{ width: 41, height: 41 }} />
+                    )}
                     <Text style={textStyles.textBodyHeaderPurpleBold}>
                       {item.likes.length}
                     </Text>
