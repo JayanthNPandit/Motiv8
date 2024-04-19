@@ -230,6 +230,7 @@ export const containerStyles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     width: "100%",
+    borderRadius: 10,
   },
   // TEXT INPUT
   inputContainer: {
