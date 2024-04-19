@@ -64,7 +64,7 @@ const ConfirmGroupScreen = ({ route, navigation }) => {
             <View style={styles.users}>
               <Image
                 style={styles.image}
-                source={item.pfp == null ? image : { url: item.pfp }}
+                source={item.pfp === "" ? image : { url: item.pfp }}
               />
               <Text style={textStyles.textBody}> {item.name} </Text>
             </View>
