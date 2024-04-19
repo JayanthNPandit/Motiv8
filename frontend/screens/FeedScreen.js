@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   Alert,
   Touchable,
+  Dimensions
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -110,7 +111,7 @@ const FeedScreen = ({ navigation }) => {
               data={allImages}
               keyExtractor={(item, index) => index.toString()}
               scrollEnabled={false}
-              style={{ width: "100%", height: 500 * allImages.length }}
+              style={{ width: "100%", height: (screenWidth + 200) * allImages.length }}
               renderItem={({ item }) => (
                 <View style={styles.imageContainer}>
                   <View style={styles.title}>
@@ -172,7 +173,7 @@ const FeedScreen = ({ navigation }) => {
                       >
                         <Image
                           source={liked_heart}
-                          style={{ width: 41, height: 41 }}
+                          style={{ width: 50, height: 50 }}
                         />
                       </TouchableOpacity>
                     ) : (
@@ -186,7 +187,7 @@ const FeedScreen = ({ navigation }) => {
                       >
                         <Image
                           source={heart}
-                          style={{ width: 41, height: 41 }}
+                          style={{ width: 50, height: 50 }}
                         />
                       </TouchableOpacity>
                     )}
@@ -201,6 +202,8 @@ const FeedScreen = ({ navigation }) => {
   );
 };
 
+const { width: screenWidth } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   imageContainer: {
     display: "flex",
@@ -212,13 +215,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    padding: 5,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
     borderWidth: 1,
     borderColor: "#8E99AB",
   },
   image: {
-    width: "100%",
-    height: 300,
+    width: screenWidth,
+    height: screenWidth,
   },
   clickedImage: {
     ...StyleSheet.absoluteFillObject,
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    bottom: "7%",
+    bottom: "8.5%",
   },
   caption: {
     paddingRight: "15%",
@@ -263,7 +267,7 @@ const styles = StyleSheet.create({
   },
   goal: {
     width: "90%",
-    paddingHorizontal: "1%",
+    paddingHorizontal: "3%",
     paddingVertical: 5,
     borderRadius: 12,
     borderWidth: 1,

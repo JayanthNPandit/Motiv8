@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Touchable,
   Alert,
+  Dimensions
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import * as ImagePicker from "expo-image-picker";
@@ -112,7 +113,6 @@ const GalleryScreen = ({ navigation }) => {
   useEffect(() => {
     if (allImages !== null && markedImages !== null) {
       setReady(true);
-      console.log(markedImages);
     }
   }, [allImages, markedImages]);
 
@@ -162,7 +162,7 @@ const GalleryScreen = ({ navigation }) => {
             data={dayImages}
             keyExtractor={(item, index) => index.toString()}
             scrollEnabled={false}
-            style={{ width: "100%", height: 500 * dayImages.length }}
+            style={{ width: "100%", height: (screenWidth + 200) * dayImages.length }}
             renderItem={({ item }) => (
               <View style={styles.imageContainer}>
                 <View style={styles.title}>
@@ -206,10 +206,10 @@ const GalleryScreen = ({ navigation }) => {
                     {item.likes.includes(user.uid) ? (
                       <Image
                         source={liked_heart}
-                        style={{ width: 41, height: 41 }}
+                        style={{ width: 50, height: 50 }}
                       />
                     ) : (
-                      <Image source={heart} style={{ width: 41, height: 41 }} />
+                      <Image source={heart} style={{ width: 50, height: 50 }} />
                     )}
                     <Text style={textStyles.textBodyHeaderPurpleBold}>
                       {item.likes.length}
@@ -234,6 +234,8 @@ const GalleryScreen = ({ navigation }) => {
   );
 };
 
+const { width: screenWidth } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   calendar: {
     borderRadius: 10,
@@ -247,24 +249,27 @@ const styles = StyleSheet.create({
   title: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "space-between",
-    padding: 5,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
     borderWidth: 1,
     borderColor: "#8E99AB",
   },
   image: {
-    width: "100%",
-    height: 300,
+    width: screenWidth,
+    height: screenWidth,
   },
   downloadContainer: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: 10,
   },
   download: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
   },
   clickedImage: {
     ...StyleSheet.absoluteFillObject,
@@ -308,7 +313,7 @@ const styles = StyleSheet.create({
   },
   goal: {
     width: "90%",
-    paddingHorizontal: "1%",
+    paddingHorizontal: "3%",
     paddingVertical: 5,
     borderRadius: 12,
     borderWidth: 1,

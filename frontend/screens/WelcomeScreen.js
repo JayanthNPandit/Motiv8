@@ -40,13 +40,13 @@ const WelcomeScreen = ({ navigation }) => {
         </View>
         <Image style={styles.image} source={image} />
         <TouchableOpacity
-          style={{ ...containerStyles.purpleButton, marginBottom: "0%" }}
+          style={{ ...containerStyles.longPurpleButton, marginBottom: "2%" }}
           onPress={() => navigation.navigate("SignUp")}
         >
           <Text style={textStyles.textBodyHeaderWhite}> Signup </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={containerStyles.whiteButton}
+          style={containerStyles.longWhiteButton}
           onPress={() => navigation.navigate("Login")}
         >
           <Text style={textStyles.textBodyHeaderPurple}> Login </Text>
@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: "white",
-    marginVertical: "20%",
+    marginTop: '15%',
+    marginBottom: "20%",
     backgroundColor: "white",
   },
   // HEADER STYLING
@@ -73,13 +74,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     gap: 5,
-    marginHorizontal: "15%",
+    marginHorizontal: "9%",
     marginVertical: "5%",
   },
   // IMAGE STYLING
   image: {
     width: "97%",
     height: "30%",
+    marginBottom: '8%'
   },
 });
 

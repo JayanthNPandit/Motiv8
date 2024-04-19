@@ -32,7 +32,7 @@ const GroupCodeScreen = ({ route, navigation }) => {
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(groupID);
-    Alert.alert("Copied group code");
+    Alert.alert("Success!", "Copied group code");
   };
 
   return (
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     paddingVertical: "4.5%",
   },
   copyImage: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
   },
   // IMAGE STYLING
   image: {

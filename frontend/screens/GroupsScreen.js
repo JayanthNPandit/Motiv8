@@ -44,13 +44,13 @@ const GroupsScreen = ({ route, navigation }) => {
 
         <Image style={styles.image} source={image} />
         <TouchableOpacity
-          style={{ ...containerStyles.purpleButton, marginBottom: "-3%" }}
+          style={{ ...containerStyles.longPurpleButton, paddingHorizontal: '15%', marginBottom: "-2%" }}
           onPress={() => navigation.navigate("CreateGroup")}
         >
           <Text style={textStyles.textBodyHeaderWhite}> Create a group </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ ...containerStyles.whiteButton, paddingHorizontal: "17%" }}
+          style={{ ...containerStyles.longWhiteButton, paddingHorizontal: "17%" }}
           onPress={() => navigation.navigate("JoinGroup")}
         >
           <Text style={textStyles.textBodyHeaderPurple}> Join a group </Text>

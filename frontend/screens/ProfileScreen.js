@@ -159,8 +159,9 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.editContainer}>
             <TouchableOpacity
               style={{
-                ...containerStyles.purpleButton,
-                marginBottom: "0%",
+                ...containerStyles.longPurpleButton,
+                paddingHorizontal: '15.5%',
+                marginBottom: "2%",
               }}
               onPress={() =>
                 navigation.navigate("Gallery")
@@ -172,7 +173,7 @@ const ProfileScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                ...containerStyles.whiteButton,
+                ...containerStyles.longWhiteButton,
                 paddingHorizontal: "25%",
               }}
               onPress={() => setEdit(true)}
@@ -185,8 +186,8 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.editContainer}>
             <TouchableOpacity
               style={{
-                ...containerStyles.purpleButton,
-                marginBottom: "0%",
+                ...containerStyles.longPurpleButton,
+                marginBottom: "2%",
               }}
               disabled={!isClickable}
               onPress={handleChange}
@@ -195,8 +196,8 @@ const ProfileScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                ...containerStyles.whiteButton,
-                paddingHorizontal: "20%",
+                ...containerStyles.longWhiteButton,
+                paddingHorizontal: "29%",
               }}
               onPress={handleCancel}
             >
