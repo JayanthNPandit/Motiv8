@@ -356,14 +356,14 @@ export const addImageToDatabase = async (user, goals, caption, url, name) => {
   );
 
   console.log("added image to database" + addedImage.id);
-  editGoals(user, goals);
+  decrementGoals(user, goals);
   console.log("updated goals");
   return addedImage.id;
 };
 
 // now we need to call a function that takes in the selected goals and edits the goals collection for that user and decrements each seleected goal counter by 1
 // for each selected goal
-export const editGoals = async (user, selectedGoals) => {
+export const decrementGoals = async (user, selectedGoals) => {
   try {
     const userID = user.uid;
     const goalsCollection = collection(db, "users", userID, "goals");
@@ -430,5 +430,55 @@ export const unlikeImage = async (user, photo) => {
     await updateDoc(imageDocRef, updatedData);
   } catch (error) {
     console.log("Error liking image", error);
+  }
+};
+
+// function to fetch 1 goal object from a user with the name passed in
+export const fetchAGoal = async (user, goalName) => {
+  console.log("fetching goal");
+  console.log("goal name: " + goalName);
+  try {
+    const userID = user.uid;
+    const goalsCollection = collection(db, "users", userID, "goals");
+    const goalsSnapshot = await getDocs(goalsCollection);
+    const goals = goalsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    const goal = goals.find((goal) => goal.name === goalName);
+    console.log("fetched goal name: " + goal.name)
+    return goal;
+  } catch (error) {
+    console.error("Error fetching goal:", error);
+  }
+};
+
+// function to edit a goal object for a user with all the new parameters passed in
+export const editGoal = async (
+  user,
+  goalID,
+  newName,
+  newFrequency,
+  newCounter,
+  newDeadline,
+  newDescription
+) => {
+  try {
+    const userID = user.uid;
+    const goalsCollection = collection(db, "users", userID, "goals");
+    const goalRef = doc(goalsCollection, goalID);
+    const updatedFields = {
+      name: newName,
+      frequency: newFrequency,
+      counter: newCounter,
+      currentCounter: newCounter,
+      date: newDeadline,
+      description: newDescription,
+    };
+    await updateDoc(goalRef, updatedFields);
+    return true;
+  } catch (error) {
+    console.error("Error editing goal:", error);
+    return false;
   }
 };

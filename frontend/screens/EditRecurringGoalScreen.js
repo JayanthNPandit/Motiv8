@@ -1,60 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollView, Alert } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
-import { addGoal } from '../backendFunctions';
+import { editGoal, fetchAGoal } from '../backendFunctions';
+import { useRoute } from '@react-navigation/native';
 
-const AddRecurringGoalScreen = ({ navigation }) => {
-    const [goalName, setGoalName] = useState('');
-    const [type, setType] = useState('Recurring');
-    const [frequency, setFrequency] = useState('Daily');
-    const [counter, setCounter] = useState('');
-    const [description, setDescription] = useState('');
+const EditRecurringGoalScreen = ({ navigation }) => {
+    const route = useRoute();
+    const { user } = useAuth();
+
+    const { goalName } = route.params;
+
+    // new values for everything
+    const [newName, setNewName] = useState('');
+    const [newFrequency, setNewFrequency] = useState('');
+    const [newCounter, setNewCounter] = useState();
+    const [currentCounter, setCurrentCounter] = useState(); // State to store the current counter value
+    const [newDate, setNewDate] = useState('');
+    const [newDescription, setNewDescription] = useState('');
     const [isClickable, setIsClickable] = useState(true);
+    const [type, setType] = useState('Recurring');
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
-    const { user } = useAuth();
+    const [goal, setGoal] = useState(null); // State to store fetched goal
 
     const frequencyOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
-    // Function to handle adding a new goal
-    const handleNewGoal = async () => {
-        if (!goalName || !frequency || !counter) {
+    const fetchUserGoal = async () => {
+        try {
+            const fetchedGoal = await fetchAGoal(user, goalName);
+            setGoal(fetchedGoal);
+        } catch (error) {
+            console.error("Error fetching goal:", error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchUserGoal = async () => {
+            try {
+                const fetchedGoal = await fetchAGoal(user, goalName);
+                setGoal(fetchedGoal);
+    
+                // Once the goal is fetched, set the new values
+                setNewName(fetchedGoal.name);
+                setNewFrequency(fetchedGoal.frequency);
+                setNewCounter(fetchedGoal.counter);
+                setCurrentCounter(fetchedGoal.currentCounter);
+                setNewDate(fetchedGoal.date);
+                setNewDescription(fetchedGoal.description);
+            } catch (error) {
+                console.error("Error fetching goal:", error);
+            }
+        };
+    
+        fetchUserGoal(); // Call the async function
+    
+    }, [user, goalName]);
+
+    const handleEditGoal = async () => {
+        if (!newName || !newFrequency || !newCounter) {
             Alert.alert("Name, frequency, and counter are required fields.");
-            setIsClickable(true);
+            return;
+        }
+
+        if (newCounter < currentCounter) {
+            Alert.alert("New counter cannot be less than the current progress count, which is " + currentCounter + ".");
             return;
         }
 
         setIsClickable(false);
-        const id = await addGoal(user, goalName, type, frequency, counter, '', description);
+        const success = await editGoal(user, goal.id, newName, newFrequency, newCounter, newDate, newDescription);
 
-        if (!id) {
-            setIsClickable(true);
-            console.log("Error adding goal. Try again");
+        if (success) {
+            console.log("Goal edited successfully");
+            navigation.navigate("Goals");
         } else {
-            setGoalName('');
-            setCounter('');
-            setDescription('');
             setIsClickable(true);
+            console.log("Error editing goal. Try again");
         }
-
-        navigation.navigate("Goals");
     }
 
     const handleOptionSelect = (option) => {
-        setFrequency(option);
+        setNewFrequency(option);
         setDropdownVisible(false);
-        console.log("Frequency: " + frequency);
-        console.log("dropdown: " + dropdownVisible);
     }
 
-
-    return (
-        <View style={containerStyles.background}>
-            <ScrollView>
+return (
+    <View style={containerStyles.background}>
+        <ScrollView>
             <View style={containerStyles.container}>
                 <View style={containerStyles.headerContainer}>
-                    <Text style={textStyles.header}>Add a Recurring Goal</Text>
+                    <Text style={textStyles.header}>Edit a Recurring Goal</Text>
                     <Text style={textStyles.textBodyGray}>You can always change this later!</Text>
                 </View>
 
@@ -62,8 +98,8 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                     <Text style={textStyles.textBodyHeader}>Enter a name for your goal:</Text>
                     <TextInput
                         style={containerStyles.input}
-                        value={goalName}
-                        onChangeText={setGoalName}
+                        value={newName}
+                        onChangeText={setNewName}
                     />
 
                     <Text style={textStyles.textBodyHeader}>Choose a goal type:</Text>
@@ -78,8 +114,8 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                     <View style={containerStyles.buttonContainer}>
                         <TextInput
                             style={containerStyles.counterInput}
-                            value={counter}
-                            onChangeText={setCounter}
+                            value={newCounter}
+                            onChangeText={setNewCounter}
                             keyboardType="numeric"
                         />
                         <Text style={textStyles.bottomText}>times per</Text>
@@ -94,11 +130,11 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                                 keyExtractor={(item, index) => index.toString()}
                                 style={styles.dropdownContainer}
                             />
-                        ) : (       
-                            <TouchableOpacity onPress={() => setDropdownVisible(true)}>
-                                <Text style={containerStyles.frequencyInput}>{frequency}</Text>
-                            </TouchableOpacity>
-                        )}
+                        ) : (
+                                <TouchableOpacity onPress={() => setDropdownVisible(true)}>
+                                    <Text style={containerStyles.frequencyInput}>{newFrequency}</Text>
+                                </TouchableOpacity>
+                            )}
                     </View>
 
                     <Text style={textStyles.textBodyHeader}>Add a description:</Text>
@@ -106,21 +142,21 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                         style={containerStyles.biggerInput}
                         multiline={true}
                         numberOfLines={4}
-                        value={description}
-                        onChangeText={setDescription}
+                        value={newDescription}
+                        onChangeText={setNewDescription}
                         placeholder="This is optional"
                     />
 
                     <View style={containerStyles.buttonContainer}>
                         <TouchableOpacity
                             style={containerStyles.whiteButton}
-                            onPress={() => navigation.navigate("AddGoal")}
+                            onPress={() => navigation.navigate("Goals")}
                         >
                             <Text style={textStyles.textBodyHeaderPurple}>Back</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={containerStyles.purpleButton}
-                            onPress={handleNewGoal}
+                            onPress={handleEditGoal}
                             disabled={!isClickable}
                         >
                             <Text style={textStyles.textBodyHeaderWhite}>Submit</Text>
@@ -160,4 +196,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AddRecurringGoalScreen;
+export default EditRecurringGoalScreen;

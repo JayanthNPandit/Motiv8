@@ -153,7 +153,14 @@ const GoalsScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <Text style={textStyles.textBodyHeaderWhite}>No pinned goals</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={textStyles.textBodyHeaderWhite}>No pinned goals</Text>
+                </View>
+                <TouchableOpacity onPress={removePin}>
+                  <Image source={pinButton} style={{ width: 20, height: 20 }} />
+                </TouchableOpacity>
+              </View>
             )}
           </View>
 
@@ -191,7 +198,7 @@ const GoalsScreen = ({navigation}) => {
                   </View>
                   <View style={containerStyles.goalContentContainer}>
                     <Text style={textStyles.goalText}>{item[0]}</Text>
-                    <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
+                    <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditRecurringGoal", { goalName: item[0].toString() })}>
                       <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>
                   </View>

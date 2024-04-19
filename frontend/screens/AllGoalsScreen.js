@@ -17,12 +17,6 @@ const AllGoalsScreen = ({navigation}) => {
   const [completedGoals, setCompletedGoals] = useState([]); // State to manage completed goals
   const [filteredGoals, setFilteredGoals] = useState([]); // State to manage filtered goals
 
-  const [newName, setNewName] = useState(''); // State to manage the new goal name
-  const [newDescription, setNewDescription] = useState(''); // State to manage the new goal description
-  const [newCategory, setNewCategory] = useState(''); // State to manage the new goal category
-  const [newDeadline, setNewDeadline] = useState(''); // State to manage the new goal deadline
-  const [newCounter, setNewCounter] = useState(''); // State to manage the new goal progress
-
   const {user} = useAuth();
 
   useEffect(() => {

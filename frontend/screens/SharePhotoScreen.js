@@ -53,6 +53,8 @@ const SharePhotoScreen = ({navigation}) => {
       // add some stuff to extract only the name from each goal
       const goalNames = goals.map((goal) => goal.name);
       setGoals(goalNames);
+
+      setGoals(goalNames);
       console.log("after set goal names" + goalNames);
     };
     
@@ -120,6 +122,7 @@ const SharePhotoScreen = ({navigation}) => {
 
     return (
       <View style={containerStyles.background}>
+        <ScrollView>
         <View style={containerStyles.container}>
           <View style={containerStyles.headerContainer}>
             <Text style={textStyles.header}>
@@ -140,7 +143,7 @@ const SharePhotoScreen = ({navigation}) => {
           <View style={containerStyles.divider}></View>
           <Text style={styles.goalHeader}>Select at least one goal associated with the photo:</Text>
           <TextInput
-            style={{ borderWidth: 1, borderRadius:'10%', borderColor: 'gray', padding: 10, marginVertical: '2%', width: '100%'}}
+            style={{ borderWidth: 1, borderRadius: '10%', borderColor: 'gray', padding: 10, marginVertical: '2%', width: '100%'}}
             placeholder="🔍 Search goals..."
             value={searchTerm}
             onChangeText={handleSearch}
@@ -186,6 +189,9 @@ const SharePhotoScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={{ flex: 1, paddingBottom: '40%' }}>
+        </View>
+        </ScrollView>
       </View>
       );
     };

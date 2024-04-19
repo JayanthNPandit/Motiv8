@@ -24,6 +24,8 @@ const AddGoalScreen = ({navigation}) => {
           <View style={containerStyles.addGoalHeaderContainer}>
             <Text style={textStyles.header}> Add a Goal </Text>
           </View>
+          <View style={{ flex: 1, paddingBottom: '10%' }}>
+          </View>
           <Text style={textStyles.textBodyGray}> Choose your Goal Type: </Text>
           <View style={containerStyles.listContainer}>
             <Text style={textStyles.sectionHeader}></Text>

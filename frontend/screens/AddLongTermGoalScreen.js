@@ -1,7 +1,7 @@
 // add recurring goal screen
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ImageComponent, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ImageComponent, Alert, ScrollView, Dimensions } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
 import { addGoal } from '../backendFunctions';
@@ -19,6 +19,8 @@ const AddLongTermGoalScreen = ({navigation}) => {
     const [isClickable, setIsClickable] = useState(true);
 
     const {user} = useAuth();
+
+    const { width: screenWidth } = Dimensions.get('window');
 
     const frequencies = ['Daily', 'Weekly', 'Monthly'];
 
@@ -84,20 +86,20 @@ const AddLongTermGoalScreen = ({navigation}) => {
                         visible={showCalendar}
                         onRequestClose={() => setShowCalendar(false)}
                     >
-                        <View style={containerStyles.modalContainer}>
-                            <Text></Text>
-                            <Text></Text>
-                            <Text></Text>
-                            <View style={containerStyles.modalContent}>
-                            <Calendar
-                                current={date}
-                                minDate={new Date()} // Set minimum date to today
-                                onDayPress={(day) => {
-                                    setDate(day.dateString); // Update selected date
-                                    setShowCalendar(false); // Close the calendar
-                                }}
-                                theme={containerStyles.customCalendarTheme} // Apply the custom theme
-                            />
+                        <View style={[containerStyles.modalContainer, { width: screenWidth*0.95, paddingTop: '12%', paddingLeft: '5%' }]}>
+                            <View style={{ borderRadius: 20, overflow: 'hidden' }}>
+                                <View style={containerStyles.modalContent}>
+                                    <Calendar
+                                        current={date}
+                                        minDate={new Date()} // Set minimum date to today
+                                        onDayPress={(day) => {
+                                            setDate(day.dateString); // Update selected date
+                                            setShowCalendar(false); // Close the calendar
+                                        }}
+                                        theme={containerStyles.customCalendarTheme} // Apply the custom theme
+                                        borderRadius={200} // Apply border radius to the Calendar component
+                                    />
+                                </View>
                             </View>
                         </View>
                     </Modal>

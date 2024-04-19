@@ -282,7 +282,6 @@ export const containerStyles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#939393",
-    width: "100%",
     paddingHorizontal: "5%",
     paddingVertical: "5%",
     display: "flex",

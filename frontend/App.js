@@ -25,6 +25,8 @@ import GalleryScreen from "./screens/GalleryScreen";
 import FeedScreen from "./screens/FeedScreen";
 import AllGoalsScreen from "./screens/AllGoalsScreen";
 import NoGroupFeedScreen from "./screens/NoGroupFeedScreen";
+import EditLongTermGoalScreen from "./screens/EditLongTermGoalScreen";
+import EditRecurringGoalScreen from "./screens/EditRecurringGoalScreen";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
@@ -375,6 +377,16 @@ function GoalStack() {
       <Stack.Screen
         name="SharePhoto"
         component={SharePhotoScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditRecurringGoal"
+        component={EditRecurringGoalScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditLongTermGoal"
+        component={EditLongTermGoalScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
