@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext.js";
 import { fetchGroupImages, fetchRecentGroupImages, addImageToDatabase, addToBucket } from '../backendFunctions.js';
-import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal } from 'react-native';
+import { View, Image, TouchableOpacity, Text, FlatList, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, RefreshControl, Platform, Modal, Alert } from 'react-native';
 import { CheckBox } from '@react-native-community/checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { containerStyles, textStyles } from '../styles/styles.js';
@@ -26,6 +26,8 @@ const SharePhotoScreen = ({navigation}) => {
     const [filteredGoals, setFilteredGoals] = useState([]);
 
     const [selectedGoals, setSelectedGoals] = useState([]);
+
+    const [isClickable, setIsClickable] = useState(true);
 
     const { imageUrl } = route.params;
               
@@ -56,6 +58,12 @@ const SharePhotoScreen = ({navigation}) => {
     
     // upload the image
     const uploadImage = async () => {
+      if (selectedGoals.length === 0) {
+          setIsClickable(true);
+          Alert.alert("Must select a goal to upload image.");
+          return;
+      }
+      
       console.log("imageurl: " + imageUrl);
       if (imageUrl) {
         console.log("image received");
@@ -78,7 +86,7 @@ const SharePhotoScreen = ({navigation}) => {
           setCaption('');
           setSelectedGoals([]);
           setImageData(null);
-          navigation.navigate("SnapProgress");
+          navigation.navigate("Feed");
         }
       }
     };
@@ -120,12 +128,13 @@ const SharePhotoScreen = ({navigation}) => {
           </View>
           <View style={containerStyles.imageContainer}>
             <Image style={styles.image} source={{ uri: imageUrl }} />
-            <TextInput 
-                style={containerStyles.captionInput} 
-                //multiline // Add this prop to make it multiline
-                value={caption} 
-                onChangeText={setCaption} 
-                placeholder="Add a caption..." 
+            <TextInput
+                style={containerStyles.captionInput}
+                multiline={true}
+                numberOfLines={4}
+                value={caption}
+                onChangeText={setCaption}
+                placeholder="This is optional"
             />          
           </View>
           <View style={containerStyles.divider}></View>
@@ -161,12 +170,19 @@ const SharePhotoScreen = ({navigation}) => {
             keyExtractor={(item, index) => index.toString()}
           />
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("ConfirmPhoto", {imageUrl: imageUrl})}>
-              <Text>Back</Text>
+          <View style={containerStyles.buttonContainer}>
+            <TouchableOpacity
+                style={containerStyles.whiteButton}
+                onPress={() => navigation.navigate("ConfirmPhoto", {imageUrl: imageUrl})}
+            >
+                <Text style={textStyles.textBodyHeaderPurple}>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={containerStyles.purpleButton} onPress={uploadImage}>
-              <Text style={textStyles.textBodySmallWhite}>Share!</Text>
+            <TouchableOpacity
+                style={containerStyles.purpleButton}
+                onPress={uploadImage}
+                disabled={!isClickable}
+            >
+              <Text style={textStyles.textBodyHeaderWhite}>Share!</Text>
             </TouchableOpacity>
           </View>
         </View>

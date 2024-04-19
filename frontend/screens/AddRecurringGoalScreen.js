@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Platform, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
@@ -15,6 +15,8 @@ const AddRecurringGoalScreen = ({ navigation }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const { user } = useAuth();
+
+    const frequencyOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
     // Function to handle adding a new goal
     const handleNewGoal = async () => {
@@ -40,7 +42,13 @@ const AddRecurringGoalScreen = ({ navigation }) => {
         navigation.navigate("Goals");
     }
 
+    const handleOptionSelect = (option) => {
+        setFrequency(option);
+        setDropdownVisible(false); // Close the dropdown after selection
+    };
+
     return (
+        <ScrollView style={containerStyles.background}>
         <View style={containerStyles.background}>
             <View style={containerStyles.container}>
                 <View style={containerStyles.headerContainer}>
@@ -73,24 +81,23 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                             keyboardType="numeric"
                         />
                         <Text style={textStyles.textBodyHeader}>times per</Text>
-                        <TouchableOpacity
-                            style={styles.dropdownButton}
-                            onPress={() => setDropdownVisible(!dropdownVisible)}
-                        >
-                            <Text style={textStyles.textBodyHeader}>{frequency}</Text>
+                        <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)}>
+                            <TextInput
+                                style={containerStyles.frequencyInput}
+                                value={counter}
+                                onChangeText={setFrequency}
+                                editable={false}
+                                defaultValue='Frequency'
+                            />
                         </TouchableOpacity>
                         {dropdownVisible && (
-                            <Picker
-                                selectedValue={frequency}
-                                style={styles.picker}
-                                onValueChange={(itemValue) => setFrequency(itemValue)}
-                                mode="dropdown"
-                            >
-                                <Picker.Item label="Day" value="Day" />
-                                <Picker.Item label="Week" value="Week" />
-                                <Picker.Item label="Month" value="Month" />
-                                <Picker.Item label="Year" value="Year" />
-                            </Picker>
+                            <View style={styles.dropdownContainer}>
+                            {frequencyOptions.map((option, index) => (
+                                <TouchableOpacity key={index} onPress={() => handleOptionSelect(option)} style={styles.option}>
+                                <Text>{option}</Text>
+                                </TouchableOpacity>
+                            ))}
+                            </View>
                         )}
                     </View>
 
@@ -122,6 +129,9 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                 </View>
             </View>
         </View>
+        <View style={{ flex: 1, paddingBottom: '50%' }}>
+        </View>
+        </ScrollView>
     );
 };
 

@@ -1,7 +1,7 @@
 // add recurring goal screen
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ImageComponent, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ImageComponent, Alert, ScrollView } from 'react-native';
 import { textStyles, containerStyles } from '../styles/styles';
 import { useAuth } from "../contexts/AuthContext";
 import { addGoal } from '../backendFunctions';
@@ -55,6 +55,7 @@ const AddLongTermGoalScreen = ({navigation}) => {
 
     return (
         <View style={containerStyles.background}>
+            <ScrollView>
             <View style={containerStyles.container}>
                 <View style={containerStyles.headerContainer}>
                     <Text style={textStyles.header}> Add a Long Term Goal </Text>
@@ -102,18 +103,35 @@ const AddLongTermGoalScreen = ({navigation}) => {
                     </Modal>
 
                     <Text style={textStyles.textBodyHeader}> Add a description: </Text>
-                    <TextInput style={containerStyles.biggerInput} multiline={false} numberOfLines={4} value={description} onChangeText={setDescription} placeholder='This is optional'/>
+                    <TextInput
+                        style={containerStyles.biggerInput}
+                        multiline={true}
+                        numberOfLines={4}
+                        value={description}
+                        onChangeText={setDescription}
+                        placeholder="This is optional"
+                    />
 
                     <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity style={containerStyles.whiteButton} onPress={() => navigation.navigate("AddGoal")}>
-                            <Text style={textStyles.textBodyHeaderPurple}> Back </Text>
+                        <TouchableOpacity
+                            style={containerStyles.whiteButton}
+                            onPress={() => navigation.navigate("AddGoal")}
+                        >
+                            <Text style={textStyles.textBodyHeaderPurple}>Back</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={containerStyles.purpleButton} onPress={handleNewGoal} disabled={!isClickable}>
-                            <Text style={textStyles.textBodyHeaderWhite}> Submit </Text>
+                        <TouchableOpacity
+                            style={containerStyles.purpleButton}
+                            onPress={handleNewGoal}
+                            disabled={!isClickable}
+                        >
+                            <Text style={textStyles.textBodyHeaderWhite}>Submit</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
+            <View style={{ flex: 1, paddingBottom: '50%' }}>
+            </View>
+            </ScrollView>
         </View>
     );
 };

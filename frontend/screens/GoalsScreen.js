@@ -163,11 +163,11 @@ const GoalsScreen = ({navigation}) => {
           {recurringGoals.length == 0 ? (
             <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
               <View style={styles.progressBarContainer}>
-                <View style={[styles.progressBar, { width: '100%' }]} />
+                <View style={[styles.progressBar, { width: `${Math.min(100)}%` }]} />
               </View>
               <View style={containerStyles.goalContentContainer}>
                 <Text style={textStyles.goalText}>No goals yet!</Text>
-                <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditGoal")}>
+                <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddGoal")}>
                   <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                 </TouchableOpacity>
               </View>
