@@ -29,7 +29,7 @@ import {
   addToBucket,
   fetchUserData,
   likeImage,
-  unlikeImage
+  unlikeImage,
 } from "../backendFunctions.js";
 import { textStyles, containerStyles } from "../styles/styles";
 import * as MediaLibrary from "expo-media-library";
@@ -42,6 +42,7 @@ const FeedScreen = ({ navigation }) => {
   const [allImages, setAllImages] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [clickable, setIsClickable] = useState(true);
 
   const { user } = useAuth();
 
@@ -54,14 +55,18 @@ const FeedScreen = ({ navigation }) => {
   };
 
   const handleLike = async (photo) => {
+    setIsClickable(false);
     await likeImage(user, photo);
     await fetchImages();
-  }
+    setIsClickable(true);
+  };
 
   const handleUnlike = async (photo) => {
+    setIsClickable(false);
     await unlikeImage(user, photo);
     await fetchImages();
-  }
+    setIsClickable(true);
+  };
 
   useEffect(() => {
     fetchImages();
@@ -69,7 +74,7 @@ const FeedScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (allImages !== null) {
-      console.log('loading images');
+      console.log("loading images");
     }
   }, [allImages]);
 
@@ -157,12 +162,32 @@ const FeedScreen = ({ navigation }) => {
                       </Text>
                     </View>
                     {item.likes.includes(user.uid) ? (
-                      <TouchableOpacity style={styles.likes} onPress={() => {handleUnlike(item)}} activeOpacity={0.5}>
-                        <Image source={liked_heart} style={{width: 41, height: 41}}/>
+                      <TouchableOpacity
+                        style={styles.likes}
+                        onPress={() => {
+                          handleUnlike(item);
+                        }}
+                        disabled={!clickable}
+                        activeOpacity={0.5}
+                      >
+                        <Image
+                          source={liked_heart}
+                          style={{ width: 41, height: 41 }}
+                        />
                       </TouchableOpacity>
                     ) : (
-                      <TouchableOpacity style={styles.likes} onPress={() => {handleLike(item)}} activeOpacity={0.5}>
-                        <Image source={heart} style={{width: 41, height: 41}}/>
+                      <TouchableOpacity
+                        style={styles.likes}
+                        onPress={() => {
+                          handleLike(item);
+                        }}
+                        disabled={!clickable}
+                        activeOpacity={0.5}
+                      >
+                        <Image
+                          source={heart}
+                          style={{ width: 41, height: 41 }}
+                        />
                       </TouchableOpacity>
                     )}
                   </View>

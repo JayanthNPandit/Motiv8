@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     paddingVertical: "4.5%",
   },
   copyImage: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
   },
   // IMAGE STYLING
   image: {

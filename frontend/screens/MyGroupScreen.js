@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
     borderRadius: 1000,
   },
   copyImage: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
   },
   copyContainer: {
     display: "flex",

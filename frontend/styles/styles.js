@@ -263,7 +263,7 @@ export const containerStyles = StyleSheet.create({
   input: {
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#111111",
+    borderColor: "#939393",
     width: "100%",
     paddingHorizontal: "2%",
     paddingVertical: "4.5%",

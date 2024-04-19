@@ -140,7 +140,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={containerStyles.inputContainer}>
           <Text style={textStyles.textBodyHeader}> Username: </Text>
           <TextInput
-            style={containerStyles.input}
+            style={[containerStyles.input, !edit && styles.color]}
             value={!edit ? origUsername : username}
             editable={isClickable}
             onChangeText={setUsername}
@@ -149,7 +149,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={containerStyles.inputContainer}>
           <Text style={textStyles.textBodyHeader}> Name: </Text>
           <TextInput
-            style={containerStyles.input}
+            style={[containerStyles.input, !edit && styles.color]}
             value={!edit ? origName : name}
             editable={isClickable}
             onChangeText={setName}
@@ -243,6 +243,9 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     marginBottom: "7%",
   },
+  color: {
+    color: '#8E99AB',
+  }
 });
 
 export default ProfileScreen;
