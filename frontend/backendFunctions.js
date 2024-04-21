@@ -9,10 +9,10 @@ import {
   updateDoc,
   deleteDoc,
   collection,
+  writeBatch,
   query
 } from "firebase/firestore";
 import { verifyIdToken } from "firebase/auth";
-import { writeBatch } from "firebase/firestore";
 
 // authorize user
 const validateUser = (token) => {
@@ -482,3 +482,4 @@ export const editGoal = async (
     return false;
   }
 };
+

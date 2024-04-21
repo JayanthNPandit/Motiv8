@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, TextInput, TouchableOpacity, Image } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore'; // Assuming you are using Firebase Firestore
 import { fetchUserGoals } from '../backendFunctions';
 import { useAuth } from '../contexts/AuthContext';
 import { textStyles, containerStyles } from '../styles/styles';
+import back from "../assets/back_arrow.png";
+
 
 const AllGoalsScreen = ({navigation}) => {
   const [goals, setGoals] = useState([]);
 
   const [refreshing, setRefreshing] = useState(false); // State to manage refreshing the list 
   const [searchTerm, setSearchTerm] = useState(null);
-  const [expandedGoalIndex, setExpandedGoalIndex] = useState(null);
+  const [expandedGoalIndex, setExpandedGoalIndex] = useState([]);
 
 
   const [inProgressGoals, setInProgressGoals] = useState([]); // State to manage in progress goals 
@@ -59,7 +61,12 @@ const AllGoalsScreen = ({navigation}) => {
   }
 
   const handleGoalContainerPress = (index) => {
-    setExpandedGoalIndex(index === expandedGoalIndex ? null : index);
+    // if the index is in the array, remove it. other wise, add it
+    if (expandedGoalIndex.includes(index)) {
+      setExpandedGoalIndex(expandedGoalIndex.filter((i) => i !== index));
+    } else {
+      setExpandedGoalIndex([...expandedGoalIndex, index]);
+    }
   }
 
   const handleSearch = (text) => {
@@ -75,84 +82,108 @@ const AllGoalsScreen = ({navigation}) => {
 
   return (
     <View style={containerStyles.background}>
-      <ScrollView style={styles.scrollView}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
-        <View>   
-          <Text style={textStyles.header}>All Your Goals</Text>
-          <Text style={textStyles.subheader}>Open Goal Dropdown to Edit</Text>
-          <TextInput
-            style={{ borderWidth: 1, borderRadius:'10%', borderColor: 'gray', padding: 10, marginVertical: '2%', width: '100%'}}
-            placeholder="🔍 Search goals..."
-            value={searchTerm}
-            onChangeText={handleSearch}
-          />
-          <View style={styles.goalsContainer}>
-            {/* If searchTerm is null, split goals into in progress and completed */}
-            {searchTerm === null ? (
-            <>
+      <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <View style={containerStyles.container}>
+        <TouchableOpacity style={containerStyles.back} onPress={() => navigation.navigate("Goals")}>
+          <Image source={back} />
+        </TouchableOpacity>
+        <Text style={textStyles.header}>All Your Goals</Text>
+        <Text style={textStyles.subheader}>Open Goal Dropdown to Edit</Text>
+        <TextInput
+          style={{ borderWidth: 1, borderRadius:'10%', borderColor: 'gray', padding: 10, marginVertical: '2%', marginHorizontal: '2%', width: '100%' }}
+          placeholder="🔍 Search goals..."
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+        <View style={styles.goalsContainer}>
+          {/* If searchTerm is null, split goals into in progress and completed */}
+          {searchTerm === null ? (
+            <View>
               <View>
-                <Text style={styles.sectionHeader}>In Progress</Text>
+                <Text style={styles.sectionHeader}>In Progress: </Text>
                 {inProgressGoals.map((goal, index) => (
-                  <TouchableOpacity key={index} onPress={() => handleGoalContainerPress(index)}>
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleGoalContainerPress(index)}
+                  >
                     <View style={styles.goalContainer}>
                       <Text style={styles.goalText}>{goal.name}</Text>
-                      {expandedGoalIndex === index && (
-                        <TextInput
-                          value={goal.details} // Assuming details is the property containing additional details
-                          onChangeText={(text) => handleGoalDetailsChange(index, text)} // Implement handleGoalDetailsChange function
-                          placeholder="Edit details..."
-                          style={styles.goalDetailsTextInput}
-                        />
+                      {expandedGoalIndex.includes(index) && (
+                        <View style={styles.goalDetailsContainer}>
+                          <Text>Type: {goal.type}</Text>
+                          {goal.type === "Recurring" ? (
+                            <Text>Frequency: {goal.frequency}</Text>
+                          ) : (
+                            <Text>Target Date: {goal.date}</Text>
+                          )}
+                          <Text>Description: {goal.description}</Text>
+                          <View style={flexDirection='row'}>
+                          <TouchableOpacity onPress={() => navigation.navigate(goal.type === "Recurring" ? "EditRecurringGoal" : "EditLongTermGoal", { goalName: goal.name})}>
+                            <Text>Edit</Text>
+                          </TouchableOpacity>
+                            <TouchableOpacity onPress={() => console.log("Delete")}>
+                              <Text>Delete</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
                       )}
                     </View>
                   </TouchableOpacity>
                 ))}
               </View>
-              <View style={containerStyles.divider}></View>
+              <View style={styles.divider}></View>
               <View>
-                <Text style={styles.sectionHeader}>Completed</Text>
+                <Text style={styles.sectionHeader}>Completed: </Text>
                 {completedGoals.map((goal, index) => (
-                  <TouchableOpacity key={index} onPress={() => handleGoalContainerPress(index)}>
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleGoalContainerPress(index)}
+                  >
                     <View style={styles.goalContainer}>
                       <Text style={styles.goalText}>{goal.name}</Text>
-                      {expandedGoalIndex === index && (
-                        <TextInput
-                          value={goal.details} // Assuming details is the property containing additional details
-                          onChangeText={(text) => handleGoalDetailsChange(index, text)} // Implement handleGoalDetailsChange function
-                          placeholder="Edit details..."
-                          style={styles.goalDetailsTextInput}
-                        />
+                      {expandedGoalIndex.includes(index) && (
+                        <View style={styles.goalDetailsContainer}>
+                          <Text>Type: {goal.type}</Text>
+                          {goal.type === "Recurring" ? (
+                            <Text>Frequency: {goal.frequency}</Text>
+                          ) : (
+                            <Text>Target Date: {goal.date}</Text>
+                          )}
+                          <Text>Description: {goal.description}</Text>
+                          <View style={flexDirection='row'}>
+                          <TouchableOpacity onPress={() => navigation.navigate(goal.type === "Recurring" ? "EditRecurringGoal" : "EditLongTermGoal", { goalName: goal.name})}>
+                            <Text>Edit</Text>
+                          </TouchableOpacity>
+                            <TouchableOpacity onPress={() => console.log("Delete")}>
+                              <Text>Delete</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
                       )}
                     </View>
                   </TouchableOpacity>
                 ))}
               </View>
-            </>
+            </View>
           ) : (
-            // If searchTerm is not null, show filteredGoals
             <View>
               <Text style={styles.sectionHeader}>Filtered Goals</Text>
-              <View style={containerStyles.divider}></View>
+              <View style={styles.divider}></View>
               {filteredGoals.map((goal, index) => (
-                <TouchableOpacity key={index} onPress={() => handleGoalContainerPress(index)}>
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleGoalContainerPress(index)}
+                >
                   <View style={styles.goalContainer}>
-                    <Text style={styles.goalText}>{goal.name}</Text>
-                    {expandedGoalIndex === index && (
-                      <TextInput
-                        value={goal.details} // Assuming details is the property containing additional details
-                        onChangeText={(text) => handleGoalDetailsChange(index, text)} // Implement handleGoalDetailsChange function
-                        placeholder="Edit details..."
-                        style={styles.goalDetailsTextInput}
-                      />
-                    )}
+                    <Text>{goal}</Text>
                   </View>
                 </TouchableOpacity>
               ))}
             </View>
           )}
-          </View>
         </View>
+        </View>
+        <View style={{ flex: 1, paddingBottom: '10%' }}></View>
       </ScrollView>
     </View>
   );    
@@ -173,19 +204,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   goalsContainer: {
-    width: '90%',
     alignItems: 'center',
     flexDirection: 'column',
   },
   goalContainer: {
-    backgroundColor: 'purple',
-    padding: 10,
-    marginBottom: 10,
     borderRadius: 5,
+    borderWidth: '1%',
+    borderColor: '#8098D5',
+    width: '100%',
+    paddingVertical: '2%',
+    marginRight: '52%',
+    marginVertical: '2%',
+    textAlign: 'center',
+    paddingLeft: '2%',
+    backgroundColor: '#AABFF4',
   },
-  goalText: {
-    color: 'white',
-    fontSize: 18,
+  goalDetailsContainer: {
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: '2%',
+    marginRight: '2%',
+    backgroundColor: '#F0F4FF',
+    flexDirection: 'column',
   },
 });
 
