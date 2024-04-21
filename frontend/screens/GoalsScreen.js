@@ -173,7 +173,7 @@ const GoalsScreen = ({navigation}) => {
                 <View style={[styles.progressBar, { width: `${Math.min(100)}%` }]} />
               </View>
               <View style={containerStyles.goalContentContainer}>
-                <Text style={textStyles.goalText}>No goals yet!</Text>
+                <Text style={[textStyles.goalText, { flexShrink: 1 }]} numberOfLines={undefined}>No goals yet!</Text>
                 <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddGoal")}>
                   <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                 </TouchableOpacity>
@@ -197,7 +197,7 @@ const GoalsScreen = ({navigation}) => {
                     <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[2] - item[1], item[2]))}%` }]} />
                   </View>
                   <View style={containerStyles.goalContentContainer}>
-                    <Text style={textStyles.goalText}>{item[0]}</Text>
+                    <Text style={[textStyles.goalText, { flexShrink: 1 }]} numberOfLines={undefined}>{item[0]}</Text>
                     <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditRecurringGoal", { goalName: item[0].toString() })}>
                       <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>
@@ -223,7 +223,7 @@ const GoalsScreen = ({navigation}) => {
           <View style={containerStyles.menuContainer}>
             <Text style={textStyles.sectionHeader}>Long-Term Goals:</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("AllGoals")}>
+            <TouchableOpacity onPress={() => navigation.navigate(goals.length != 0 ? "AllGoals" : "AddGoal")}>
               <Text style={{ textDecorationLine: 'underline', color: 'lightgray', position: 'absolute', left: 30, bottom: 5 }}> View All </Text>
             </TouchableOpacity>
           </View>
@@ -234,13 +234,14 @@ const GoalsScreen = ({navigation}) => {
                 <Image source={backgroundImage} style={styles.backgroundImage} />
                 <TouchableOpacity onPress={() => navigation.navigate("AddGoal")}>
                   <View style={{...containerStyles.whiteButton, borderColor: '#8098D5', borderWidth: 2}}>
-                    <Text style={textStyles.textBodyHeaderBlue}>Add your first goal!</Text>
+                    <Text style={textStyles.textBodyHeaderBlue}>Add a goal!</Text>
                   </View>
                 </TouchableOpacity>
               </View>
             ) : (
               <FlatList
                   data={longTermGoals}
+                  nestedScrollEnabled={true}
                   renderItem={({ item }) => (
                     <View style={containerStyles.longTermGoalContainer}>
                       <Text style={textStyles.grayGoalText}>{item}</Text>

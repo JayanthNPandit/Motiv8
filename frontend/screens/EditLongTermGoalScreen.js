@@ -14,7 +14,7 @@ const EditLongTermGoalScreen = ({ navigation, route }) => {
     const [goal, setGoal] = useState(null); // State to store fetched goal
     const [newName, setNewName] = useState('');
     const [type, setType] = useState('Long Term');
-    const [deadline, setDeadline] = useState('');
+    const [deadline, setDeadline] = useState(new Date());
     const [description, setDescription] = useState('');
     const [isClickable, setIsClickable] = useState(true);
     const [showCalendar, setShowCalendar] = useState(false);
@@ -111,16 +111,16 @@ const EditLongTermGoalScreen = ({ navigation, route }) => {
                         >
                             <View style={[containerStyles.modalContainer, { paddingTop: '12%' }]}>
                                 <View style={containerStyles.modalContent}>
-                                    <Calendar
-                                        current={deadline}
-                                        minDate={new Date()} // Set minimum date to today
-                                        onDayPress={(day) => {
-                                            setDeadline(day.dateString); // Update selected date
-                                            setShowCalendar(false); // Close the calendar
-                                        }}
-                                        theme={containerStyles.customCalendarTheme} // Apply the custom theme
-                                        borderRadius={20} // Apply border radius to the Calendar component
-                                    />
+                                <Calendar
+                                    current={date}
+                                    minDate={new Date()} // Set minimum date to today
+                                    onDayPress={(day) => {
+                                        setDate(day.dateString); // Update selected date
+                                        setShowCalendar(false); // Close the calendar
+                                    }}
+                                    theme={containerStyles.customCalendarTheme} // Apply the custom theme
+                                    borderRadius={200} // Apply border radius to the Calendar component
+                                />
                                 </View>
                             </View>
                         </Modal>

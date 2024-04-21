@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore'; // Assuming you are using Firebase Firestore
-import { fetchUserGoals } from '../backendFunctions';
+import { fetchUserGoals, deleteGoal } from '../backendFunctions';
 import { useAuth } from '../contexts/AuthContext';
 import { textStyles, containerStyles } from '../styles/styles';
 import back from "../assets/back_arrow.png";
@@ -12,7 +12,9 @@ const AllGoalsScreen = ({navigation}) => {
 
   const [refreshing, setRefreshing] = useState(false); // State to manage refreshing the list 
   const [searchTerm, setSearchTerm] = useState(null);
-  const [expandedGoalIndex, setExpandedGoalIndex] = useState([]);
+  // make expanded for boht in progress and completed
+  const [expandedGoalIndexInProgress, setExpandedGoalIndexInProgress] = useState([]);
+  const [expandedGoalIndexCompleted, setExpandedGoalIndexCompleted] = useState([]);
 
 
   const [inProgressGoals, setInProgressGoals] = useState([]); // State to manage in progress goals 
@@ -65,7 +67,27 @@ const AllGoalsScreen = ({navigation}) => {
     if (expandedGoalIndex.includes(index)) {
       setExpandedGoalIndex(expandedGoalIndex.filter((i) => i !== index));
     } else {
+      // figure out if the index is in the in progress or completed goals and add that to the expanded list
       setExpandedGoalIndex([...expandedGoalIndex, index]);
+    }
+  }
+
+  // make 2 functions to handle, one for in progress and one for completed
+  const handleGoalContainerPressInProgress = (index) => {
+    // if the index is in the array, remove it. other wise, add it
+    if (expandedGoalIndexInProgress.includes(index)) {
+      setExpandedGoalIndexInProgress(expandedGoalIndexInProgress.filter((i) => i !== index));
+    } else {
+      setExpandedGoalIndexInProgress([...expandedGoalIndexInProgress, index]);
+    }
+  }
+
+  const handleGoalContainerPressCompleted = (index) => {
+    // if the index is in the array, remove it. other wise, add it
+    if (expandedGoalIndexCompleted.includes(index)) {
+      setExpandedGoalIndexCompleted(expandedGoalIndexCompleted.filter((i) => i !== index));
+    } else {
+      setExpandedGoalIndexCompleted([...expandedGoalIndexCompleted, index]);
     }
   }
 
@@ -80,6 +102,38 @@ const AllGoalsScreen = ({navigation}) => {
     console.log("filtered shit" + filtered);
   };
 
+  // delete goal
+  const handleDelete = async (goalName) => {
+    // Show confirmation alert
+    Alert.alert(
+      'Delete Goal',
+      `Are you sure you want to delete the goal "${goalName}"?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            try {
+              await deleteGoal(user, goalName); // Assuming deleteGoal function deletes the goal from Firestore
+              console.log('Goal deleted successfully!');
+              // Refresh goals after deletion
+              fetchGoals();
+            } catch (error) {
+              console.error('Error deleting goal: ', error);
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+
   return (
     <View style={containerStyles.background}>
       <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -90,7 +144,7 @@ const AllGoalsScreen = ({navigation}) => {
         <Text style={textStyles.header}>All Your Goals</Text>
         <Text style={textStyles.subheader}>Open Goal Dropdown to Edit</Text>
         <TextInput
-          style={{ borderWidth: 1, borderRadius:'10%', borderColor: 'gray', padding: 10, marginVertical: '2%', marginHorizontal: '2%', width: '100%' }}
+          style={{ borderWidth: 1, borderRadius:10, borderColor: 'gray', padding: 10, marginVertical: '2%', marginHorizontal: '2%', width: '100%' }}
           placeholder="🔍 Search goals..."
           value={searchTerm}
           onChangeText={handleSearch}
@@ -104,11 +158,11 @@ const AllGoalsScreen = ({navigation}) => {
                 {inProgressGoals.map((goal, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => handleGoalContainerPress(index)}
+                    onPress={() => handleGoalContainerPressInProgress(index)}
                   >
                     <View style={styles.goalContainer}>
                       <Text style={styles.goalText}>{goal.name}</Text>
-                      {expandedGoalIndex.includes(index) && (
+                      {expandedGoalIndexInProgress.includes(index) && (
                         <View style={styles.goalDetailsContainer}>
                           <Text>Type: {goal.type}</Text>
                           {goal.type === "Recurring" ? (
@@ -121,9 +175,9 @@ const AllGoalsScreen = ({navigation}) => {
                           <TouchableOpacity onPress={() => navigation.navigate(goal.type === "Recurring" ? "EditRecurringGoal" : "EditLongTermGoal", { goalName: goal.name})}>
                             <Text>Edit</Text>
                           </TouchableOpacity>
-                            <TouchableOpacity onPress={() => console.log("Delete")}>
-                              <Text>Delete</Text>
-                            </TouchableOpacity>
+                          <TouchableOpacity onPress={() => handleDelete(goal.name)}>
+                            <Text>Delete</Text>
+                          </TouchableOpacity>
                           </View>
                         </View>
                       )}
@@ -137,11 +191,11 @@ const AllGoalsScreen = ({navigation}) => {
                 {completedGoals.map((goal, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => handleGoalContainerPress(index)}
+                    onPress={() => handleGoalContainerPressCompleted(index)}
                   >
                     <View style={styles.goalContainer}>
                       <Text style={styles.goalText}>{goal.name}</Text>
-                      {expandedGoalIndex.includes(index) && (
+                      {expandedGoalIndexCompleted.includes(index) && (
                         <View style={styles.goalDetailsContainer}>
                           <Text>Type: {goal.type}</Text>
                           {goal.type === "Recurring" ? (
@@ -154,7 +208,7 @@ const AllGoalsScreen = ({navigation}) => {
                           <TouchableOpacity onPress={() => navigation.navigate(goal.type === "Recurring" ? "EditRecurringGoal" : "EditLongTermGoal", { goalName: goal.name})}>
                             <Text>Edit</Text>
                           </TouchableOpacity>
-                            <TouchableOpacity onPress={() => console.log("Delete")}>
+                            <TouchableOpacity onPress={() => navigation.navigate(handleDelete("" + goal.name))}>
                               <Text>Delete</Text>
                             </TouchableOpacity>
                           </View>

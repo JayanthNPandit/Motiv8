@@ -139,6 +139,24 @@ export const createUser = async (user, username, name, pfp) => {
   }
 };
 
+// implement delete goal given goal name
+export const deleteGoal = async (user, goalName) => {
+  try {
+    const userID = user.uid;
+    const goalsCollection = collection(db, "users", userID, "goals");
+    const goalsSnapshot = await getDocs(goalsCollection);
+    const goals = goalsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    const goal = goals.find((goal) => goal.name === goalName);
+    const goalRef = doc(goalsCollection, goal.id);
+    await deleteDoc(goalRef);
+  } catch (error) {
+    console.error("Error deleting goal:", error);
+  }
+};
+
 export const changeUserData = async (user, name, username, imageUrl) => {
   try {
     let url = "";

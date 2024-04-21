@@ -22,22 +22,27 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     setIsClickable(false);
-    if (isSelected) await remember();
-    const result = await login(email, password);
-    if (!result.success) {
-      Alert.alert("Login failed", result.message); // Use the error message
+    try {
+      if (isSelected) await remember();
+      const result = await login(email, password);
+      if (!result.success) {
+        Alert.alert("Login failed", result.message); // Use the error message
+      } else {
+        setEmail("");
+        setPassword("");
+        setSelection(false);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Tab' }],
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error occurred during login:", error);
+      Alert.alert("Login failed", "An error occurred during login. Please try again later.");
+    } finally {
       setIsClickable(true);
-    } else {
-      setEmail("");
-      setPassword("");
-      setSelection(false);
-      setIsClickable(true);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Tab' }],
-        })
-      );
     }
   };
 

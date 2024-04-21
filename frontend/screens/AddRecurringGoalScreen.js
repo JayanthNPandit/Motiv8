@@ -84,8 +84,10 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                         />
                         <Text style={textStyles.bottomText}>times per</Text>
                         {dropdownVisible ? (
+                            <View>
                             <FlatList
                                 data={frequencyOptions}
+                                nestedScrollEnabled={true}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity onPress={() => handleOptionSelect(item)} style={styles.option}>
                                         <Text>{item}</Text>
@@ -94,6 +96,7 @@ const AddRecurringGoalScreen = ({ navigation }) => {
                                 keyExtractor={(item, index) => index.toString()}
                                 style={styles.dropdownContainer}
                             />
+                            </View>
                         ) : (       
                             <TouchableOpacity onPress={() => setDropdownVisible(true)}>
                                 <Text style={containerStyles.frequencyInput}>{frequency}</Text>

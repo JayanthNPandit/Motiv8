@@ -44,6 +44,12 @@ const SharePhotoScreen = ({navigation}) => {
 
     const fetchGoals = async () => {
       const goals = await fetchUserGoals(user); // Fetch the goals from the backend
+
+      // if goals.length() is 0, navigate to the add goal screen
+      if (goals.length === 0) {
+        navigation.navigate("AddGoal");
+      }
+
       console.log("in fetch goals");
       console.log(goals);
       setGoals(goals); // Set the goals to the state
@@ -123,133 +129,128 @@ const SharePhotoScreen = ({navigation}) => {
     return (
       <View style={containerStyles.background}>
         <ScrollView>
-        <View style={containerStyles.container}>
-          <View style={containerStyles.headerContainer}>
-            <Text style={textStyles.header}>
-              Share Your Photo!
-            </Text>
-          </View>
-          <View style={containerStyles.imageContainer}>
-            <Image style={styles.image} source={{ uri: imageUrl }} />
-            <TextInput
+          <View style={containerStyles.container}>
+            <View style={containerStyles.headerContainer}>
+              <Text style={textStyles.header}>
+                Share Your Photo!
+              </Text>
+            </View>
+            <View style={containerStyles.imageContainer}>
+              <Image style={styles.image} source={{ uri: imageUrl }} />
+              <TextInput
                 style={containerStyles.captionInput}
                 multiline={true}
                 numberOfLines={4}
                 value={caption}
                 onChangeText={setCaption}
                 placeholder="This is optional"
-            />          
-          </View>
-          <View style={containerStyles.divider}></View>
-          <Text style={styles.goalHeader}>Select at least one goal associated with the photo:</Text>
-          <TextInput
-            style={{ borderWidth: 1, borderRadius: '10%', borderColor: 'gray', padding: 10, marginVertical: '2%', width: '100%'}}
-            placeholder="🔍 Search goals..."
-            value={searchTerm}
-            onChangeText={handleSearch}
-          />
-          <FlatList
-            data={filteredGoals}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => toggleGoalSelection(item)}>
-                <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
-                  <Text>{item}</Text>
-                  {selectedGoals.includes(item) ? (
-                    <Image
-                      source={checkBoxImage} // Image for selected state
-                      style={{ width: 24, height: 24, backgroundColor: 'black', borderColor: 'gray', borderWidth: 1, borderRadius: '5%'}}
-                    />
-                  ) : (
-                    <Image
-                      source={checkBoxImage} // Image for unselected state
-                      style={{ width: 24, height: 24, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, borderRadius: '5%'}}
-                    />
-                  )}
-                  {console.log("selected goals: " + selectedGoals)}
-                </View>
-                <View style={containerStyles.goalDivider}></View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-
-          <View style={containerStyles.buttonContainer}>
-            <TouchableOpacity
+              />          
+            </View>
+            <View style={containerStyles.divider}></View>
+            <Text style={styles.goalHeader}>Select at least one goal associated with the photo:</Text>
+            <TextInput
+              style={{ borderWidth: 1, borderRadius: 10, borderColor: 'gray', padding: 10, marginVertical: '2%', width: '100%'}}
+              placeholder="🔍 Search goals..."
+              value={searchTerm}
+              onChangeText={handleSearch}
+            />
+            <View>
+              {filteredGoals.map((item, index) => (
+                <TouchableOpacity key={index} onPress={() => toggleGoalSelection(item)}>
+                  <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
+                    <Text>{item}</Text>
+                    {selectedGoals.includes(item) ? (
+                      <Image
+                        source={checkBoxImage} // Image for selected state
+                        style={{ width: 24, height: 24, backgroundColor: 'black', borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+                      />
+                    ) : (
+                      <Image
+                        source={checkBoxImage} // Image for unselected state
+                        style={{ width: 24, height: 24, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+                      />
+                    )}
+                  </View>
+                  <View style={containerStyles.goalDivider}></View>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={containerStyles.buttonContainer}>
+              <TouchableOpacity
                 style={containerStyles.whiteButton}
                 onPress={() => navigation.navigate("ConfirmPhoto", {imageUrl: imageUrl})}
-            >
+              >
                 <Text style={textStyles.textBodyHeaderPurple}>Back</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={containerStyles.purpleButton}
                 onPress={uploadImage}
                 disabled={!isClickable}
-            >
-              <Text style={textStyles.textBodyHeaderWhite}>Share!</Text>
-            </TouchableOpacity>
+              >
+                <Text style={textStyles.textBodyHeaderWhite}>Share!</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={{ flex: 1, paddingBottom: '40%' }}>
-        </View>
+          <View style={{ flex: 1, paddingBottom: '40%' }}></View>
         </ScrollView>
       </View>
-      );
-    };
+    );
+  };
     
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        padding: 20,
-      },
-      headerContainer: {
-        marginBottom: 20,
-      },
-      header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 5,
-      },
-      subheader: {
-        fontSize: 16,
-        color: 'gray',
-      },
-      buttonContainer: {
-        marginBottom: 20,
-        flexDirection: 'row',
-        gap: '10%',
-      },
-      image: {
-        width: '45%',
-        height: 150,
-        borderRadius: 10,
-      },
-      input: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-      },
-      searchContainer: {
-        marginBottom: 20,
-      },
-      searchInput: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 5,
-        padding: 10,
-      },
-      goalHeader: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: '2%',
-        marginTop: '5%',
-      },
-      goal: {
-        fontSize: 16,
-        marginBottom: 5,
-      },
-    });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  headerContainer: {
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  subheader: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  buttonContainer: {
+    marginBottom: 20,
+    flexDirection: 'row',
+    gap: '10%',
+  },
+  image: {
+    width: '45%',
+    height: 150,
+    borderRadius: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  searchContainer: {
+    marginBottom: 20,
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+  },
+  goalHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: '2%',
+    marginTop: '5%',
+  },
+  goal: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+});
     
-    export default SharePhotoScreen;
+export default SharePhotoScreen;
