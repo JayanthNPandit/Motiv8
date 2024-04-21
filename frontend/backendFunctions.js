@@ -77,7 +77,7 @@ export const addGoal = async (
 
     const goalDocRef = collection(db, "users", userID, "goals");
     await addDoc(goalDocRef, goalData);
-    console.log("added goal" + goalData.name);
+    console.log("added goal: " + goalData.name);
   } catch (error) {
     console.error("Error adding goal:", error);
   }

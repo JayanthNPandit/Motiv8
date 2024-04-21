@@ -121,33 +121,33 @@ function TabContent() {
         tabBarIcon: ({ focused, color, size }) => {
           if (route.name === "FeedStack") {
             return focused ? (
-              <Image source={purpleHome} style={{width: 38, height: 38}}/>
+              <Image source={purpleHome} style={{ width: 38, height: 38 }} />
             ) : (
-              <Image source={home} style={{width: 38, height: 38}}/>
+              <Image source={home} style={{ width: 38, height: 38 }} />
             );
           } else if (route.name === "GoalStack") {
             return focused ? (
-              <Image source={purpleGoal} style={{width: 38, height: 38}}/>
+              <Image source={purpleGoal} style={{ width: 38, height: 38 }} />
             ) : (
-              <Image source={goal} style={{width: 38, height: 38}}/>
+              <Image source={goal} style={{ width: 38, height: 38 }} />
             );
           } else if (route.name === "PhotoStack") {
             return focused ? (
-              <Image source={purplePost} style={{width: 50, height: 50}}/>
+              <Image source={purplePost} style={{ width: 50, height: 50 }} />
             ) : (
-              <Image source={post} style={{width: 50, height: 50}}/>
+              <Image source={post} style={{ width: 50, height: 50 }} />
             );
           } else if (route.name === "GroupStack") {
             return focused ? (
-              <Image source={purpleGroup} style={{width: 38, height: 38}}/>
+              <Image source={purpleGroup} style={{ width: 38, height: 38 }} />
             ) : (
-              <Image source={group} style={{width: 38, height: 38}}/>
+              <Image source={group} style={{ width: 38, height: 38 }} />
             );
           } else {
             return focused ? (
-              <Image source={purpleProfile} style={{width: 38, height: 38}}/>
+              <Image source={purpleProfile} style={{ width: 38, height: 38 }} />
             ) : (
-              <Image source={profile} style={{width: 38, height: 38}}/>
+              <Image source={profile} style={{ width: 38, height: 38 }} />
             );
           }
         },
@@ -352,16 +352,19 @@ function GoalStack() {
       <Stack.Screen
         name="AddGoal"
         component={AddGoalScreen}
+        initialParams={{ disableNav: true }}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddRecurringGoal"
         component={AddRecurringGoalScreen}
+        initialParams={{ disableNav: true }}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddLongTermGoal"
         component={AddLongTermGoalScreen}
+        initialParams={{ disableNav: true }}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -424,9 +427,27 @@ function AppContent() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="AddGoal"
+          component={AddGoalScreen}
+          initialParams={{ disableNav: false }}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AddRecurringGoal"
+          component={AddRecurringGoalScreen}
+          initialParams={{ disableNav: false }}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AddLongTermGoal"
+          component={AddLongTermGoalScreen}
+          initialParams={{ disableNav: false }}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Groups"
           component={GroupsScreen}
-          initialParams={{ disableNav: true }}
+          initialParams={{ disableNav: false }}
           options={{ headerShown: false }}
         />
         <Stack.Screen

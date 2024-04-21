@@ -19,7 +19,7 @@ const GroupsScreen = ({ route, navigation }) => {
         {!disableNav && (
           <TouchableOpacity
             style={{ ...containerStyles.back, top: "5%" }}
-            onPress={() => navigation.navigate("Onboarding")}
+            onPress={() => navigation.navigate("AddGoal")}
           >
             <Image source={back} />
           </TouchableOpacity>
@@ -27,7 +27,7 @@ const GroupsScreen = ({ route, navigation }) => {
 
         {!disableNav && (
           <TouchableOpacity
-            style={containerStyles.skipForward}
+            style={{ ...containerStyles.skipForward, top: "5%" }}
             onPress={() =>
               navigation.dispatch(
                 CommonActions.reset({ index: 0, routes: [{ name: "Tab" }] })

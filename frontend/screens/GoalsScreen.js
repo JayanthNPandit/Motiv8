@@ -135,7 +135,7 @@ const GoalsScreen = ({navigation}) => {
           </View>
 
           <TouchableOpacity
-            style={{...containerStyles.forward, top: '-2%'}}
+            style={{position: 'absolute', right: '-1%', top: '-2%'}}
             onPress={() => navigation.navigate("AddGoal")}
           >
             <Image source={addButton} style={{width: 45, height: 45}}/>
@@ -191,7 +191,7 @@ const GoalsScreen = ({navigation}) => {
             >
               {/* figure out wtf is wrong with this container sizing thing at EM*/ }
               {/* also figure out pinned goals backend stuff*/ }
-              {recurringGoals.map((item) => (
+              {recurringGoals.map((key, item) => (
                 <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
                   <View style={styles.progressBarContainer}>
                     <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[2] - item[1], item[2]))}%` }]} />
@@ -209,7 +209,7 @@ const GoalsScreen = ({navigation}) => {
           </View>
 
           <View style={styles.pagination}>
-            {recurringGoals.map((_, index) => (
+            {recurringGoals.map((key, index) => (
               <TouchableOpacity
                 key={index}
                 style={[styles.dot, { backgroundColor: index === activeIndex ? 'black' : 'lightgray' }]}
@@ -242,6 +242,7 @@ const GoalsScreen = ({navigation}) => {
               <FlatList
                   data={longTermGoals}
                   nestedScrollEnabled={true}
+                  keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => (
                     <View style={containerStyles.longTermGoalContainer}>
                       <Text style={textStyles.grayGoalText}>{item}</Text>
@@ -250,7 +251,6 @@ const GoalsScreen = ({navigation}) => {
                       </TouchableOpacity>
                     </View>
                   )}
-                  //keyExtractor={(item) => item.id}
                 />
             )}
           </View>
@@ -327,6 +327,7 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: 'lightgray',
     borderRadius: 5,
+    marginTop: '2%'
   },
   progressBar: {
     height: '100%',

@@ -83,7 +83,7 @@ const Onboarding = ({ navigation }) => {
       console.log(error);
     }
     setIsClickable(true);
-    navigation.navigate("Groups");
+    navigation.navigate("AddGoal");
   };
 
   return (

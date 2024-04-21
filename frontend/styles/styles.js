@@ -251,14 +251,9 @@ export const containerStyles = StyleSheet.create({
     alignItems: "flex-start",
     gap: "10%",
     display: "flex",
-    marginBottom: "5%",
+    marginVertical: "1%",
     width: "92%",
-    marginTop: "5%",
     marginHorizontal: "10%",
-    borderColor: "#111111",
-    borderWidth: "0%",
-    borderRadius: "10%",
-    backgroundColor: "#FFFFFF",
   },
   input: {
     borderRadius: 16,
@@ -274,8 +269,7 @@ export const containerStyles = StyleSheet.create({
     borderColor: "#111111",
     width: "100%",
     paddingHorizontal: "2%",
-    paddingVertical: "4.5%",
-    marginVertical: "3%",
+    paddingVertical: "3.5%",
     backgroundColor: "#8098D5",
   },
   frequencyInput: {
@@ -306,7 +300,7 @@ export const containerStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#939393",
     width: "100%",
-    paddingHorizontal: "2%",
+    paddingHorizontal: "3%",
     paddingVertical: "5%",
     height: '20%', 
     textAlignVertical: 'top'
@@ -444,7 +438,8 @@ export const containerStyles = StyleSheet.create({
   },
   recurringGoalContainer: {
     flexDirection: "column",
-    paddingHorizontal: "1%",
+    paddingHorizontal: "2%",
+    paddingVertical: '2%',
     backgroundColor: "#8098D5",
     borderRadius: "15%",
     borderColor: "#FFFFFF",
@@ -572,7 +567,7 @@ export const containerStyles = StyleSheet.create({
   skipForward: {
     position: "absolute",
     top: "5%",
-    right: "1%",
+    right: "5%",
   },
   // Way more definitions than i need, i just put it in so i can mess around with it
   customCalendarTheme: {
