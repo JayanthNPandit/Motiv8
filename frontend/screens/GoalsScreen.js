@@ -166,7 +166,7 @@ const GoalsScreen = ({navigation}) => {
 
           <Text style={textStyles.sectionHeader}>Goals for the Week:</Text>
 
-          <View style={containerStyles.background}>
+          <View style={{...containerStyles.background, marginTop: '2%'}}>
           {recurringGoals.length == 0 ? (
             <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
               <View style={styles.progressBarContainer}>
@@ -229,7 +229,7 @@ const GoalsScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          <View style={containerStyles.buttonContainer}>
+          <View style={{...containerStyles.buttonContainer, marginTop: '2%'}}>
             {longTermGoals.length === 0 ? (
               <View>
                 <Image source={backgroundImage} style={styles.backgroundImage} />
@@ -246,7 +246,7 @@ const GoalsScreen = ({navigation}) => {
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => (
                     <View style={containerStyles.longTermGoalContainer}>
-                      <Text style={textStyles.grayGoalText}>{item}</Text>
+                      <Text style={{...textStyles.textBody, color: '#8098D5'}}>{item}</Text>
                       <TouchableOpacity onPress={() => setPin(item)}>
                         <Image source={pinButton} style={{ width: 20, height: 20 }} />
                       </TouchableOpacity>

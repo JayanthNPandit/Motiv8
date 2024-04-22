@@ -13,6 +13,7 @@ import { fetchUserGoals } from '../backendFunctions';
 import * as FileSystem from 'expo-file-system';
 
 import checkBoxImage from '../assets/check.png';
+import checkBoxImage2 from '../assets/check2.png';
 
 const SharePhotoScreen = ({navigation}) => {
     const route = useRoute();
@@ -161,13 +162,13 @@ const SharePhotoScreen = ({navigation}) => {
                     <Text>{item}</Text>
                     {selectedGoals.includes(item) ? (
                       <Image
-                        source={checkBoxImage} // Image for selected state
-                        style={{ width: 24, height: 24, backgroundColor: 'black', borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+                        source={checkBoxImage2} // Image for selected state
+                        style={{ width: 24, height: 24, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
                       />
                     ) : (
                       <Image
                         source={checkBoxImage} // Image for unselected state
-                        style={{ width: 24, height: 24, backgroundColor: 'white', borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
+                        style={{ width: 24, height: 24, borderColor: 'gray', borderWidth: 1, borderRadius: 10}}
                       />
                     )}
                   </View>
