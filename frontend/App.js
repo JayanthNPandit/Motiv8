@@ -28,6 +28,8 @@ import NoGroupFeedScreen from "./screens/NoGroupFeedScreen";
 import EditLongTermGoalScreen from "./screens/EditLongTermGoalScreen";
 import EditRecurringGoalScreen from "./screens/EditRecurringGoalScreen";
 
+import Notification from './screens/Notification';
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./contexts/AuthContext";
 import { fetchUserData } from "./backendFunctions";
