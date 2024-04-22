@@ -188,6 +188,7 @@ const GoalsScreen = ({navigation}) => {
               onScroll={handleScroll}
               scrollEventThrottle={16}
               //marginBottom={"-42%"}
+              // nothing
             >
               {/* figure out wtf is wrong with this container sizing thing at EM*/ }
               {/* also figure out pinned goals backend stuff*/ }
