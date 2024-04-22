@@ -198,9 +198,9 @@ const GoalsScreen = ({navigation}) => {
                     <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[2] - item[1], item[2]))}%` }]} />
                   </View>
                   <View style={containerStyles.goalContentContainer}>
-                    <Text style={[textStyles.goalText, { flexShrink: 1 }]} numberOfLines={1}>{item[0].substring(0, 20)}</Text>
+                    <Text style={[textStyles.goalText, { flexWrap: 'wrap' }]}>{item[0]}</Text>
                     <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditRecurringGoal", { goalName: item[0].toString() })}>
-                      <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
+                      <Image source={editGoalButton} style={{ width: 20, height: 20, marginLeft: '1%' }} />
                     </TouchableOpacity>
                   </View>
                 </View>
