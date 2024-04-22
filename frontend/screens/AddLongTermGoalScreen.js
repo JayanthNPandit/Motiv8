@@ -22,7 +22,7 @@ import { Calendar } from "react-native-calendars";
 import calendarIcon from "../assets/calendar.png";
 
 const AddLongTermGoalScreen = ({ route, navigation }) => {
-  const { disableNav } = route.params;
+  const {disableNav} = route.params;
   const [goalName, setGoalName] = useState("");
   const [type, setType] = useState("Long Term");
   const [frequency, setFrequency] = useState("");
@@ -48,7 +48,7 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
       setIsClickable(true);
       return;
     }
-
+    
     const id = await addGoal(
       user,
       goalName,
@@ -69,7 +69,7 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
     }
 
     if (disableNav) navigation.navigate("Goals");
-    else navigation.navigate("Groups");
+    else navigation.navigate("Groups")
   };
 
   const toggleShowCalendar = () => {
@@ -83,7 +83,7 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}> Add a Long Term Goal </Text>
           <Text style={textStyles.textBodyGray}>
-            You can always change this later!
+            You can always change this later!{" "}
           </Text>
         </View>
 
@@ -97,7 +97,8 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
           />
 
           <Text style={textStyles.textBodyHeader}>
-            Enter a name for your goal:
+            {" "}
+            Enter a name for your goal:{" "}
           </Text>
           <TextInput
             style={containerStyles.input}
