@@ -5,7 +5,7 @@ import addButton from '../assets/GoalAdd.png';
 import backgroundImage from '../assets/Fitz Personal Training.png';
 import dropDownImage from '../assets/lets-icons_arrow-drop-down.png';
 import takePhotoButton from '../assets/gg_check-o.png';
-import editGoalButton from '../assets/gay.png';
+import editGoalButton from '../assets//gay.png';
 import menuButton from '../assets/f7_menu.png'; 
 import pinButton from '../assets/pin.png';
 import removeButton from '../assets/pin.png';

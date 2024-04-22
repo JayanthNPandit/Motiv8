@@ -226,7 +226,8 @@ export const containerStyles = StyleSheet.create({
     backgroundColor: "#4044AB",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: "115%",
+    width: "100%",
+    borderRadius: 10,
   },
   // TEXT INPUT
   inputContainer: {
