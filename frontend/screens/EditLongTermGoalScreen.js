@@ -188,7 +188,7 @@ const EditLongTermGoalScreen = ({ navigation, route }) => {
         </View>
         <View style={{ ...containerStyles.buttonContainer, marginTop: "-8%" }}>
           <TouchableOpacity
-            style={containerStyles.whiteButton}
+            style={{...containerStyles.whiteButton, paddingHorizontal: '17%'}}
             onPress={() => navigation.navigate("Goals")}
           >
             <Text style={textStyles.textBodyHeaderPurple}>Back</Text>

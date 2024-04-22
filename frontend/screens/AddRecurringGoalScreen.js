@@ -141,7 +141,7 @@ const AddRecurringGoalScreen = ({ route, navigation }) => {
         </View>
         <View style={{ ...containerStyles.buttonContainer, marginTop: "-8%" }}>
           <TouchableOpacity
-            style={containerStyles.whiteButton}
+            style={{...containerStyles.whiteButton, paddingHorizontal: '17%'}}
             onPress={() => navigation.navigate("AddGoal")}
           >
             <Text style={textStyles.textBodyHeaderPurple}>Back</Text>

@@ -200,7 +200,7 @@ const AllGoalsScreen = ({ navigation }) => {
         <View style={containerStyles.headerContainer}>
           <Text style={textStyles.header}> All Your Goals </Text>
           <Text style={textStyles.textBodyGray}>
-            Open Goal Dropdown to Edit
+            Open Dropdown to View Goal
           </Text>
         </View>
         <TouchableOpacity
@@ -265,11 +265,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: "20%",
-    marginHorizontal: '3%'
+    marginHorizontal: '3%',
   },
   topContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingHorizontal: '1%',
   },
   searchInput: {
     borderWidth: 1,
