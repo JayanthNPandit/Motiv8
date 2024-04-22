@@ -10,120 +10,115 @@ import {
   Image,
   Alert,
 } from "react-native";
-import { collection, getDocs } from "firebase/firestore"; // Assuming you are using Firebase Firestore
 import { fetchUserGoals, deleteGoal } from "../backendFunctions";
 import { useAuth } from "../contexts/AuthContext";
-import { textStyles, containerStyles } from "../styles/styles";
 import back from "../assets/back_arrow.png";
+import frequency from "../assets/frequency.png";
+import calendar from "../assets/othercalendar.png";
+import menu from "../assets/Vector.png";
+import garbage from "../assets/garbage.png";
+import edit from "../assets/gay.png";
+
+import { textStyles, containerStyles } from "../styles/styles";
 
 const AllGoalsScreen = ({ navigation }) => {
   const [goals, setGoals] = useState([]);
-
-  const [refreshing, setRefreshing] = useState(false); // State to manage refreshing the list
+  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState(null);
-  // make expanded for boht in progress and completed
-  const [expandedGoalIndexInProgress, setExpandedGoalIndexInProgress] =
-    useState([]);
-  const [expandedGoalIndexCompleted, setExpandedGoalIndexCompleted] = useState(
-    []
-  );
-
-  const [inProgressGoals, setInProgressGoals] = useState([]); // State to manage in progress goals
-  const [completedGoals, setCompletedGoals] = useState([]); // State to manage completed goals
-  const [filteredGoals, setFilteredGoals] = useState([]); // State to manage filtered goals
-
+  const [expandedGoalIndexInProgress, setExpandedGoalIndexInProgress] = useState([]);
+  const [expandedGoalIndexCompleted, setExpandedGoalIndexCompleted] = useState([]);
+  const [inProgressGoals, setInProgressGoals] = useState([]);
+  const [completedGoals, setCompletedGoals] = useState([]);
+  const [filteredGoals, setFilteredGoals] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
-    fetchGoals(); // Fetch goals when the component is mounted
+    fetchGoals();
   }, []);
 
   const fetchGoals = async () => {
-    const goals = await fetchUserGoals(user); // Assuming this function returns all goals
+    const goals = await fetchUserGoals(user);
     setGoals(goals);
-
     filterGoals(goals);
-
-    console.log("goals names: " + goals.map((goal) => goal.name));
-
-    setRefreshing(false); // Set refreshing to false
+    setRefreshing(false);
   };
 
   const filterGoals = (goals) => {
-    const inProgress = [];
-    const completed = [];
-    goals.forEach((goal) => {
-      if (goal.completed === false) {
-        inProgress.push(goal);
-      } else {
-        completed.push(goal);
-      }
-    });
+    const inProgress = goals.filter(goal => !goal.completed);
+    const completed = goals.filter(goal => goal.completed);
     setInProgressGoals(inProgress);
     setCompletedGoals(completed);
-
-    console.log(
-      "inProgress goal names" + inProgressGoals.map((goal) => goal.name)
-    );
-    console.log(
-      "completed goal names" + completedGoals.map((goal) => goal.name)
-    );
   };
 
   const onRefresh = () => {
-    setRefreshing(true); // Start refreshing
-    fetchGoals(); // Fetch goals again
+    setRefreshing(true);
+    fetchGoals();
   };
 
-  const handleGoalContainerPress = (index) => {
-    // if the index is in the array, remove it. other wise, add it
-    if (expandedGoalIndex.includes(index)) {
-      setExpandedGoalIndex(expandedGoalIndex.filter((i) => i !== index));
-    } else {
-      // figure out if the index is in the in progress or completed goals and add that to the expanded list
-      setExpandedGoalIndex([...expandedGoalIndex, index]);
-    }
-  };
-
-  // make 2 functions to handle, one for in progress and one for completed
-  const handleGoalContainerPressInProgress = (index) => {
-    // if the index is in the array, remove it. other wise, add it
-    if (expandedGoalIndexInProgress.includes(index)) {
-      setExpandedGoalIndexInProgress(
-        expandedGoalIndexInProgress.filter((i) => i !== index)
-      );
-    } else {
-      setExpandedGoalIndexInProgress([...expandedGoalIndexInProgress, index]);
-    }
-  };
-
-  const handleGoalContainerPressCompleted = (index) => {
-    // if the index is in the array, remove it. other wise, add it
-    if (expandedGoalIndexCompleted.includes(index)) {
-      setExpandedGoalIndexCompleted(
-        expandedGoalIndexCompleted.filter((i) => i !== index)
-      );
-    } else {
-      setExpandedGoalIndexCompleted([...expandedGoalIndexCompleted, index]);
-    }
+  const handleGoalContainerPress = (index, type) => {
+    const setter = type === "InProgress" ? setExpandedGoalIndexInProgress : setExpandedGoalIndexCompleted;
+    setter(prevState => {
+      if (prevState.includes(index)) {
+        return prevState.filter(i => i !== index);
+      } else {
+        return [...prevState, index];
+      }
+    });
   };
 
   const handleSearch = (text) => {
-    console.log(text);
     setSearchTerm(text.trim() === "" ? null : text);
-    // make a new list that only has the goal names
-    const goalNames = goals.map((goal) => goal.name);
-    // find the goals that match the search term
-    const filtered = goalNames.filter((goal) =>
-      goal.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredGoals(filtered);
-    console.log("filtered shit" + filtered);
   };
 
-  // delete goal
+  const renderGoals = (goals, expandedIndex, onPress, type) => {
+    return goals.map((goal, index) => (
+      <TouchableOpacity
+        key={index}
+        onPress={() => onPress(index, type)}
+      >
+        <View style={styles.goalContainer}>
+          <View style={styles.topContainer}>
+            <Text style={textStyles.textBodyBoldPurple}>{goal.name}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TouchableOpacity onPress={() => handleDelete(goal.name)}>
+                <Image source={garbage} style={{ width: 20, height: 20 }} />
+              </TouchableOpacity>
+              <Text>{'\t'}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate(goal.type === "Recurring" ? "EditRecurringGoal" : "EditLongTermGoal", { goalName: goal.name })}>
+                <Image source={edit} style={{ width: 20, height: 20 }} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {expandedIndex.includes(index) && (
+            <View style={styles.goalDetailsContainer}>
+              {goal.type === "Recurring" ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Image source={frequency} style={{ width: 20, height: 20, marginRight: 5 }} />
+                  <Text style={textStyles.textBodyHeaderPurple}>{goal.frequency}, {goal.counter}x</Text>
+                </View>
+              ) : (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Image source={calendar} style={{ width: 20, height: 20, marginRight: 5 }} />
+                  <Text style={textStyles.textBodyHeaderPurple}>{goal.date}</Text>
+                </View>
+              )}
+
+              {goal.description !== "" ? 
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Image source={menu} style={{ width: 20, height: 20, marginRight: 5, backgroundColor: 'purple' }} />
+                  <Text style={textStyles.textBodyHeaderPurple}>{goal.description}</Text>
+                </View> 
+                : 
+                null
+              }  
+            </View>        
+          )}
+        </View>
+      </TouchableOpacity>
+    ));
+  };
+
   const handleDelete = async (goalName) => {
-    // Show confirmation alert
     Alert.alert(
       "Delete Goal",
       `Are you sure you want to delete the goal "${goalName}"?`,
@@ -137,9 +132,8 @@ const AllGoalsScreen = ({ navigation }) => {
           text: "Delete",
           onPress: async () => {
             try {
-              await deleteGoal(user, goalName); // Assuming deleteGoal function deletes the goal from Firestore
+              await deleteGoal(user, goalName);
               console.log("Goal deleted successfully!");
-              // Refresh goals after deletion
               fetchGoals();
             } catch (error) {
               console.error("Error deleting goal: ", error);
@@ -153,153 +147,53 @@ const AllGoalsScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={containerStyles.background}>
+    <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <View style={containerStyles.container}>
-          <View style={containerStyles.headerContainer}>
-            <Text style={textStyles.header}> All Your Goals </Text>
-            <Text style={textStyles.textBodyGray}> Open Goal Dropdown to Edit </Text>
-          </View>
-          <TouchableOpacity
-            style={containerStyles.back}
-            onPress={() => navigation.navigate("Goals")}
-          >
-            <Image source={back} />
-          </TouchableOpacity>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderRadius: 10,
-              borderColor: "gray",
-              padding: 10,
-              marginVertical: "2%",
-              marginHorizontal: "2%",
-              width: "100%",
-            }}
-            placeholder="🔍 Search goals..."
-            value={searchTerm}
-            onChangeText={handleSearch}
-          />
-          <View style={styles.goalsContainer}>
-            {/* If searchTerm is null, split goals into in progress and completed */}
-            {searchTerm === null ? (
-              <View>
-                <View>
-                  <Text style={styles.sectionHeader}>In Progress: </Text>
-                  {inProgressGoals.map((goal, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => handleGoalContainerPressInProgress(index)}
-                    >
-                      <View style={styles.goalContainer}>
-                        <Text style={styles.goalText}>{goal.name}</Text>
-                        {expandedGoalIndexInProgress.includes(index) && (
-                          <View style={styles.goalDetailsContainer}>
-                            <Text>Type: {goal.type}</Text>
-                            {goal.type === "Recurring" ? (
-                              <Text>Frequency: {goal.frequency}</Text>
-                            ) : (
-                              <Text>Target Date: {goal.date}</Text>
-                            )}
-                            <Text>Description: {goal.description}</Text>
-                            <View style={(flexDirection = "row")}>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  navigation.navigate(
-                                    goal.type === "Recurring"
-                                      ? "EditRecurringGoal"
-                                      : "EditLongTermGoal",
-                                    { goalName: goal.name }
-                                  )
-                                }
-                              >
-                                <Text>Edit</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => handleDelete(goal.name)}
-                              >
-                                <Text>Delete</Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                <View style={styles.divider}></View>
-                <View>
-                  <Text style={styles.sectionHeader}>Completed: </Text>
-                  {completedGoals.map((goal, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => handleGoalContainerPressCompleted(index)}
-                    >
-                      <View style={styles.goalContainer}>
-                        <Text style={styles.goalText}>{goal.name}</Text>
-                        {expandedGoalIndexCompleted.includes(index) && (
-                          <View style={styles.goalDetailsContainer}>
-                            <Text>Type: {goal.type}</Text>
-                            {goal.type === "Recurring" ? (
-                              <Text>Frequency: {goal.frequency}</Text>
-                            ) : (
-                              <Text>Target Date: {goal.date}</Text>
-                            )}
-                            <Text>Description: {goal.description}</Text>
-                            <View style={(flexDirection = "row")}>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  navigation.navigate(
-                                    goal.type === "Recurring"
-                                      ? "EditRecurringGoal"
-                                      : "EditLongTermGoal",
-                                    { goalName: goal.name }
-                                  )
-                                }
-                              >
-                                <Text>Edit</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  navigation.navigate(
-                                    handleDelete("" + goal.name)
-                                  )
-                                }
-                              >
-                                <Text>Delete</Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            ) : (
-              <View>
-                <Text style={styles.sectionHeader}>Filtered Goals</Text>
-                <View style={styles.divider}></View>
-                {filteredGoals.map((goal, index) => (
+        <View style={{ flex: 1, paddingTop: "10%" }}></View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>All Your Goals</Text>
+          <Text style={styles.textBodyGray}>Open Goal Dropdown to Edit</Text>
+        </View>
+        <TouchableOpacity style={styles.back} onPress={() => navigation.navigate("Goals")}>
+          <Image source={back} />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="🔍 Search goals..."
+          value={searchTerm}
+          onChangeText={handleSearch}
+        />
+        <View style={styles.goalsContainer}>
+          {searchTerm === null ? (
+            <View>
+              <Text style={styles.sectionHeader}>In Progress:</Text>
+              {renderGoals(inProgressGoals, expandedGoalIndexInProgress, handleGoalContainerPress, "InProgress")}
+              <View style={styles.divider} />
+              <Text style={styles.sectionHeader}>Completed:</Text>
+              {renderGoals(completedGoals, expandedGoalIndexCompleted, handleGoalContainerPress, "Completed")}
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.sectionHeader}>Filtered Goals</Text>
+              <View style={styles.divider} />
+              {goals
+                .filter(goal => goal.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map((goal, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => handleGoalContainerPress(index)}
+                    onPress={() => handleGoalContainerPress(index, "Filtered")}
                   >
                     <View style={styles.goalContainer}>
-                      <Text>{goal}</Text>
+                      <Text>{goal.name}</Text>
                     </View>
                   </TouchableOpacity>
                 ))}
-              </View>
-            )}
-          </View>
+            </View>
+          )}
         </View>
-        <View style={{ flex: 1, paddingBottom: "10%" }}></View>
       </ScrollView>
     </View>
   );
@@ -308,41 +202,62 @@ const AllGoalsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     paddingTop: "10%",
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerContainer: {
+    alignItems: "center",
+    marginBottom: "5%",
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: "5%",
-    alignItems: "center",
-    justifyContent: "center",
+  },
+  textBodyGray: {
+    color: "#808080",
+  },
+  back: {
+    position: "absolute",
+    top: '2%',
+    left: '2%',
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "gray",
+    padding: 10,
+    marginVertical: 10,
+    marginHorizontal: 10,
   },
   goalsContainer: {
-    alignItems: "center",
-    flexDirection: "column",
+    marginHorizontal: 10,
   },
   goalContainer: {
-    borderRadius: 5,
-    borderWidth: "1%",
+    borderWidth: 1,
+    borderRadius: 10,
     borderColor: "#8098D5",
-    width: "100%",
-    paddingVertical: "2%",
-    marginRight: "52%",
-    marginVertical: "2%",
-    textAlign: "center",
-    paddingLeft: "2%",
+    padding: 10,
+    marginVertical: 5,
     backgroundColor: "#AABFF4",
   },
   goalDetailsContainer: {
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginTop: "2%",
-    marginRight: "2%",
+    marginTop: 5,
+    padding: 10,
     backgroundColor: "#F0F4FF",
-    flexDirection: "column",
+    borderRadius: 10,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    marginVertical: 10,
   },
 });
 

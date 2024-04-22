@@ -478,7 +478,7 @@ export const editGoal = async (
   newName,
   newFrequency,
   newCounter,
-  newDeadline,
+  newDate,
   newDescription
 ) => {
   try {
@@ -490,7 +490,7 @@ export const editGoal = async (
       frequency: newFrequency,
       counter: newCounter,
       currentCounter: newCounter,
-      date: newDeadline,
+      date: newDate,
       description: newDescription,
     };
     await updateDoc(goalRef, updatedFields);
