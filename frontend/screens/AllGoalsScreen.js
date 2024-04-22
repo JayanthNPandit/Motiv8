@@ -281,6 +281,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   goalsContainer: {
+    marginTop: '4%',
     marginHorizontal: 10,
   },
   goalContainer: {
