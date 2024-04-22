@@ -93,6 +93,7 @@ const AddRecurringGoalScreen = ({ route, navigation }) => {
             style={containerStyles.input}
             value={goalName}
             onChangeText={setGoalName}
+            maxLength={20}
           />
 
           <Text style={textStyles.textBodyHeader}>Choose a frequency:</Text>

@@ -96,6 +96,17 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
             editable={false}
           />
 
+          <Text style={textStyles.textBodyHeader}>
+            {" "}
+            Enter a name for your goal:{" "}
+          </Text>
+          <TextInput
+            style={containerStyles.input}
+            value={goalName}
+            onChangeText={setGoalName}
+            maxLength={20}
+          />
+
           <Text style={textStyles.textBodyHeader}> Pick a Target Date: </Text>
           <TextInput
             style={[containerStyles.dateInput, textStyles.textBodyHeaderWhite]}
@@ -106,23 +117,13 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
           />
 
           <TouchableOpacity
-            style={{ position: "absolute", top: "30.5%", left: "85%" }}
+            style={{ position: "absolute", top: "52%", left: "85%" }}
             onPress={() => toggleShowCalendar()}
           >
             <View style={styles.imageContainer}>
               <Image source={calendarIcon} style={styles.image} />
             </View>
           </TouchableOpacity>
-
-          <Text style={textStyles.textBodyHeader}>
-            {" "}
-            Enter a name for your goal:{" "}
-          </Text>
-          <TextInput
-            style={containerStyles.input}
-            value={goalName}
-            onChangeText={setGoalName}
-          />
 
           {/* Render the calendar as an overlay */}
           <Modal
@@ -136,7 +137,7 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
                 containerStyles.modalContainer,
                 {
                   width: screenWidth * 0.95,
-                  paddingTop: "90%",
+                  paddingTop: "14%",
                   paddingLeft: "5%",
                 },
               ]}

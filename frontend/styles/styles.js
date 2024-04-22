@@ -478,9 +478,11 @@ export const containerStyles = StyleSheet.create({
   goalContentContainer: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
     gap: "200%",
     marginBottom: "5%",
+    height: 'auto',
   },
   divider: {
     width: "100%",

@@ -57,9 +57,8 @@ const AddGoalScreen = ({ route, navigation }) => {
             </Text>
           </TouchableOpacity>
         )}
+
         <View style={containerStyles.listContainer}>
-          <Text style={textStyles.sectionHeader}></Text>
-          <Text style={textStyles.sectionHeader}></Text>
           <Image source={recurringImage} style={styles.image} />
           <Text style={textStyles.textBodyGray}>
             {" "}

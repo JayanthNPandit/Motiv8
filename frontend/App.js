@@ -48,6 +48,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ActivityIndicator, View } from "react-native";
 
+import { LogBox } from "react-native";
+
+LogBox.ignoreAllLogs(true);
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 

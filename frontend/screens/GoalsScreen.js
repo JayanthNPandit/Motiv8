@@ -191,13 +191,13 @@ const GoalsScreen = ({navigation}) => {
             >
               {/* figure out wtf is wrong with this container sizing thing at EM*/ }
               {/* also figure out pinned goals backend stuff*/ }
-              {recurringGoals.map((key, item) => (
+              {recurringGoals.map((item) => (
                 <View style={[containerStyles.recurringGoalContainer, {width: 0.9*screenWidth}]}>
                   <View style={styles.progressBarContainer}>
                     <View style={[styles.progressBar, { width: `${Math.min(100, calculateProgress(item[2] - item[1], item[2]))}%` }]} />
                   </View>
                   <View style={containerStyles.goalContentContainer}>
-                    <Text style={[textStyles.goalText, { flexShrink: 1 }]} numberOfLines={undefined}>{item[0]}</Text>
+                    <Text style={[textStyles.goalText, { flexShrink: 1 }]} numberOfLines={1}>{item[0].substring(0, 20)}</Text>
                     <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("EditRecurringGoal", { goalName: item[0].toString() })}>
                       <Image source={editGoalButton} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>

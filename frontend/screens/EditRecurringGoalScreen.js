@@ -100,6 +100,7 @@ return (
                         style={containerStyles.input}
                         value={newName}
                         onChangeText={setNewName}
+                        maxLength={20}
                     />
 
                     <Text style={textStyles.textBodyHeader}>Choose a goal type:</Text>
