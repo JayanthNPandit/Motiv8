@@ -88,14 +88,6 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
         </View>
 
         <View style={containerStyles.purpleInputContainer}>
-          <Text style={textStyles.textBodyHeader}> Choose a goal type: </Text>
-          <TextInput
-            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
-            value={type}
-            onChangeText={setType}
-            editable={false}
-          />
-
           <Text style={textStyles.textBodyHeader}>
             Enter a name for your goal:
           </Text>
@@ -104,6 +96,14 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
             value={goalName}
             onChangeText={setGoalName}
             maxLength={20}
+          />
+
+          <Text style={textStyles.textBodyHeader}> Choose a goal type: </Text>
+          <TextInput
+            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
+            value={type}
+            onChangeText={setType}
+            editable={false}
           />
 
           <Text style={textStyles.textBodyHeader}> Pick a Target Date: </Text>
@@ -170,7 +170,7 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
         </View>
         <View style={{ ...containerStyles.buttonContainer, marginTop: "-8%" }}>
           <TouchableOpacity
-            style={{...containerStyles.whiteButton, paddingHorizontal: '17%'}}
+            style={{ ...containerStyles.whiteButton, paddingHorizontal: "17%" }}
             onPress={() => navigation.navigate("AddGoal")}
           >
             <Text style={textStyles.textBodyHeaderPurple}>Back</Text>

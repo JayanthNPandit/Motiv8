@@ -14,7 +14,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { addGoal } from "../backendFunctions";
 
 const AddRecurringGoalScreen = ({ route, navigation }) => {
-  const {disableNav} = route.params;
+  const { disableNav } = route.params;
   const [goalName, setGoalName] = useState("");
   const [type, setType] = useState("Recurring");
   const [frequency, setFrequency] = useState("Day");
@@ -57,7 +57,7 @@ const AddRecurringGoalScreen = ({ route, navigation }) => {
     }
 
     if (disableNav) navigation.navigate("Goals");
-    else navigation.navigate("Groups")
+    else navigation.navigate("Groups");
   };
 
   const handleOptionSelect = (option) => {
@@ -78,14 +78,6 @@ const AddRecurringGoalScreen = ({ route, navigation }) => {
         </View>
 
         <View style={containerStyles.purpleInputContainer}>
-          <Text style={textStyles.textBodyHeader}>Choose a goal type:</Text>
-          <TextInput
-            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
-            value={type}
-            onChangeText={setType}
-            editable={false}
-          />
-
           <Text style={textStyles.textBodyHeader}>
             Enter a name for your goal:
           </Text>
@@ -94,6 +86,14 @@ const AddRecurringGoalScreen = ({ route, navigation }) => {
             value={goalName}
             onChangeText={setGoalName}
             maxLength={20}
+          />
+
+          <Text style={textStyles.textBodyHeader}>Choose a goal type:</Text>
+          <TextInput
+            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
+            value={type}
+            onChangeText={setType}
+            editable={false}
           />
 
           <Text style={textStyles.textBodyHeader}>Choose a frequency:</Text>
@@ -141,7 +141,7 @@ const AddRecurringGoalScreen = ({ route, navigation }) => {
         </View>
         <View style={{ ...containerStyles.buttonContainer, marginTop: "-8%" }}>
           <TouchableOpacity
-            style={{...containerStyles.whiteButton, paddingHorizontal: '17%'}}
+            style={{ ...containerStyles.whiteButton, paddingHorizontal: "17%" }}
             onPress={() => navigation.navigate("AddGoal")}
           >
             <Text style={textStyles.textBodyHeaderPurple}>Back</Text>

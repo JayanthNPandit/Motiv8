@@ -105,20 +105,20 @@ const EditLongTermGoalScreen = ({ navigation, route }) => {
         </View>
 
         <View style={containerStyles.purpleInputContainer}>
-          <Text style={textStyles.textBodyHeader}>Goal type:</Text>
-          <TextInput
-            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
-            value={type}
-            onChangeText={setType}
-            editable={false}
-          />
-
           <Text style={textStyles.textBodyHeader}>Edit goal name:</Text>
           <TextInput
             style={containerStyles.input}
             value={newName}
             onChangeText={setNewName}
             maxLength={20}
+          />
+
+          <Text style={textStyles.textBodyHeader}>Goal type:</Text>
+          <TextInput
+            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
+            value={type}
+            onChangeText={setType}
+            editable={false}
           />
 
           <Text style={textStyles.textBodyHeader}>Edit target date:</Text>

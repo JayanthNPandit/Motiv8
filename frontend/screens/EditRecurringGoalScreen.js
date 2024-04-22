@@ -116,20 +116,20 @@ const EditRecurringGoalScreen = ({ navigation }) => {
         </View>
 
         <View style={containerStyles.purpleInputContainer}>
-          <Text style={textStyles.textBodyHeader}>Goal type:</Text>
-          <TextInput
-            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
-            value={type}
-            onChangeText={setType}
-            editable={false}
-          />
-
           <Text style={textStyles.textBodyHeader}>Edit goal name:</Text>
           <TextInput
             style={containerStyles.input}
             value={newName}
             onChangeText={setNewName}
             maxLength={20}
+          />
+
+          <Text style={textStyles.textBodyHeader}>Goal type:</Text>
+          <TextInput
+            style={{ ...containerStyles.input, backgroundColor: "#E8EFFF" }}
+            value={type}
+            onChangeText={setType}
+            editable={false}
           />
 
           <Text style={textStyles.textBodyHeader}>Edit frequency:</Text>
@@ -179,7 +179,7 @@ const EditRecurringGoalScreen = ({ navigation }) => {
         </View>
         <View style={{ ...containerStyles.buttonContainer, marginTop: "-8%" }}>
           <TouchableOpacity
-            style={{...containerStyles.whiteButton, paddingHorizontal: '17%'}}
+            style={{ ...containerStyles.whiteButton, paddingHorizontal: "17%" }}
             onPress={() => navigation.navigate("Goals")}
           >
             <Text style={textStyles.textBodyHeaderPurple}>Back</Text>
