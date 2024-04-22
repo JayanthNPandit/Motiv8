@@ -17,7 +17,7 @@ import frequency from "../assets/frequency.png";
 import calendar from "../assets/othercalendar.png";
 import menu from "../assets/Vector.png";
 import garbage from "../assets/garbage.png";
-import edit from "../assets/gay.png";
+import edit from "../assets/editbutton.png";
 import down from "../assets/down.png";
 
 import { textStyles, containerStyles } from "../styles/styles";
