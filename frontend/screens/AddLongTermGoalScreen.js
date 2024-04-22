@@ -136,7 +136,7 @@ const AddLongTermGoalScreen = ({ route, navigation }) => {
                 containerStyles.modalContainer,
                 {
                   width: screenWidth * 0.95,
-                  paddingTop: "14%",
+                  paddingTop: "115%",
                   paddingLeft: "5%",
                 },
               ]}
