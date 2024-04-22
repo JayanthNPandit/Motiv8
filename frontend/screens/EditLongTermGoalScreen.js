@@ -65,6 +65,7 @@ const EditLongTermGoalScreen = ({ navigation, route }) => {
         console.log("Counter: " + counter);
         console.log("Date: " + date);
         console.log("Description: " + description);
+        // im done bruh
         
         const success = await editGoal(user, goal.id, newName, type, counter, date, description);
         
